@@ -1,0 +1,45 @@
+<assembly>
+	<artifactSet id="project-plugins">
+		<artifacts>
+			<artifact group="org.athento.nx" name="athento-nx"
+				version="${projectParentVersion}" />
+		</artifacts>
+	</artifactSet>
+	<artifactSet id="athento-addons">
+		<artifacts>
+			<artifact group="org.athento.nx" name="athento-nx-query"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-security"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-automation-extended"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-extended-wf"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-metadata-inheritance"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-ui"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-upgrade-tools"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-extended-config"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-report-api"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-report-core"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-report-web"
+					  version="${athento.platform.version}" />
+			<artifact group="org.athento.nx" name="athento-nx-report-jasperreport"
+					  version="${athento.platform.version}" />
+            <artifact group="org.athento.nx" name="athento-nx-field-validator-plugin"
+                      version="${athento.platform.version}" />
+		</artifacts>
+	</artifactSet>
+    <artifactSet id="athento-libs">
+        <artifacts>
+            <artifact group="net.sf.jasperreports" name="jasperreports"
+              version="6.2.0" />
+        </artifacts>
+    </artifactSet>
+</assembly>
+

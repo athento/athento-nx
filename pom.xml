@@ -21,6 +21,7 @@
 		<module>athento-nx-metadata-inheritance</module>
 		<module>athento-nx-upgrade-tools</module>
 		<module>athento-nx-field-validator-plugin</module>
+		<module>athento-nx-distribution</module>
 	</modules>
 
 	<licenses>
