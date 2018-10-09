@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.athento-nx-security.AuthenticationContrib">
+
+    <require>org.nuxeo.ecm.platform.ui.web.auth.defaultConfig</require>
+    <require>org.nuxeo.ecm.automation.server.auth.config</require>
+
+    <extension
+            target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+            point="authenticators">
+
+        <authenticationPlugin name="BASIC_AUTH" enabled="true"
+                              class="org.athento.nuxeo.security.authenticator.BasicAuthenticator">
+        </authenticationPlugin>
+
+        <authenticationPlugin name="AUTOMATION_BASIC_AUTH" enabled="true"
+                              class="org.athento.nuxeo.security.authenticator.BasicAuthenticator">
+        </authenticationPlugin>
+
+        <authenticationPlugin name="FORM_CAPTCHA_AUTH" enabled="true"
+                              class="org.athento.nuxeo.security.authenticator.FormCaptchaAuthenticator">
+            <needStartingURLSaving>true</needStartingURLSaving>
+            <loginModulePlugin>Delegated_LM</loginModulePlugin>
+            <parameters>
+                <parameter name="LoginPage">login.jsp</parameter>
+                <parameter name="UsernameKey">user_name</parameter>
+                <parameter name="PasswordKey">user_password</parameter>
+                <parameter name="CaptchaKey">captcha</parameter>
+            </parameters>
+        </authenticationPlugin>
+
+        <authenticationPlugin name="ROTARYTOKEN_AUTH"
+                              enabled="true"
+                              class="org.athento.nuxeo.security.authenticator.RotaryTokenAuthenticator">
+            <loginModulePlugin>Trusting_LM</loginModulePlugin>
+        </authenticationPlugin>
+
+        <authenticationPlugin name="ONLYONEUSETOKEN_AUTH"
+                              enabled="true"
+                              class="org.athento.nuxeo.security.authenticator.OnlyOneUseTokenAuthenticator">
+            <loginModulePlugin>Trusting_LM</loginModulePlugin>
+        </authenticationPlugin>
+
+    </extension>
+
+    <extension
+            target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+            point="specificChains">
+
+        <specificAuthenticationChain name="RotaryTokenAuth">
+            <headers>
+                <header name="X-RotaryAuthentication-Token">.*</header>
+            </headers>
+            <replacementChain>
+                <plugin>ROTARYTOKEN_AUTH</plugin>
+            </replacementChain>
+        </specificAuthenticationChain>
+
+        <specificAuthenticationChain name="Automation">
+            <urlPatterns>
+                <url>(.*)/automation.*</url>
+            </urlPatterns>
+            <replacementChain>
+                <plugin>AUTOMATION_BASIC_AUTH</plugin>
+                <plugin>ROTARYTOKEN_AUTH</plugin>
+                <plugin>TOKEN_AUTH</plugin>
+                <plugin>ANONYMOUS_AUTH</plugin>
+            </replacementChain>
+        </specificAuthenticationChain>
+
+    </extension>
+
+    <extension
+            target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+            point="chain">
+
+        <authenticationChain>
+            <plugins>
+                <plugin>BASIC_AUTH</plugin>
+                <plugin>FORM_CAPTCHA_AUTH</plugin>
+                <plugin>ANONYMOUS_AUTH</plugin>
+                <plugin>WEBSERVICES_AUTH</plugin>
+            </plugins>
+        </authenticationChain>
+
+    </extension>
+
+</component>

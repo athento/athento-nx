@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<component 	name="org.athento.nuxeo.athento-nx-upgrade-tools.operation-contrib"
+	version="1.0.0">
+
+	<extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+		point="operations">
+
+		<operation class="org.athento.nx.upgrade.operation.RestructurePermissionsOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.ACLOptimizationOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.InstallAddonOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.UninstallAddonOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.StatusOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.GetAddonOperation"/>
+        <operation class="org.athento.nx.upgrade.operation.RestartOperation"/>
+
+		<operation class="org.athento.nx.upgrade.operation.CalculateStatsOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.CalculateStatOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.GetStatsOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.ReindexStatsOperation"/>
+
+	</extension>
+</component>

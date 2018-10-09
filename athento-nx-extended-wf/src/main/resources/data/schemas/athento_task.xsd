@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:nxs="http://www.athento.com/ecm/schemas/athento/athento_task"
+	targetNamespace="http://www.athento.com/ecm/schemas/athento/athento_task">
+
+	<xs:element name="order" type="xs:integer" />
+	<xs:element name="priority" type="xs:integer" />
+
+</xs:schema>

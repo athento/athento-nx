@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<component name="org.athento.utils.metadatapropagation.AutomationContrib"
+	version="1.0">
+
+	<extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+		point="operations">
+
+		<operation
+			class="org.athento.metadatapropagation.operations.MetadataPropagationOperation" />
+
+	</extension>
+
+</component>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.athento-nx-security.DynamicACLContrib">
+
+    <extension target="org.nuxeo.athento.athento-nx-security.DynamicACLService"
+               point="dynamicAcl">
+
+        <dynamicAcl name="ForFolderish" acl="local" overwrite="false">
+            <facet>Folderish</facet>
+            <ignoreDoctype>DocumentRoute</ignoreDoctype>
+            <ace principal="expr:@{doc.getPropertyValue('dc:title') + '_readers'}" />
+            <ace principal="expr:@{doc.getPropertyValue('dc:title') + '_writers'}" permission="ReadWrite" />
+            <ace principal="expr:@{doc.getPropertyValue('dc:title') + '_admin'}" permission="Everything" />
+        </dynamicAcl>
+
+    </extension>
+
+    <extension target="org.nuxeo.athento.athento-nx-security.DynamicACLService"
+               point="ignoreAclDoctype">
+        <ignoreAclDoctype id="DocumentRoute" />
+    </extension>
+
+
+</component>

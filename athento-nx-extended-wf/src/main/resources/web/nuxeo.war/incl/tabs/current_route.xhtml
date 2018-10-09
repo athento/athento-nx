@@ -1,0 +1,14 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:c="http://java.sun.com/jstl/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:nxu="http://nuxeo.org/nxweb/util"
+     xmlns:nxd="http://nuxeo.org/nxweb/document"
+     xmlns:nxl="http://nuxeo.org/nxforms/layout">
+
+  <c:forEach items="#{routingActions.getRelatedRoutes()}" var="relatedRoute">
+    <nxl:layout name="current_route_layout" mode="view"
+                value="#{relatedRoute}"
+                currentDocumentForRoute="#{currentDocument}" />
+  </c:forEach>
+
+</div>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<component name="org.athento.nx.upgrade.work-contrib" version="1.0">
+
+  <extension target="org.nuxeo.ecm.core.work.service" point="queues">
+    <queue id="stats">
+      <maxThreads>1</maxThreads>
+      <category>athentoStatistics</category>
+      <name>Athento Stats</name>
+    </queue>
+  </extension>
+
+</component>

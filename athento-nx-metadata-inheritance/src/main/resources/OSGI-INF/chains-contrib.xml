@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.extensions.chains" version="1.0.0">
+
+    <require>org.nuxeo.runtime.started</require>
+
+    <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent" point="chains">
+
+        <chain id="ChainInheritMetadatas">
+            <operation id="Context.FetchDocument"/>
+            <operation id="InheritMetadata"/>
+            <operation id="Document.Save" />
+        </chain>
+
+        <chain id="ChainInheritMetadatasFromParent">
+            <operation id="Context.FetchDocument"/>
+            <operation id="InheritMetadataFromParent"/>
+        </chain>
+
+    </extension>
+
+
+    <extension target="org.nuxeo.ecm.core.work.service" point="queues">
+        <queue id="inheritQueue">
+            <name>Inheritance</name>
+            <maxThreads>${inheritance.maxThreads:=4}</maxThreads>
+            <category>inheritance</category>
+            <clearCompletedAfterSeconds>${inheritance.clearCompletedAfterSeconds:=90}</clearCompletedAfterSeconds>
+        </queue>
+    </extension>
+
+
+
+</component>

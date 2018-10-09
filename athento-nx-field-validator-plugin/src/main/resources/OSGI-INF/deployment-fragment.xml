@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<fragment version="1">
+
+	<extension target="application#MODULE">
+		<module>
+			<java>${bundle.fileName}</java>
+		</module>
+	</extension>
+	<require>all</require>
+	<install>
+		<delete path="${bundle.fileName}.tmp" />
+		<unzip from="${bundle.fileName}" to="${bundle.fileName}.tmp" />
+		<copy from="${bundle.fileName}.tmp/web/nuxeo.war" to="/" />
+		<unzip from="${bundle.fileName}" to="${bundle.fileName}.tmp"
+			prefix="OSGI-INF/l10n">
+			<include>OSGI-INF/l10n/*-messages.properties</include>
+			<include>OSGI-INF/l10n/*-messages*.properties</include>
+		</unzip>
+		<append from="${bundle.fileName}.tmp" pattern="*-messages.properties"
+			to="nuxeo.war/WEB-INF/classes/messages.properties" addNewLine="true" />
+		<append from="${bundle.fileName}.tmp" pattern="*-messages_es_ES.properties"
+			to="nuxeo.war/WEB-INF/classes/messages_es_ES.properties" addNewLine="true" />
+		<append from="${bundle.fileName}.tmp" pattern="*-messages_pt_PT.properties"
+			to="nuxeo.war/WEB-INF/classes/messages_pt_PT.properties" addNewLine="true" />
+		<append from="${bundle.fileName}.tmp/OSGI-INF/l10n/org.athento.nuxeo.validator.fieldValidatorBean-messages_es_ES.properties"
+			to="nuxeo.war/WEB-INF/classes/messages_es.properties" addNewLine="true" />
+		<append from="${bundle.fileName}.tmp/OSGI-INF/l10n/org.athento.nuxeo.validator.fieldValidatorBean-messages_pt_PT.properties"
+			to="nuxeo.war/WEB-INF/classes/messages_pt.properties" addNewLine="true" />
+		<delete path="${bundle.fileName}.tmp" />
+	</install>
+
+
+
+
+</fragment>

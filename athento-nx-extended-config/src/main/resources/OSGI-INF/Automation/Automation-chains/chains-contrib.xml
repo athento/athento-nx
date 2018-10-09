@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component
+	name="org.athento.nuxeo.athento-nx-extended-config.chains"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+		point="chains">
+		
+		<chain id="ExtendedConfig.goto">
+
+			<documentation>
+				Invoked from Main Tab, sends the user to the Extended Config document
+			</documentation>
+
+			<operation id="Document.Fetch">
+				<param type="document" name="value">/ExtendedConfig</param>
+			</operation>
+			<operation id="Seam.NavigateTo" />
+			
+		</chain>
+		
+	</extension>
+
+</component>

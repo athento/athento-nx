@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.athento-nx-security.DynamicACLService">
+
+    <service>
+        <provide interface="org.athento.nuxeo.security.api.DynamicACLService"/>
+    </service>
+
+    <implementation
+            class="org.athento.nuxeo.security.core.DynamicACLServiceImpl"/>
+
+    <extension-point name="dynamicAcl">
+        <documentation>
+            Specify the ACLs of documents.
+
+            Examples for dynamic with "Read" permission when it is undefined. And another with set permission.
+            Check below the principal string with a dynamic MVEL expression based in a document context and the rules to apply as well.
+            ComplexField and complextPattern are used for complex field. Get and replace the wildcard % for complex value into pattern whether it is defined.
+            <code>
+                <dynamicAcl name="dynamic1">
+                    <doctype>File</doctype>
+                    <ace principal="expr:@{'readers_' + doc.getPropertyValue('dc:title')}" permission="ReadWrite">
+                        <rule>doc.getPropertyValue('dc:title') == 'FileTest'</rule>
+                    </ace>
+                    <ace principal="expr:@{doc.getPropertyValue('complex:property')}" complexField="mapValue"
+                         complexPattern="%_readers" permission="ReadWrite" />
+                </dynamicAcl>
+                <dynamicAcl name="dynamic2" overwrite="true" blockInheritance="true">
+                    <doctype>File</doctype>
+                    <doctype>Image</doctype>
+                    <ace principal="expr:@{'readers_' + doc.getPropertyValue('dc:title')}" permission="ReadWrite" />
+                    <ace principal="MyGroup" permission="ManageAll" />
+                </dynamicAcl>
+            </code>
+
+            Disable dynamic ACL.
+            <code>
+                <dynamicAcl name="dynamic1" enabled="false" />
+            </code>
+
+            Ingore doctype for dynamic ACL.
+            <code>
+                <ingoreAclDoctype id="DocumentRoute" />
+            </code>
+
+            Default dynamic ACLs for folderish is:
+            <code>
+                <dynamicAcl name="local" overwrite="false">
+                    <doctype>Folder</doctype>
+                    <ace principal="@{doc.getPropertyValue('dc:title') + '_readers'}" />
+                    <ace principal="@{doc.getPropertyValue('dc:title') + '_writers'}" />
+                    <ace principal="@{doc.getPropertyValue('dc:title') + '_admin'}" />
+                </dynamicAcl>
+            </code>
+        </documentation>
+        <object
+                class="org.athento.nuxeo.security.api.descriptor.DynamicACLDescriptor" />
+    </extension-point>
+
+    <extension-point name="ignoreAclDoctype">
+        <documentation>
+            Ignore doctype for dynamic ACL.
+            <code>
+                <ignoreAclDoctype id="DocumentRoute" />
+            </code>
+        </documentation>
+        <object
+                class="org.athento.nuxeo.security.api.descriptor.ACLIgnoreDoctypeDescriptor" />
+    </extension-point>
+
+
+</component>

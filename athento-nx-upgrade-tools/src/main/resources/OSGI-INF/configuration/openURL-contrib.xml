@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.ui.athento-nx-upgrade-tools.openurl-contrib">
+
+    <extension point="openUrl"
+               target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService">
+
+        <!-- Your open-url contributions here -->
+
+    </extension>
+
+    <extension target="org.nuxeo.ecm.platform.web.common.requestcontroller.service.RequestControllerService" point="corsConfig">
+        <corsConfig name="rhombus" supportedMethods="GET,POST,OPTIONS"
+                    allowOrigin="*" allowSubdomains="true"
+                    supportedHeaders="Authorization, Origin, Content-Type, X-Requested-With" supportsCredentials="true" maxAge="-1"
+                    allowGenericHttpRequests="true">
+            <pattern>/nuxeo/api/v1/.*</pattern>
+        </corsConfig>
+        <corsConfig name="checkStatus" supportedMethods="GET,POST,OPTIONS"
+                    allowOrigin="*" allowSubdomains="true"
+                    supportedHeaders="Authorization, Origin, Content-Type, X-Requested-With" supportsCredentials="true" maxAge="-1"
+                    allowGenericHttpRequests="true">
+            <pattern>/nuxeo/site/automation/Athento.CheckStatus</pattern>
+        </corsConfig>
+    </extension>
+
+
+</component>

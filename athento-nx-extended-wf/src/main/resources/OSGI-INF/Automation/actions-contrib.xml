@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.athento.nuxeo.automation.extended-wf.ActionsContrib">
+
+    <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+               point="actions">
+
+        <action id="summary_picture_custom_metadata" type="widget" order="150">
+            <category>SUMMARY_PANEL_RIGHT</category>
+            <properties>
+                <property name="widgetName">summary_current_document_view</property>
+            </properties>
+            <filter-id>hasPicture</filter-id>
+        </action>
+
+        <action id="summary_video_custom_metadata" type="widget" order="150">
+            <category>SUMMARY_PANEL_RIGHT</category>
+            <properties>
+                <property name="widgetName">summary_current_document_view</property>
+            </properties>
+            <filter-id>hasVideo</filter-id>
+        </action>
+
+        <action id="workflow_history" type="rest_document_link" order="1"
+                link="/incl/tabs/document_workflow_history_cv.xhtml" enabled="true" label="action.view.workflow.history">
+            <category>TAB_CONTENT_HISTORY_sub_tab</category>
+            <filter-id>view_content_history</filter-id>
+        </action>
+
+        <action id="summary_workflow_history" type="widget" order="700">
+            <category>SUMMARY_PANEL_LEFT</category>
+            <properties>
+                <property name="widgetName">summary_workflow_history</property>
+            </properties>
+        </action>
+
+        <action id="current_route_abandon" type="widget" order="300">
+            <category>CURRENT_ROUTE_PANEL_RIGHT</category>
+            <properties>
+                <property name="widgetName">current_route_abandon</property>
+            </properties>
+            <filter-id>currentUserIsWorkflowInitatior</filter-id>
+        </action>
+
+    </extension>
+</component>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.athento-nx-extended-wf.listener-contrib" version="1.0.0">
+
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
+               point="listener">
+
+        <listener name="AthentoTaskAssignedListener" async="false"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.TaskAssignedListener">
+            <event>workflowTaskAssigned</event>
+        </listener>
+        <listener name="AthentoTaskCompletedListener" async="false" priority="9999"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.TaskCompletedListener">
+            <event>beforeRouteStart</event>
+            <event>workflowTaskCompleted</event>
+            <event>afterRouteFinish</event>
+            <event>documentModified</event>
+        </listener>
+
+        <listener name="AthentoWorkflowChangeListener" async="false"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.WorkflowChangeListener">
+            <event>workflowChanged</event>
+            <event>workflowTaskReassigned</event>
+            <event>workflowTaskDelegated</event>
+        </listener>
+
+        <!-- Auto-start workflow after document created  (minimal priority) -->
+        <listener name="AutostartWorkflowListener" async="false" priority="1"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.AutostartWorkflowListener">
+            <event>documentCreated</event>
+        </listener>
+
+        <!-- Update document workflow listener -->
+        <listener name="UpdatedDocumentWorkflowListener" async="false" priority="1"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.UpdateDocumentWorkflowListener">
+            <event>documentModified</event>
+        </listener>
+
+    </extension>
+
+    <extension
+            target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService"
+            point="notificationListenerHook">
+        <hookListener name="hookNotificationAudit" class="org.athento.nuxeo.wf.listener.HookWorkflowListener"/>
+    </extension>
+
+</component>

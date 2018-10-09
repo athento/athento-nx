@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-metadata-inheritance.extended-config.formlayout-metadataInheritance"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+		point="layouts">
+		<layout name="layout@formlayout-metadataInheritance-extendedConfig">
+			<templates>
+				<template mode="any">/layouts/metadataInheritance_widget_layout_template.xhtml
+				</template>
+			</templates>
+			<rows>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>enableInheritance</widget>
+                </row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>ignoredMetadatas</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>propagateNullValues</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>enableSiblingInheritance</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>ignoreVersions</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>overrideValues</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>increaseVersion</widget>
+				</row>
+			</rows>
+			<widget name="enableInheritance" type="checkbox">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.enableInheritance</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:enableInheritance</field>
+				</fields>
+			</widget>
+			<widget name="ignoredMetadatas" type="text">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.ignoredMetadatas</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:ignoredMetadatas</field>
+				</fields>
+			</widget>
+			<widget name="propagateNullValues" type="checkbox">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.propagateNullValues</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:propagateNullValues</field>
+				</fields>
+			</widget>
+			<widget name="enableSiblingInheritance" type="checkbox">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.enableSiblingInheritance</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:enableSiblingInheritance</field>
+				</fields>
+			</widget>
+			<widget name="ignoreVersions" type="checkbox">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.ignoreVersions</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:ignoreVersions</field>
+				</fields>
+			</widget>
+			<widget name="overrideValues" type="checkbox">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.overrideValues</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:overrideValues</field>
+				</fields>
+			</widget>
+			<widget name="increaseVersion" type="checkbox">
+				<labels>
+					<label mode="any">label.metadataInheritanceConfig.increaseVersion</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>metadataInheritanceConfig:increaseVersion</field>
+				</fields>
+			</widget>
+		</layout>
+
+	</extension>
+</component>

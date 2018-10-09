@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.commandline.contrib">
+
+  <extension target="org.nuxeo.ecm.platform.commandline.executor.service.CommandLineExecutorComponent"
+    point="command">
+
+    <command name="pdf2htmlEX" enabled="true">
+      <commandLine>pdf2htmlEX</commandLine>
+      <parameterString> --fallback 1 --zoom #{zoom} #{inFilePath} --dest-dir #{outDirPath}</parameterString>
+      <installationDirective>You need to install pdf2htmlEX</installationDirective>
+    </command>
+
+  </extension>
+
+</component>

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Require-Bundle: org.nuxeo.runtime
+Bundle-Vendor: Nuxeo
+Bundle-Version: 1.0.0
+Bundle-Name: org.athento.nuxeo.metadata.inheritance
+Bundle-ManifestVersion: 2
+Nuxeo-Component: OSGI-INF/doctype-contrib.xml,
+ OSGI-INF/schemas-contrib.xml,
+ OSGI-INF/widgettypes-contrib.xml,
+ OSGI-INF/operations-contrib.xml,
+ OSGI-INF/chains-contrib.xml,
+ OSGI-INF/actions-contrib.xml,
+ OSGI-INF/events-contrib.xml,
+ OSGI-INF/ExtendedConfig/extended-config-doctypes-contrib.xml,
+ OSGI-INF/ExtendedConfig/extended-config-schemas-contrib.xml,
+ OSGI-INF/ExtendedConfig/extended-config-layouts-contrib.xml
+Bundle-SymbolicName: org.athento.nuxeo.plugins.automation.nuxeo_inheritMetadatas
+

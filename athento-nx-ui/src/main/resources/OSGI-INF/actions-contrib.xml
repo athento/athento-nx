@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.athento.athento-nx-ui.ActionsContrib">
+
+    <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+               point="actions">
+
+        <!-- QSearch actions -->
+        <action id="qsearch" link="querysearch" label="label.main.tab.qsearch" order="60"
+                type="template">
+            <category>SEARCH_RESULTS_ACTIONS</category>
+            <filter-id>nxqlSearchSelected</filter-id>
+            <properties>
+                <property name="template">/search/incl/action/qsearch_main_tab_action_template.xhtml</property>
+                <property name="target">_blank</property>
+            </properties>
+        </action>
+
+        <action id="qsearchViewTitle" type="widget" order="100">
+            <category>QSEARCH_PANEL</category>
+            <properties>
+                <property name="widgetName">qsearchViewTitle</property>
+                <property name="containerStyleClass">searchViewTitle</property>
+            </properties>
+        </action>
+
+        <action id="qsearchResultsActions" type="widget" order="100">
+            <category>QSEARCH_PANEL</category>
+            <properties>
+                <property name="widgetName">qsearchResultsActions</property>
+                <property name="containerStyleClass">searchResultsActions</property>
+            </properties>
+        </action>
+
+        <action id="qsearchContentView" type="widget" order="500">
+            <category>QSEARCH_PANEL</category>
+            <properties>
+                <property name="containerStyleClass">searchResultsListing</property>
+                <property name="widgetName">qsearchContentView</property>
+            </properties>
+        </action>
+
+        <action id="qsearchCreateDocument" type="fancybox" label="action.new.document"
+                icon="/icons/action_add.gif" order="0">
+            <category>QSEARCH_ACTIONS_PANEL</category>
+            <properties>
+                <property name="include">/select_document_type.xhtml</property>
+                <property name="styleClass">primary</property>
+            </properties>
+        </action>
+
+        <action id="qsearchBack" link="#{userWorkspaceManagerActions.navigateToOverallWorkspace}"
+                label="command.user.return.to.repository" order="20">
+            <category>QSEARCH_ACTIONS_PANEL</category>
+        </action>
+
+
+        <!-- Other -->
+
+        <action id="summary_picture_custom_metadata" type="widget" order="150">
+            <category>SUMMARY_PANEL_RIGHT</category>
+            <properties>
+                <property name="widgetName">summary_current_document_view</property>
+            </properties>
+            <filter id="hasPicture">
+                <rule grant="true">
+                    <facet>Picture</facet>
+                </rule>
+            </filter>
+        </action>
+
+        <action id="summary_video_custom_metadata" type="widget" order="150">
+            <category>SUMMARY_PANEL_RIGHT</category>
+            <properties>
+                <property name="widgetName">summary_current_document_view</property>
+            </properties>
+            <filter id="hasVideo">
+                <rule grant="true">
+                    <facet>Video</facet>
+                </rule>
+            </filter>
+        </action>
+
+        <action icon="/icons/contextual_menu/preview.png" id="showFancyBoxPreview" label="label.document.preview" order="0" type="fancybox">
+            <category>DOCUMENT_UPPER_ACTION</category>
+            <filter-id>view_preview</filter-id>
+            <filter-id>not_folder</filter-id>
+            <filter-id>not_anonymous</filter-id>
+            <properties>
+                <property name="iframe">
+                    #{previewActions.getCurrentDocumentPreviewPopupURL()}
+                </property>
+                <property name="ajaxSupport">true</property>
+            </properties>
+        </action>
+
+    </extension>
+
+
+</component>

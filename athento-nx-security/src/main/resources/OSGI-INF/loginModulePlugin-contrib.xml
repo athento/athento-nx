@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.security.ModulePluginContrib">
+
+  <extension target="org.nuxeo.ecm.platform.login.LoginPluginRegistry" point="plugin">
+    <LoginPlugin name="Delegated_LM" class="org.athento.nuxeo.security.login.DelegatedLoginPlugin">
+      <enabled>true</enabled>
+    </LoginPlugin>
+  </extension>
+
+</component>

@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.athento-nx-ui.WidgetsContrib"
+	version="1.0.0">
+	
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+			   point="widgets">
+
+		<widget name="dashboard_top" type="documentActions">
+			<labels>
+				<label mode="any"></label>
+			</labels>
+			<properties widgetMode="any">
+				<property name="category">DASHBOARD_TOP</property>
+			</properties>
+			<controls mode="any">
+				<control name="gridStyleClass">gridStyle12</control>
+			</controls>
+		</widget>
+
+		<widget name="dashboard_bottom" type="documentActions">
+			<labels>
+				<label mode="any"></label>
+			</labels>
+			<properties widgetMode="any">
+				<property name="category">DASHBOARD_BOTTOM</property>
+			</properties>
+			<controls mode="any">
+				<control name="gridStyleClass">gridStyle12</control>
+			</controls>
+		</widget>
+
+		<!-- Search -->
+
+		<widget name="qsearchPanel" type="container">
+			<properties widgetMode="view">
+				<property name="display">block_top</property>
+				<property name="hideSubLabels">true</property>
+				<property name="ajaxPanelId">qsearchPanel</property>
+			</properties>
+			<subWidgetRefs>
+				<widget>qsearchResults</widget>
+			</subWidgetRefs>
+			<controls mode="any">
+				<control name="gridStyleClass">
+					gridStyle6 nxSearchResults
+				</control>
+			</controls>
+		</widget>
+
+		<widget name="qsearchResults" type="documentActions">
+			<properties widgetMode="view">
+				<property name="category">QSEARCH_PANEL</property>
+			</properties>
+			<controls mode="any">
+				<control name="requireSurroundingForm">false</control>
+			</controls>
+		</widget>
+
+		<widget name="qsearchViewTitle" type="qsearch_view_title" />
+
+		<widget name="qsearchResultsActions" type="documentActionsWithForms">
+			<properties widgetMode="view">
+				<property name="category">QSEARCH_ACTIONS_PANEL</property>
+				<property name="styleClass">globalActionBar</property>
+				<property name="overallDisplay">horizontal_block</property>
+				<property name="actionStyleClass">button</property>
+				<property name="actionsDisplay">buttons</property>
+				<property name="useAjaxForm">true</property>
+				<property name="ignoreTemplateProperty">true</property>
+				<property name="maxActionsNumber">3</property>
+			</properties>
+		</widget>
+
+		<widget name="qsearchContentView" type="contentViewWithForms">
+			<properties widgetMode="any">
+				<property name="contentViewName">#{querySearchUIActions.contentViewName}</property>
+				<property name="showFilterForm">false</property>
+				<property name="useAjaxForm">true</property>
+				<property name="useAjaxPagination">true</property>
+				<property name="styleClass">alignL</property>
+			</properties>
+		</widget>
+
+		<!-- Lifecycle -->
+
+		<widget name="lifecycle_widget" type="template">
+			<labels>
+				<label mode="any"></label>
+			</labels>
+			<translated>true</translated>
+			<fields>
+				<field>selectedTransition</field>
+			</fields>
+			<properties mode="any">
+				<property name="template">
+					/widgets/lifecycle_transition_widget_template.xhtml
+				</property>
+			</properties>
+			<properties widgetMode="edit">
+				<property name="cssStyleClass">dataInputText</property>
+			</properties>
+			<controls mode="any">
+				<control name="requireSurroundingForm">true</control>
+				<control name="disableMultiPartForm">true</control>
+			</controls>
+		</widget>
+
+	</extension>
+
+	<extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+			   point="widgettypes">
+
+		<widgetType name="decimal">
+			<configuration>
+				<title>Decimal</title>
+				<description>
+					<p>
+						The decimal widget displays an input text in create or edit mode, with
+						additional message tag for errors, and a regular text output in
+						anyother mode. It uses a decimal converter.
+					</p>
+					<p>
+						Widgets using this type can provide properties accepted on a
+						&lt;h:inputText /&gt; tag in create or edit mode, and properties
+						accepted on a &lt;h:outputText /&gt; tag in other modes.
+					</p>
+				</description>
+				<demo id="decimalWidget" previewEnabled="true" />
+				<categories>
+					<category>document</category>
+				</categories>
+				<supportedModes>
+					<mode>edit</mode>
+					<mode>view</mode>
+				</supportedModes>
+				<fields>
+					<list>false</list>
+					<complex>false</complex>
+					<supportedTypes>
+						<type>float</type>
+						<type>double</type>
+					</supportedTypes>
+					<defaultTypes>
+						<type>float</type>
+					</defaultTypes>
+				</fields>
+				<properties>
+					<layouts mode="view">
+						<layout name="decimal_widget_type_properties_view">
+							<rows>
+								<row>
+									<widget category="widgetTypeConf">style</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">styleClass</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">title</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">type</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">pattern</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">locale</widget>
+								</row>
+							</rows>
+						</layout>
+					</layouts>
+					<layouts mode="edit">
+						<layout name="decimal_widget_type_properties_edit">
+							<rows>
+								<row>
+									<widget category="widgetTypeConf">required</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">maxlength</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">style</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">styleClass</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">title</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">accesskey</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">alt</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">dir</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">placeholder</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">disabled</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">immediate</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">lang</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">validator</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">valueChangeListener</widget>
+								</row>
+                                <row>
+                                    <widget category="widgetTypeConf">pattern</widget>
+                                </row>
+                                <row>
+                                    <widget category="widgetTypeConf">locale</widget>
+                                </row>
+							</rows>
+						</layout>
+					</layouts>
+				</properties>
+			</configuration>
+			<handler-class>
+				org.athento.nuxeo.ui.widget.DecimalWidgetTypeHandler
+			</handler-class>
+		</widgetType>
+
+		<widgetType name="currency">
+			<configuration>
+				<title>Currency</title>
+				<description>
+					<p>
+						The currency widget displays an input text in create or edit mode, with
+						additional message tag for errors, and a regular text output in
+						anyother mode. It uses a currency converter.
+					</p>
+					<p>
+						Widgets using this type can provide properties accepted on a
+						&lt;h:inputText /&gt; tag in create or edit mode, and properties
+						accepted on a &lt;h:outputText /&gt; tag in other modes.
+					</p>
+				</description>
+				<demo id="currencyWidget" previewEnabled="true" />
+				<categories>
+					<category>document</category>
+				</categories>
+				<supportedModes>
+					<mode>edit</mode>
+					<mode>view</mode>
+				</supportedModes>
+				<fields>
+					<list>false</list>
+					<complex>false</complex>
+					<supportedTypes>
+						<type>float</type>
+						<type>double</type>
+					</supportedTypes>
+					<defaultTypes>
+						<type>float</type>
+					</defaultTypes>
+				</fields>
+				<properties>
+					<layouts mode="view">
+						<layout name="currency_widget_type_properties_view">
+							<rows>
+								<row>
+									<widget category="widgetTypeConf">style</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">styleClass</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">title</widget>
+								</row>
+                                <row>
+                                    <widget category="widgetTypeConf">type</widget>
+                                </row>
+                                <row>
+                                    <widget category="widgetTypeConf">pattern</widget>
+                                </row>
+                                <row>
+                                    <widget category="widgetTypeConf">currencySymbol</widget>
+                                </row>
+								<row>
+									<widget category="widgetTypeConf">minFractionDigits</widget>
+								</row>
+							</rows>
+						</layout>
+					</layouts>
+					<layouts mode="edit">
+						<layout name="currency_widget_type_properties_edit">
+							<rows>
+								<row>
+									<widget category="widgetTypeConf">required</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">maxlength</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">style</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">styleClass</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">title</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">accesskey</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">alt</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">dir</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">placeholder</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">disabled</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">immediate</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">lang</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">validator</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">valueChangeListener</widget>
+								</row>
+							</rows>
+						</layout>
+					</layouts>
+				</properties>
+			</configuration>
+			<handler-class>
+				org.athento.nuxeo.ui.widget.CurrencyWidgetTypeHandler
+			</handler-class>
+		</widgetType>
+
+		<widgetType name="booleanWithIcon">
+			<configuration>
+				<title>Boolean fontawesome checkbox</title>
+				<description>
+					<p>
+						The checkbox widget displays a checkbox in create, edit and any
+						other mode, with additional message tag for errors.
+					</p>
+					<p>
+						Widgets using this type can provide properties accepted on a
+						&lt;h:selectBooleanCheckbox /&gt; tag in create, edit mode, and
+						other modes.
+					</p>
+				</description>
+				<categories>
+					<category>document</category>
+				</categories>
+				<supportedModes>
+					<mode>edit</mode>
+					<mode>view</mode>
+				</supportedModes>
+				<fields>
+					<list>false</list>
+					<complex>false</complex>
+					<supportedTypes>
+						<type>boolean</type>
+					</supportedTypes>
+					<defaultTypes>
+						<type>boolean</type>
+					</defaultTypes>
+				</fields>
+				<properties>
+					<layouts mode="view">
+						<layout name="checkbox_with_icon_widget_type_properties_view">
+							<rows>
+								<row>
+									<widget category="widgetTypeConf">style</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">styleClass</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">title</widget>
+								</row>
+                                <row>
+                                    <widget category="widgetTypeConf">icon</widget>
+                                </row>
+							</rows>
+						</layout>
+					</layouts>
+					<layouts mode="edit">
+						<layout name="checkbox_with_icon_widget_type_properties_edit">
+							<rows>
+								<row>
+									<widget category="widgetTypeConf">required</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">style</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">styleClass</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">title</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">accesskey</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">dir</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">disabled</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">immediate</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">lang</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">validator</widget>
+								</row>
+								<row>
+									<widget category="widgetTypeConf">valueChangeListener</widget>
+								</row>
+							</rows>
+						</layout>
+					</layouts>
+				</properties>
+			</configuration>
+			<handler-class>
+                org.athento.nuxeo.ui.widget.BooleanWithIconWidgetTypeHandler
+            </handler-class>
+		</widgetType>
+
+		<!-- Search -->
+		<widgetType name="qsearch_view_title">
+			<configuration>
+				<sinceVersion>7.10</sinceVersion>
+				<title>Query Search View Title</title>
+				<description>
+					<p>
+						This widget type displays the title of the search view: the title of
+						the selected saved search, or the title of the selected content view.
+					</p>
+					<p>
+					</p>
+				</description>
+			</configuration>
+			<handler-class>
+				org.nuxeo.ecm.platform.forms.layout.facelets.plugins.TemplateWidgetTypeHandler
+			</handler-class>
+			<property name="template">
+				/search/widgets/qsearch_view_title_widget_template.xhtml
+			</property>
+		</widgetType>
+
+	</extension>
+	
+</component>	

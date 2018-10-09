@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Generated with Athento Rhombus at 2016-05-19T16:11:15Z -->
+<component name="org.athento.athento-nx-ui.SchemaContrib"
+		   version="1.0.0">
+
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.core.schema.TypeService"
+			   point="schema">
+
+		<schema name="cvconfig" prefix="cvconfig" src="data/schemas/contentviewconfig.xsd" />
+
+	</extension>
+
+</component>

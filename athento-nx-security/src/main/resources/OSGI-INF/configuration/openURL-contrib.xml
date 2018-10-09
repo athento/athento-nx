@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.ui.athento-nx-security.openurl-contrib">
+
+    <extension point="openUrl"
+               target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService">
+
+        <!-- Remember password -->
+        <openUrl name="Rememberpassword_enteremail_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/security/recoverypassword</grantPattern>
+        </openUrl>
+        <openUrl name="Rememberpassword_change_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/security/changepassword</grantPattern>
+        </openUrl>
+        <openUrl name="Rememberpassword_send_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/security/sendpassword</grantPattern>
+        </openUrl>
+        <openUrl name="Rememberpassword_enterpassword_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/security/enterpassword/.*</grantPattern>
+        </openUrl>
+        <openUrl name="Rememberpassword_expiredpassword_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/security/expiredpassword/.*</grantPattern>
+        </openUrl>
+        <openUrl name="Rememberpassword_Graphical_Resources_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/skin/webSecurity/.*</grantPattern>
+        </openUrl>
+
+        <!-- Download -->
+        <openUrl name="AthentoPublicDownload">
+            <grantPattern>/nuxeo/restAPI/athdownload/.*</grantPattern>
+        </openUrl>
+
+    </extension>
+
+</component>

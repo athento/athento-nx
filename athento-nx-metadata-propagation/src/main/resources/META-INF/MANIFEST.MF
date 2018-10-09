@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Nuxeo Metadata Propagation
+Bundle-SymbolicName: org.athento.utils.metadatapropagation;singleton:=true
+Bundle-Version: 1.0.0
+Nuxeo-Component: OSGI-INF/automation-contrib.xml
+Bundle-Vendor: Athento
+ 

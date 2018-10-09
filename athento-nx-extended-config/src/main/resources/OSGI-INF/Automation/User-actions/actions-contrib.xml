@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-extended-config.actions"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.platform.actions.ActionService"
+		point="actions">
+
+		<!-- ExtendedConfig in Main Tabs -->
+		<action id="ExtendedConfig" link="#{operationActionBean.doOperation('ExtendedConfig.goto')}"
+			enabled="true" label="label.extendedconfig" order="99" type="link">
+			<category>MAIN_TABS</category>
+			<filter-id>only_for_manager</filter-id>
+		</action>
+		
+
+	</extension>
+
+</component>

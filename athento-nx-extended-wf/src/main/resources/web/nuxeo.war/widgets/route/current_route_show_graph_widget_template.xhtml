@@ -1,0 +1,46 @@
+<c:if test="true"
+      xmlns:nxu="http://nuxeo.org/nxweb/util"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:nxl="http://nuxeo.org/nxforms/layout"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+
+    <script type="text/javascript">
+        <h:outputText value="var currentLang='#{restHelper.getLocaleString()}';"/>
+        <h:outputText value="var divContainerTargetId#{relatedRoute.modelName}='#{relatedRoute.modelName}_#{widget.id}_target';"/>
+        var content#{relatedRoute.modelName};
+        function showGraph#{relatedRoute.modelName}(routeId) {
+          if (!content#{relatedRoute.modelName}) content#{relatedRoute.modelName} = jQuery('##{relatedRoute.modelName}_div').html();
+          jQuery('##{relatedRoute.modelName}_div').html(content#{relatedRoute.modelName});
+          loadGraph(routeId, currentLang, divContainerTargetId#{relatedRoute.modelName});
+          openFancyBox('##{relatedRoute.modelName}_#{widget.id}_graphView_box', {
+            'autoScale': false,
+            'autoDimensions': false,
+            'type': 'inline',
+            'width': '880',
+            'height': '720',
+            'transitionIn': 'none',
+            'transitionOut': 'none',
+            'enableEscapeButton': true,
+            'centerOnScroll': true
+          });
+          return false;
+        }
+      </script>
+
+    <a href="#" onclick="showGraph#{relatedRoute.modelName}('#{field_0}');return false;" class="button smallButton">
+        #{messages['label.document.routing.show.graph']}
+    </a>
+
+    <div id="#{relatedRoute.modelName}_div">
+        <div style="display:none">
+            <div id="#{relatedRoute.modelName}_#{widget.id}_graphView_box">
+                <!-- div container for the graph -->
+                <div id="#{relatedRoute.modelName}_#{widget.id}_target" class="targetDiv"></div>
+            </div>
+        </div>
+    </div>
+
+</c:if>

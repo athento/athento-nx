@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.query.AutomationContrib" version="1.0">
+
+    <documentation>
+        Query and ResultSet optimization.
+    </documentation>
+
+    <require>org.nuxeo.ecm.core.automation.featuresContrib</require>
+
+    <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+               point="operations">
+
+        <operation class="org.athento.nuxeo.query.ResultSetElasticPageProviderOperation" replace="true" />
+        <operation class="org.athento.nuxeo.query.DocumentPaginatedQueryOperation" replace="true" />
+        <operation class="org.athento.nuxeo.query.ResultSetAuditPageProviderOperation" replace="true" />
+
+    </extension>
+</component>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.query.ConfigurationContrib" version="1.0">
+
+    <documentation>
+        Query and ResultSet configuration.
+    </documentation>
+
+    <extension target="org.nuxeo.runtime.ConfigurationService" point="configuration">
+        <property name="nuxeo.pageprovider.default-max-page-size">${athento.maxpagesize:=2000}</property>
+    </extension>
+
+</component>

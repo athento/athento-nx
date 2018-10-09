@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.athento.nx.upgradetools.StatsService">
+
+  <implementation class="org.athento.nx.upgrade.stats.AthentoStatsServiceImpl" />
+
+  <service>
+    <provide interface="org.athento.nx.upgrade.stats.AthentoStatsService" />
+  </service>
+
+</component>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-security.formlayout-contrib"
+	version="1.0.0">
+
+    <require>org.nuxeo.ecm.platform.forms.layouts.webapp.base</require>
+
+	<extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+		point="layouts">
+
+        <layout name="user">
+            <templates>
+                <template mode="any">/layouts/layout_default_template.xhtml
+                </template>
+            </templates>
+            <rows>
+                <row>
+                    <widget>username</widget>
+                </row>
+                <row>
+                    <widget>firstname</widget>
+                </row>
+                <row>
+                    <widget>lastname</widget>
+                </row>
+                <row>
+                    <widget>company</widget>
+                </row>
+                <row>
+                    <widget>email</widget>
+                </row>
+                <row>
+                    <widget>delegatedUser</widget>
+                </row>
+                <row>
+                    <widget>groups</widget>
+                </row>
+                <row>
+                    <widget>groupsValidator</widget>
+                </row>
+                <row>
+                    <widget>vgroups</widget>
+                </row>
+                <row>
+                    <widget>passwordMatcher</widget>
+                </row>
+                <row>
+                    <widget>userAdditionalWidgets</widget>
+                </row>
+            </rows>
+            <widget name="username" type="text">
+                <labels>
+                    <label mode="any">username</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">username</field>
+                </fields>
+                <widgetModes>
+                    <mode value="create">edit</mode>
+                    <mode value="editPassword">hidden</mode>
+                    <mode value="any">view</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="required">true</property>
+                    <property name="styleClass">dataInputText</property>
+                    <property name="validator">
+                        #{userManagementActions.validateUserName}
+                    </property>
+                </properties>
+            </widget>
+            <widget name="firstname" type="text">
+                <labels>
+                    <label mode="any">firstName</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">firstName</field>
+                </fields>
+                <widgetModes>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="lastname" type="text">
+                <labels>
+                    <label mode="any">lastName</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">lastName</field>
+                </fields>
+                <widgetModes>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="company" type="text">
+                <labels>
+                    <label mode="any">company</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">company</field>
+                </fields>
+                <widgetModes>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="email" type="text">
+                <labels>
+                    <label mode="any">email</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">email</field>
+                </fields>
+                <widgetModes>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="required">true</property>
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="delegatedUser" type="singleUserSuggestion">
+                <labels>
+                    <label mode="any">delegatedUser</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">delegatedUser</field>
+                </fields>
+                <widgetModes>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="groups" type="multipleUsersSuggestion">
+                <labels>
+                    <label mode="any">label.userManager.userGroups</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">groups</field>
+                </fields>
+                <widgetModes>
+                    <mode value="edit">
+                        #{nxu:test(webActions.checkFilter('usersGroupsManagementAccess'),
+                        'edit', 'view')}
+                    </mode>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="any">
+                    <property name="hideVirtualGroups">true</property>
+                    <property name="userSuggestionSearchType">GROUP_TYPE</property>
+                </properties>
+            </widget>
+
+            <widget name="groupsValidator" type="template">
+                <labels>
+                    <label mode="any"></label>
+                </labels>
+                <translated>true</translated>
+                <widgetModes>
+                    <mode value="create">edit</mode>
+                    <mode value="editPassword">hidden</mode>
+                    <mode value="view">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <!-- XXX: depends on firstPassword and secondPassword widget names -->
+                    <property name="template">
+                        /widgets/user_groups_validation_widget_template.xhtml
+                    </property>
+                </properties>
+            </widget>
+
+            <widget name="vgroups" type="userVirtualGroups">
+                <labels>
+                    <label mode="any">label.userManager.userVirtualGroups</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">username</field>
+                </fields>
+                <widgetModes>
+                    <mode value="create">hidden</mode>
+                    <mode value="editPassword">hidden</mode>
+                </widgetModes>
+            </widget>
+            <widget name="passwordMatcher" type="template">
+                <labels>
+                    <label mode="create">label.immediateCreation</label>
+                    <label mode="any"></label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field schema="user">password</field>
+                </fields>
+                <widgetModes>
+                    <mode value="create">edit</mode>
+                    <mode value="editPassword">editPassword</mode>
+                    <mode value="any">hidden</mode>
+                </widgetModes>
+                <properties widgetMode="edit">
+                    <property name="required">true</property>
+                    <property name="styleClass">dataInputText</property>
+                    <property name="template">
+                        /widgets/user_password_widget_template.xhtml
+                    </property>
+                </properties>
+                <properties widgetMode="editPassword">
+                    <property name="required">true</property>
+                    <property name="styleClass">dataInputText</property>
+                    <property name="template">
+                        /widgets/user_password_validation_widget_template.xhtml
+                    </property>
+                </properties>
+            </widget>
+        </layout>
+
+  	</extension>
+</component>

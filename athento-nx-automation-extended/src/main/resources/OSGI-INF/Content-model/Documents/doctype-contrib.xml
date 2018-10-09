@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-automation-extended.doctype"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.core.schema.TypeService"
+		point="doctype">
+
+		<doctype name="ExtendedConfig" extends="File" append="true">
+			<schema name="automationExtendedConfig" />
+			<facet name="HiddenInNavigation" />
+			<prefetch>dc:title, dc:modified, uid.uid</prefetch>
+		</doctype>
+		<doctype name="AthentoException" extends="Document" append="false">
+			<schema name="athentoException" />
+			<schema name="common" />
+			<facet name="HiddenInNavigation" />
+		</doctype>
+		<doctype name="AutomationQueryRequest" extends="Document">
+			<schema name="automationQueryRequest" />
+		</doctype>
+    </extension>
+
+	<extension target="org.nuxeo.ecm.platform.types.TypeService"
+		point="types">
+
+		<type id="ExtendedConfig" append="true">
+			<label>label.athento-nx-athento-nx-automation-extended.ExtendedConfig
+			</label>
+			<translated>true</translated>
+			<icon>/icons/file.gif</icon>
+			<bigIcon>/img/file_100.png</bigIcon>
+			<description>label.athento-nx-athento-nx-automation-extended.ExtendedConfig
+			</description>
+			<category>label.athento-nx-athento-nx-automation-extended.ExtendedConfig
+			</category>
+			<default-view>view_documents</default-view>
+			<layouts mode="create" append="true">
+				<layout>layout@formlayout-automationExtended</layout>
+			</layouts>
+			<layouts mode="edit" append="true">
+				<layout>layout@formlayout-automationExtended</layout>
+			</layouts>
+			<layouts mode="view" append="true">
+				<layout>layout@formlayout-automationExtended</layout>
+			</layouts>
+		</type>
+
+	</extension>
+
+</component>

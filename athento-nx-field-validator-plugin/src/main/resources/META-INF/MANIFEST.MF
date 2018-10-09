@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Vendor: Athento
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-Version: 1.0
+Bundle-Name: athento-nx-field-validator
+Bundle-ManifestVersion: 2
+Nuxeo-Component: OSGI-INF/extensions/org.athento.nuxeo.validator.field
+ ValidatorBean.xml
+Bundle-SymbolicName: athento-nx-field-validator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+

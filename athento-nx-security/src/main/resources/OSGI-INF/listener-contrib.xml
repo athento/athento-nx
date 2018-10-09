@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.security.listener-contrib">
+
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+
+        <listener name="DocumentSaveRestrictListener" async="false" postCommit="false"
+                  class="org.athento.nuxeo.security.listener.DocumentSaveRestrictListener">
+            <event>aboutToCreate</event>
+            <event>beforeDocumentModification</event>
+        </listener>
+
+        <listener name="DynamicACLControlListener" async="false" postCommit="false"
+                  class="org.athento.nuxeo.security.listener.DynamicACLControlListener">
+            <event>documentCreated</event>
+            <event>documentModified</event>
+        </listener>
+
+    </extension>
+
+</component>

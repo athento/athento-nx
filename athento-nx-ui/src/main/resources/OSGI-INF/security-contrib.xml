@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.ui.security-contrib">
+
+  <extension
+    target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+    point="startURL">
+
+    <startURLPattern>
+      <patterns>
+        <pattern>nxqsearch/</pattern>
+      </patterns>
+    </startURLPattern>
+
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService" point="specificChains">
+
+    <specificAuthenticationChain name="NXQSearch">
+
+      <urlPatterns>
+        <url>(.*)/nxqsearch/.*</url>
+      </urlPatterns>
+      <replacementChain>
+        <plugin>AUTOMATION_BASIC_AUTH</plugin>
+        <plugin>ONLYONEUSETOKEN_AUTH</plugin>
+      </replacementChain>
+    </specificAuthenticationChain>
+
+  </extension>
+
+</component>
