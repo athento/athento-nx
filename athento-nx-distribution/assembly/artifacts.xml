@@ -1,10 +1,4 @@
 <assembly>
-	<artifactSet id="project-plugins">
-		<artifacts>
-			<artifact group="org.athento.nx" name="athento-nx"
-				version="${projectParentVersion}" />
-		</artifacts>
-	</artifactSet>
 	<artifactSet id="athento-addons">
 		<artifacts>
 			<artifact group="org.athento.nx" name="athento-nx-query"
@@ -31,7 +25,7 @@
 					  version="${athento.platform.version}" />
 			<artifact group="org.athento.nx" name="athento-nx-report-jasperreport"
 					  version="${athento.platform.version}" />
-            <artifact group="org.athento.nx" name="athento-nx-field-validator-plugin"
+            <artifact group="org.athento.nx" name="athento-nx-field-validator"
                       version="${athento.platform.version}" />
 		</artifacts>
 	</artifactSet>

@@ -18,5 +18,7 @@
 		<operation class="org.athento.nx.upgrade.operation.GetStatsOperation"/>
 		<operation class="org.athento.nx.upgrade.operation.ReindexStatsOperation"/>
 
+		<operation class="org.athento.nx.upgrade.operation.RebuildLogsOperation"/>
+
 	</extension>
 </component>
