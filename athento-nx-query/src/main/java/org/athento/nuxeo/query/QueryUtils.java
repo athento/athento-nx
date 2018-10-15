@@ -4,11 +4,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.provider.ElasticSearchQueryProviderDescriptor;
 import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.model.Property;
+import org.nuxeo.ecm.core.api.model.PropertyNotFoundException;
 import org.nuxeo.ecm.directory.DirectoryException;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.query.api.PageProvider;
 import org.nuxeo.ecm.platform.query.api.PageProviderService;
+import org.nuxeo.ecm.platform.tag.Tag;
+import org.nuxeo.ecm.platform.tag.TagService;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.elasticsearch.api.ElasticSearchService;
 import org.nuxeo.elasticsearch.query.NxQueryBuilder;
@@ -31,7 +35,7 @@ public class QueryUtils {
 
 
     enum CastTypes {
-        date, shortdate, vocabulary, document, user, parent;
+        date, shortdate, vocabulary, document, user, parent, complex, list;
     }
 
     /** Query separator. */
@@ -152,6 +156,12 @@ public class QueryUtils {
                 } catch (DocumentNotFoundException e) {
                     LOG.error("Unable to cast user for " + metadata + ": " + e.getMessage());
                 }
+            } else if (castType.equals(CastTypes.complex.name())) {
+                Serializable complexValue = manageComplexField(doc, field);
+                castValues.add(new CastField(field, complexValue));
+            } else if (castType.equals(CastTypes.list.name())) {
+                Serializable listValue = manageFieldList(doc, field);
+                castValues.add(new CastField(field, listValue));
             }
         }
         return castValues.toArray(new CastField[0]);
@@ -524,5 +534,87 @@ public class QueryUtils {
             }
         }
         return clauses;
+    }
+
+    /**
+     * Manage complex field.
+     *
+     * @param doc
+     * @param field
+     */
+    public static Serializable manageComplexField(DocumentModel doc, String field) {
+        String uuid = doc.getId();
+        if (uuid != null) {
+            try {
+                if (field != null) {
+                    field = field.trim();
+                    if (!field.isEmpty()) {
+                        try {
+                            String aux = field;
+                            if (aux.contains("/")) {
+                                aux = field.split("/")[0];
+                            }
+                            Property prop = doc.getProperty(aux);
+                            if (prop.isComplex()) {
+                                return doc.getPropertyValue(field);
+                            } else {
+                                LOG.warn("Field " + field + " is not complex");
+                            }
+                        } catch (PropertyNotFoundException e) {
+                            LOG.trace("Ignore document property " + field + " for " + doc.getId());
+                        }
+                    }
+                }
+            } catch (ClientException e) {
+                LOG.trace("Document is not found into ResultSet " + uuid);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Manage field list.
+     *
+     * @param doc
+     * @param field
+     */
+    public static Serializable manageFieldList(DocumentModel doc, String field) {
+        String uuid = doc.getId();
+        if (uuid != null) {
+            try {
+                if (field != null) {
+                    field = field.trim();
+                    if (!field.isEmpty()) {
+                        if ("ecm:tag".equals(field)) {
+                            TagService tagService = Framework.getService(TagService.class);
+                            List<Tag> tags = tagService.getDocumentTags(doc.getCoreSession(), doc.getId(), null);
+                            StringBuilder sb = new StringBuilder();
+                            for (Iterator<Tag> it = tags.iterator(); it.hasNext(); ) {
+                                Tag tag = it.next();
+                                sb.append(tag.getLabel());
+                                if (it.hasNext()) {
+                                    sb.append(", ");
+                                }
+                            }
+                            return sb.toString();
+                        } else {
+                            try {
+                                Property prop = doc.getProperty(field);
+                                if (prop.isList()) {
+                                    return doc.getPropertyValue(field);
+                                } else {
+                                    LOG.warn("Property " + field + " is not a list");
+                                }
+                            } catch (PropertyNotFoundException e) {
+                                LOG.trace("Ignore document property " + field + " for " + doc.getId());
+                            }
+                        }
+                    }
+                }
+            } catch (ClientException e) {
+                LOG.trace("Document is not found into ResultSet " + uuid);
+            }
+        }
+        return null;
     }
 }
