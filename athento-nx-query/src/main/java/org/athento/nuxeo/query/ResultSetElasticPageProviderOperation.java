@@ -209,11 +209,13 @@ public class ResultSetElasticPageProviderOperation {
             manageCastFields(pp);
             // Check field list items
             if (hasFieldList()) {
+                LOG.info("fieldList param is deprecated. Please, use ::list casting in your SELECT clause");
                 // Manage fields for get its field items
                 manageFieldList(pp);
             }
             // Check field complex items
             if (hasFieldComplex()) {
+                LOG.info("complexField param is deprecated. Please, use ::complex casting in your SELECT clause");
                 manageFieldComplex(pp);
             }
         }
