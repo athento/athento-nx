@@ -1,0 +1,36 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout">
+
+  <c:if test="#{widget.handlingLabels}">
+    <c:if test="#{!empty widget.label}">
+      <ui:include src="/widgets/incl/widget_label_template.xhtml">
+        <ui:param name="labelStyleClass" value="summaryTitle #{widgetProperty_headerStyleClass}" />
+      </ui:include>
+    </c:if>
+    <c:if test="#{empty widget.label}">
+      <ui:include src="/widgets/incl/label_template.xhtml">
+        <ui:param name="label" value="label.content.header.currentLifecycleState" />
+        <ui:param name="helpLabel" value="#{widget.helpLabel}" />
+        <ui:param name="translated" value="true" />
+        <ui:param name="required" value="#{widget.required}" />
+        <ui:param name="labelStyleClass" value="summaryTitle #{widgetProperty_headerStyleClass}" />
+      </ui:include>
+    </c:if>
+  </c:if>
+  <div style="margin-bottom: 8px;">
+      <span style="margin-right: 6px">#{messages["label.document.lifecycles.currentState"]}</span>
+      <h:outputText
+        value="#{messages[currentDocument.currentLifeCycleState]}"
+        styleClass="sticker" />
+      <h:outputText value="#{messages['label.document.lock']}"
+        title="#{messages['label.summary.by']} #{nxu:userFullName(currentDocumentLockDetails['document.locker'])}, #{messages['label.summary.the']} #{currentDocumentLockDetails['document.lock.created'].time}"
+        styleClass="sticker warningLabel tipsyShow tipsyGravityS"
+        rendered="#{!empty currentDocumentLockDetails}" />
+  </div>
+  <c:if test="#{currentUser.isAdministrator() or athLifecycleAction.userInGroup('LifecycleAdministrators')}">
+    <nxl:widget name="lifecycle_widget" mode="edit" value="#{athLifecycleAction}" />
+  </c:if>
+
+</div>

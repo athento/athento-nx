@@ -1,0 +1,69 @@
+<c:if test="true"
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  xmlns:nxh="http://nuxeo.org/nxweb/html"
+  xmlns:a4j="http://richfaces.org/a4j">
+
+  <div style="margin-top: 8px;">
+  <nxu:set var="availableTransitions"
+    value="#{athLifecycleAction.availableTransitions}"
+    cache="true">
+
+  <a4j:region renderRegionOnly="true" id="#{widget.id}_region">
+
+    <h:panelGrid columns="1">
+
+      <c:choose>
+        <c:when test="#{empty availableTransitions}">
+          <h:outputText value="#{messages['label.document.lifecycles.no.transition']}" />
+        </c:when>
+        <c:otherwise>
+          <h:panelGroup>
+            <h:selectOneListbox id="#{widget.id}" value="#{field}" size="1">
+              <nxu:selectItems
+                var="transition" value="#{availableTransitions}"
+                itemValue="#{transition}" itemLabel="#{messages[transition]}" />
+              <f:attribute name="sourceComponentId" value="#{widget.id}" />
+              <f:attribute name="targetComponentId" value="#{widget.id}_valueHolder" />
+              <f:ajax execute="@this" render="#{widget.id}_preview"
+                listener="#{selectionActions.setValueFromComponent}"
+                id="#{widget.id}_ajax_select" />
+            </h:selectOneListbox>
+            <h:message for="#{widget.id}" id="#{widget.id}_message"
+              styleClass="errorStyleClass" />
+          </h:panelGroup>
+
+          <a4j:outputPanel id="#{widget.id}_preview" layout="block">
+            <nxu:valueHolder id="#{widget.id}_valueHolder"
+                             var="selectedTransition"
+                             defaultValue="#{availableTransitions.get(0)}"
+                             submitChanges="false" />
+          </a4j:outputPanel>
+        </c:otherwise>
+      </c:choose>
+
+      <a4j:status>
+        <f:facet name="start">
+          <h:graphicImage value="/img/standart_waiter.gif" />
+        </f:facet>
+      </a4j:status>
+
+      <c:if test="#{not empty availableTransitions}">
+        <div style="float: left">
+         <h:commandButton type="submit" class="button smallButton"
+           value="#{messages['action.lifecycle.transition']}"
+           action="#{athLifecycleAction.followTransition()}"
+           id="#{widget.id}_follow_transition"/>
+        </div>
+      </c:if>
+
+    </h:panelGrid>
+
+  </a4j:region>
+
+  </nxu:set>
+  </div>
+</c:if>
