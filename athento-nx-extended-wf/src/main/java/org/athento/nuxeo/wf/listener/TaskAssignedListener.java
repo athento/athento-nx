@@ -307,7 +307,6 @@ public class TaskAssignedListener implements EventListener {
                         WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
                     } catch (Exception e) {
                         LOG.error("Error sending notification to initiator", e);
-                        throw new ClientException(e);
                     }
                 }
             }
@@ -328,7 +327,6 @@ public class TaskAssignedListener implements EventListener {
                             WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
                         } catch (Exception e) {
                             LOG.error("Error sending notification to user " + user, e);
-                            throw new ClientException(e);
                         }
                     }
                 }

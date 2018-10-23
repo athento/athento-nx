@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
+import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
@@ -17,6 +18,7 @@ import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskService;
 import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.transaction.TransactionHelper;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -70,23 +72,26 @@ public class SendEmailAssignedTaskOperation {
      *
      * @param doc is the document
      * @return the document
-     * @throws Exception on error
      */
     @OperationMethod(collector = DocumentModelCollector.class)
-    public DocumentModel run(DocumentModel doc) throws Exception {
+    public DocumentModel run(DocumentModel doc) {
         boolean ignoreNotifications = Boolean.valueOf(Framework.getProperty("athento.workflow.ignoreNotification", "false"));
         if (ignoreNotifications) {
             return doc;
         }
         TaskService taskService = Framework.getService(TaskService.class);
-        if (taskId != null) {
-            Task task = taskService.getTask(session, taskId);
-            notifyTask(task, doc);
-        } else {
-            List<Task> documentTasks = taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session);
-            for (Task task : documentTasks) {
+        try {
+            if (taskId != null) {
+                Task task = taskService.getTask(session, taskId);
                 notifyTask(task, doc);
+            } else {
+                List<Task> documentTasks = taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session);
+                for (Task task : documentTasks) {
+                    notifyTask(task, doc);
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Unable to notify workflow, please check", e);
         }
         return doc;
     }
@@ -96,7 +101,7 @@ public class SendEmailAssignedTaskOperation {
      *
      * @param task
      * @param doc
-     * @throws Exception
+     * @throws Exception on error
      */
     private void notifyTask(Task task, DocumentModel doc) throws Exception {
         HashMap<String, Serializable> params = new HashMap<>();
@@ -127,14 +132,14 @@ public class SendEmailAssignedTaskOperation {
                     usernameList.add(act);
                 }
             }
+            // Prepare notification
+            Map<String, Object> mailParams = new HashMap<>();
+            mailParams.put("from", from);
+            mailParams.put("message", template);
+            mailParams.put("subject", subject);
+            mailParams.put("HTML", html);
+            mailParams.put("files", files);
             try {
-                // Prepare notification
-                Map<String, Object> mailParams = new HashMap<>();
-                mailParams.put("from", from);
-                mailParams.put("message", template);
-                mailParams.put("subject", subject);
-                mailParams.put("HTML", html);
-                mailParams.put("files", files);
                 if (toUser != null) {
                     if (toUser.startsWith("user:")) {
                         // Send to user
@@ -152,42 +157,39 @@ public class SendEmailAssignedTaskOperation {
                         runOperation("Notification.SendMail", doc, mailParams, session, ctx);
                     }
                 } else {
-                    try {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info("Sending with no user destination...");
+                    }
+                    if (!usernameList.isEmpty()) {
                         if (LOG.isInfoEnabled()) {
-                            LOG.info("Sending with no user destination...");
+                            LOG.info("Sending task notification to users: " + usernameList);
                         }
-                        if (!usernameList.isEmpty()) {
+                        mailParams.put("to", new PlatformFunctions().getEmails(usernameList));
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info("Mail params=" + mailParams);
+                        }
+                        if (mailParams.containsKey("to")) {
+                            // Run send email operation to username list
+                            runOperation("Notification.SendMail", doc, mailParams, session, ctx);
+                        }
+                    }
+                    if (!groupList.isEmpty()) {
+                        for (String group : groupList) {
                             if (LOG.isInfoEnabled()) {
-                                LOG.info("Sending task notification to users: " + usernameList);
+                                LOG.info("Sending task notification to group: " + group);
                             }
-                            mailParams.put("to", new PlatformFunctions().getEmails(usernameList));
+                            mailParams.put("to", new PlatformFunctions().getEmailsFromGroup(group));
                             if (LOG.isInfoEnabled()) {
                                 LOG.info("Mail params=" + mailParams);
                             }
-                            if (mailParams.containsKey("to")) {
-                                // Run send email operation to username list
-                                runOperation("Notification.SendMail", doc, mailParams, session, ctx);
-                            }
+                            // Run send email operation to each group
+                            runOperation("Notification.SendMail", doc, mailParams, session, ctx);
                         }
-                        if (!groupList.isEmpty()) {
-                            for (String group : groupList) {
-                                if (LOG.isInfoEnabled()) {
-                                    LOG.info("Sending task notification to group: " + group);
-                                }
-                                mailParams.put("to", new PlatformFunctions().getEmailsFromGroup(group));
-                                if (LOG.isInfoEnabled()) {
-                                    LOG.info("Mail params=" + mailParams);
-                                }
-                                // Run send email operation to each group
-                                runOperation("Notification.SendMail", doc, mailParams, session, ctx);
-                            }
-                        }
-                    } catch (Exception e) {
-                        LOG.error("Error sending email notification", e);
                     }
-                }
+             }
             } catch (Exception e) {
-                LOG.error("Notification error", e);
+                LOG.error("Error sending email notification", e);
+                TransactionHelper.commitOrRollbackTransaction();
             }
         }
     }
@@ -204,7 +206,7 @@ public class SendEmailAssignedTaskOperation {
      */
     private static Object runOperation(String operationId, Object input,
                                       Map<String, Object> params, CoreSession session, OperationContext context)
-            throws Exception {
+            throws OperationException {
         AutomationService automationManager = Framework
                 .getLocalService(AutomationService.class);
         OperationContext ctx = new OperationContext(session);

@@ -1,10 +1,20 @@
 <?xml version="1.0"?>
 <component name="org.athento.nuxeo.automation.extended-wf.OperationContrib" version="1.0.0">
 
-
     <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent" point="operations">
         <operation class="org.athento.nuxeo.wf.operation.SendEmailAssignedTaskOperation" />
         <operation class="org.athento.nuxeo.wf.operation.ResumeNodeOperation" replace="true" />
+    </extension>
+
+    <extension point="chainException"
+               target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <documentation>
+            Exception control for operations.
+        </documentation>
+        <catchChain id="SendEmailAssignedTaskOperationCatchChain"
+                    onChainId="SendEmailAssignedTaskOperation">
+            <run chainId="athentoExceptionReturn" priority="0" rollBack="false"/>
+        </catchChain>
     </extension>
 
 </component>

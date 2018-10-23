@@ -99,7 +99,6 @@ public class WorkflowChangeListener implements EventListener {
                             WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
                         } catch (Exception e) {
                             LOG.error("Error sending notification to initiator", e);
-                            throw new ClientException(e);
                         }
                     }
                 }
