@@ -128,7 +128,7 @@
 
     <properties>
         <aetherVersion>1.8</aetherVersion>
-        <tikaVersion>1.5</tikaVersion>
+        <tikaVersion>1.10</tikaVersion>
     </properties>
 
 </project>
