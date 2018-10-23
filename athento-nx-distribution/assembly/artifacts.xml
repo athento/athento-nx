@@ -29,10 +29,28 @@
                       version="${athento.platform.version}" />
 		</artifacts>
 	</artifactSet>
-    <artifactSet id="athento-libs">
+    <artifactSet id="project-bundles">
+        <artifacts>
+            <artifact group="org.nuxeo.ecm.platform" name="nuxeo-platform-imaging-api"
+                      version="${nuxeo.platform.version}" />
+            <artifact group="org.nuxeo.ecm.platform" name="nuxeo-platform-imaging-core"
+                      version="${nuxeo.platform.version}" />
+            <artifact group="org.nuxeo.ecm.platform" name="nuxeo-platform-imaging-jsf"
+                      version="${nuxeo.platform.version}" />
+            <artifact group="org.nuxeo.ecm.platform" name="nuxeo-platform-imaging-convert"
+                      version="${nuxeo.platform.version}" />
+            <artifact group="org.nuxeo.ecm.platform" name="nuxeo-platform-imaging-tiling"
+                      version="${nuxeo.platform.version}" />
+        </artifacts>
+    </artifactSet>
+    <artifactSet id="project-libs">
         <artifacts>
             <artifact group="net.sf.jasperreports" name="jasperreports"
-              version="6.2.0" />
+                      version="6.2.0" />
+            <artifact group="org.apache.tika" name="tika-core"
+                      version="1.10" />
+            <artifact group="org.apache.tika" name="tika-parsers"
+                      version="1.10" />
         </artifacts>
     </artifactSet>
 </assembly>
