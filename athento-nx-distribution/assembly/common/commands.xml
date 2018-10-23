@@ -12,8 +12,12 @@
 		<set>project-plugins</set>
 	</assemble>
 	<assemble>
+		<outputFile>/bundles</outputFile>
+		<set>project-bundles</set>
+	</assemble>
+	<assemble>
 		<outputFile>/lib</outputFile>
-		<set>athento-libs</set>
+		<set>project-libs</set>
 	</assemble>
 </assembly>
 
