@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.athento.nx</groupId>
 		<artifactId>athento-nx</artifactId>
-		<version>8.10-AT1</version>
+    <version>8.10-AT2-SNAPSHOT</version>
 	</parent>
 	<artifactId>athento-nx-automation-extended</artifactId>
 	<name>Athento NX Automation Extended</name>
@@ -149,7 +149,7 @@
 		<dependency>
 			<groupId>org.athento.nx</groupId>
 			<artifactId>athento-nx-query</artifactId>
-			<version>8.10-AT1</version>
+			<version>8.10-AT2-SNAPSHOT</version>
 		</dependency>
         <dependency>
             <groupId>org.nuxeo.runtime</groupId>
@@ -181,17 +181,17 @@
         <dependency>
             <groupId>org.athento.nx</groupId>
             <artifactId>athento-nx-report-api</artifactId>
-            <version>8.10-AT1</version>
+            <version>8.10-AT2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.athento.nx</groupId>
             <artifactId>athento-nx-report-core</artifactId>
-            <version>8.10-AT1</version>
+            <version>8.10-AT2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.athento.nx</groupId>
             <artifactId>athento-nx-report-jasperreport</artifactId>
-            <version>8.10-AT1</version>
+            <version>8.10-AT2-SNAPSHOT</version>
         </dependency>
 	</dependencies>
 
