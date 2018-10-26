@@ -1,6 +1,7 @@
 <!-- See documentation at http://doc.nuxeo.com/x/IgIz -->
 <install>
 
+    <update dir="${package.root}/bundles" todir="${env.home}/bundles/" overwrite="true"/>
     <update dir="${package.root}/plugins" todir="${env.home}/plugins/" overwrite="true"/>
     <update dir="${package.root}/lib" todir="${env.home}/lib/" overwrite="true"/>
 
