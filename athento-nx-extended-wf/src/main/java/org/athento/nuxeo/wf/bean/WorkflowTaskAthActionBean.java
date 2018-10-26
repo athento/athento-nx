@@ -62,6 +62,7 @@ public class WorkflowTaskAthActionBean implements Serializable {
      * Cancel the workflow.
      */
     public String cancelRoute(DocumentRoute route) throws ClientException {
+        LOG.info("Canceling route " + route);
         Framework.getLocalService(DocumentRoutingEngineService.class).cancel(route, documentManager);
         // force computing of tabs
         webActions.resetTabList();

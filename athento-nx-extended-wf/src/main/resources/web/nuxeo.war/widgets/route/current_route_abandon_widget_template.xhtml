@@ -11,10 +11,11 @@
        return confirm("#{messages['label.document.routing.confirmAbandon']}");
     }
   </script>
-
-  <h:commandButton action="#{athWorkflowTaskActionBean.cancelRoute(relatedRoute)}"
-    value="#{messages['label.document.routing.abandon']}"
-    styleClass="button smallButton"
-    onclick="if( !confirmAbandonWorkflow() ) return false;" />
+  <h:form>
+    <h:commandButton action="#{athWorkflowTaskActionBean.cancelRoute(relatedRoute)}"
+                     value="#{messages['label.document.routing.abandon']}"
+                     styleClass="button smallButton"
+                     onclick="if( !confirmAbandonWorkflow() ) return false;" />
+  </h:form>
 
 </c:if>
