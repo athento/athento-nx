@@ -97,6 +97,12 @@
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
             <version>${tikaVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-transports-http</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -104,6 +110,12 @@
             <artifactId>tika-core</artifactId>
             <version>${tikaVersion}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-transports-http</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -128,7 +140,7 @@
 
     <properties>
         <aetherVersion>1.8</aetherVersion>
-        <tikaVersion>1.10</tikaVersion>
+        <tikaVersion>[1.19.1,)</tikaVersion>
     </properties>
 
 </project>

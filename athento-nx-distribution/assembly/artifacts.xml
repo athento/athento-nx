@@ -48,9 +48,9 @@
             <artifact group="net.sf.jasperreports" name="jasperreports"
                       version="6.2.0" />
             <artifact group="org.apache.tika" name="tika-core"
-                      version="1.10" />
+                      version="1.19.1" />
             <artifact group="org.apache.tika" name="tika-parsers"
-                      version="1.10" />
+                      version="1.19.1" />
         </artifacts>
     </artifactSet>
 </assembly>
