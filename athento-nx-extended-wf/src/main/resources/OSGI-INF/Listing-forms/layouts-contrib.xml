@@ -223,6 +223,63 @@
             </rows>
         </layout>
 
+        <!-- Route tasks content view layout -->
+        <layout name="route_with_name_content_view_layout">
+            <templates>
+                <template mode="any">
+                    /layouts/layout_listing_ajax_template.xhtml
+                </template>
+            </templates>
+            <properties mode="any">
+                <property name="showListingHeader">true</property>
+                <property name="showRowEvenOddClass">true</property>
+            </properties>
+            <columns>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_process_list_name</widget>
+                </column>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_title</widget>
+                </column>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_assignee</widget>
+                </column>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_directive</widget>
+                </column>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_comments</widget>
+                </column>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_start_date</widget>
+                </column>
+                <column>
+                    <properties mode="any">
+                        <property name="useFirstWidgetLabelAsColumnHeader">true</property>
+                    </properties>
+                    <widget>task_due_date</widget>
+                </column>
+            </columns>
+        </layout>
+
     </extension>
 
     <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
@@ -246,6 +303,62 @@
                 <control name="handleLabels">true</control>
             </controls>
         </widget>
+
+        <widget name="current_route_previous_tasks" type="contentViewWithForms">
+            <labels>
+                <label mode="any"></label>
+            </labels>
+            <translated>false</translated>
+            <properties widgetMode="any">
+                <property name="contentViewName">route_past_all_steps</property>
+            </properties>
+        </widget>
+
+        <widget name="task_process_list_name" type="task_workflow_list_name">
+            <labels>
+                <label mode="any">label.workflow.task.ProcessName</label>
+            </labels>
+            <translated>true</translated>
+            <fields>
+                <field>data.task</field>
+            </fields>
+            <properties mode="any">
+                <property name="localize">true</property>
+            </properties>
+        </widget>
+
+    </extension>
+
+    <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+               point="widgettypes">
+
+        <widgetType name="task_workflow_list_name">
+            <configuration>
+                <title>
+                    Task workflow title
+                </title>
+                <sinceVersion>5.8</sinceVersion>
+                <categories>
+                    <category>routing</category>
+                </categories>
+                <supportedModes>
+                    <mode>view</mode>
+                </supportedModes>
+                <fields>
+                    <list>false</list>
+                    <complex>false</complex>
+                    <supportedTypes>
+                        <type>string</type>
+                    </supportedTypes>
+                </fields>
+            </configuration>
+            <handler-class>
+                org.nuxeo.ecm.platform.forms.layout.facelets.plugins.TemplateWidgetTypeHandler
+            </handler-class>
+            <property name="template">
+                /widgets/task/task_workflow_list_name_widget_template.xhtml
+            </property>
+        </widgetType>
 
     </extension>
 

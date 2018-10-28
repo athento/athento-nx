@@ -10,11 +10,10 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.international.LocaleSelector;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoute;
+import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
+import org.nuxeo.ecm.platform.routing.api.DocumentRoutingService;
 import org.nuxeo.ecm.platform.routing.core.api.DocumentRoutingEngineService;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskEventNames;
@@ -61,7 +60,7 @@ public class WorkflowTaskAthActionBean implements Serializable {
     /**
      * Cancel the workflow.
      */
-    public String cancelRoute(DocumentRoute route) throws ClientException {
+    public String cancelRoute(DocumentRoute route) {
         LOG.info("Canceling route " + route);
         Framework.getLocalService(DocumentRoutingEngineService.class).cancel(route, documentManager);
         // force computing of tabs
@@ -73,13 +72,71 @@ public class WorkflowTaskAthActionBean implements Serializable {
     }
 
     /**
+     * Get related routes for a document.
+     *
+     * @return
+     */
+    public List<String> getRelatedRoutesDocIds() {
+        DocumentModel currentDocument = navigationContext.getCurrentDocument();
+        List<DocumentModel> relatedRoutes = findRelatedRoute(currentDocument.getId());
+        List<String> routesIds = new ArrayList<String>(relatedRoutes.size());
+        for (DocumentModel route : relatedRoutes) {
+            routesIds.add(route.getId());
+        }
+        return routesIds;
+    }
+
+    /**
+     * Get route instance from task id.
+     *
+     * @param taskId
+     * @return
+     */
+    public DocumentModel getRouteInstanceFor(String taskId) {
+        DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
+        Task task = taskDoc.getAdapter(Task.class);
+        final String routeDocId = task.getVariable(DocumentRoutingConstants.TASK_ROUTE_INSTANCE_DOCUMENT_ID_KEY);
+        if (routeDocId == null) {
+            return null;
+        }
+        final DocumentModel[] res = new DocumentModel[1];
+        new UnrestrictedSessionRunner(documentManager) {
+            @Override
+            public void run() {
+                DocumentModel doc = session.getDocument(new IdRef(routeDocId));
+                doc.detach(true);
+                res[0] = doc;
+            }
+        }.runUnrestricted();
+        return res[0];
+    }
+
+    /**
+     * Find related routes for a document.
+     *
+     * @param documentId
+     * @return
+     */
+    public List<DocumentModel> findRelatedRoute(String documentId) {
+        List<DocumentModel> docs = new ArrayList<DocumentModel>();
+        if (documentId == null || "".equals(documentId)) {
+            return docs;
+        }
+        List<DocumentRoute> relatedRoutes = Framework.getService(DocumentRoutingService.class).getDocumentRoutesForAttachedDocument(
+                documentManager, documentId);
+        for (DocumentRoute documentRoute : relatedRoutes) {
+            docs.add(documentRoute.getDocument());
+        }
+        return docs;
+    }
+
+    /**
      * Modify from NX to get task for any route of document.
      *
      * @param route
      * @return
-     * @throws ClientException
      */
-    public List<Task> getCurrentRouteAllTasks(DocumentRoute route) throws ClientException {
+    public List<Task> getCurrentRouteAllTasks(DocumentRoute route) {
         TaskService taskService = Framework.getLocalService(TaskService.class);
         if (route != null) {
             return taskService.getAllTaskInstances(route.getDocument().getId(), documentManager);
