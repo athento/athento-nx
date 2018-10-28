@@ -51,9 +51,7 @@
                         translateTitle="true" iconPath="/icons/document_listing_icon.png"
                         showCSVExport="true" showPDFExport="false"/>
             </resultLayouts>
-
         </contentView>
-
         <contentView name="DOCUMENT_SUMMARY_WORKFLOW_HISTORY">
             <title>label.contentview.workflow.history</title>
             <translateTitle>true</translateTitle>
@@ -81,7 +79,7 @@
                 <sort column="eventDate" ascending="false" />
                 <pageSize>10</pageSize>
                 <maxPageSize>1000</maxPageSize>
-            </genericPageProvider>
+            </genericPageProvider>ss
             <searchLayout name="basicauditsearch" filterDisplayType="quick" />
             <showFilterForm>false</showFilterForm>
             <showPageSizeSelector>true</showPageSizeSelector>
@@ -99,7 +97,42 @@
                         translateTitle="true" iconPath="/icons/document_listing_icon.png"
                         showCSVExport="true" showPDFExport="false"/>
             </resultLayouts>
+        </contentView>
 
+        <contentView name="route_past_all_steps">
+            <title>label.document.routing.past.steps</title>
+            <translateTitle>true</translateTitle>
+            <showTitle>true</showTitle>
+            <coreQueryPageProvider>
+                <property name="coreSession">#{documentManager}</property>
+                <parameter>#{currentDocument.id}</parameter>
+                <parameter>#{athWorkflowTaskActionBean.getRelatedRoutesDocIds()}</parameter>
+                <whereClause docType="TaskDoc">
+                    <fixedPart>
+                        nt:targetDocumentsIds = ? AND
+                        nt:processId IN ? AND
+                        ecm:currentLifeCycleState = 'ended'
+                    </fixedPart>
+                </whereClause>
+                <pageSize>10</pageSize>
+            </coreQueryPageProvider>
+            <showFilterForm>false</showFilterForm>
+            <showRefreshCommand>false</showRefreshCommand>
+            <showPageSizeSelector>false</showPageSizeSelector>
+            <useGlobalPageSize>false</useGlobalPageSize>
+            <refresh>
+                <event>documentCreated</event>
+                <event>workflowTaskCompleted</event>
+                <event>tasksCacheReset</event>
+            </refresh>
+            <cacheSize>10</cacheSize>
+            <cacheKey>#{org.jboss.seam.core.manager.currentConversationId}
+            </cacheKey>
+            <resultLayouts>
+                <layout name="route_with_name_content_view_layout" title=""
+                        translateTitle="" iconPath="" showCSVExport="false"
+                        showPDFExport="false" />
+            </resultLayouts>
         </contentView>
 
     </extension>
