@@ -2,9 +2,11 @@ package org.athento.nuxeo.ui.configuration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.fluent.Content;
 import org.athento.nuxeo.ui.configuration.service.UIConfigurationManager;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.Scope;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.platform.contentview.jsf.ContentView;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.ScopeType.STATELESS;
 
 /**
  * Created by victorsanchez on 19/05/16.

@@ -14,8 +14,6 @@ import org.nuxeo.ecm.platform.ui.web.tag.handler.TagConfigFactory;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
-import javax.faces.convert.DoubleConverter;
-import javax.faces.convert.FloatConverter;
 import javax.faces.convert.NumberConverter;
 import javax.faces.view.facelets.*;
 import java.io.IOException;

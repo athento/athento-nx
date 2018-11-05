@@ -2,6 +2,7 @@ package org.athento.nuxeo.ui.restlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.ui.util.Utils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -11,10 +12,12 @@ import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseNuxeoRestlet;
 import org.nuxeo.ecm.platform.util.RepositoryLocation;
+import org.nuxeo.runtime.api.Framework;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.OutputRepresentation;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,18 +51,32 @@ public class DocumentViewInlineRestlet extends BaseNuxeoRestlet {
             return;
         }
 
+        String token = getQueryParamValue(req, "token", "");
+        if (token == null) {
+            handleError(res, "Token is mandatory for view inline");
+            return;
+        }
+
         DocumentModel dm;
         try {
-            navigationContext.setCurrentServerLocation(new RepositoryLocation(repo));
+            Framework.login();
+            navigationContext.setCurrentServerLocation(new RepositoryLocation(
+                    repo));
             documentManager = navigationContext.getOrCreateDocumentManager();
             String docid = (String) req.getAttributes().get("docid");
             if (docid != null) {
                 dm = documentManager.getDocument(new IdRef(docid));
+                if (token != null) {
+                    if (!Utils.validToken(token, dm)) {
+                        handleError(res, "Token is invalid.");
+                        return;
+                    }
+                }
             } else {
                 handleError(res, "you must specify a valid document IdRef");
                 return;
             }
-        } catch (ClientException e) {
+        } catch (LoginException e) {
             handleError(res, e);
             return;
         }

@@ -1,8 +1,6 @@
 package org.athento.nuxeo.ui.widget;
 
 import com.sun.faces.facelets.tag.TagAttributesImpl;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.platform.forms.layout.api.BuiltinWidgetModes;
 import org.nuxeo.ecm.platform.forms.layout.api.FieldDefinition;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;

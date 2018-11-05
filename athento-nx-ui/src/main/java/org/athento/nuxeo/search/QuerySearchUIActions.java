@@ -15,17 +15,12 @@ import org.nuxeo.ecm.platform.contentview.seam.ContentViewActions;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.api.WebActions;
 import org.nuxeo.ecm.platform.ui.web.rest.RestHelper;
-import org.nuxeo.ecm.platform.ui.web.util.BaseURL;
 import org.nuxeo.ecm.platform.url.DocumentViewImpl;
 import org.nuxeo.ecm.platform.url.api.DocumentView;
-import org.nuxeo.ecm.platform.url.api.DocumentViewCodecManager;
-import org.nuxeo.ecm.webapp.documentsLists.DocumentsListsManager;
-import org.nuxeo.runtime.api.Framework;
 
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static org.apache.commons.logging.LogFactory.getLog;

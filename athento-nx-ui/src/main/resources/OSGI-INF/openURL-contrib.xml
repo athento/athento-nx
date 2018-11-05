@@ -7,6 +7,9 @@
         <openUrl name="AthentoPreview">
             <grantPattern>/nuxeo/restAPI/athpreview/.*</grantPattern>
         </openUrl>
+        <openUrl name="AthentoInlineFile">
+            <grantPattern>/nuxeo/restAPI/.*/inlineFile</grantPattern>
+        </openUrl>
         <openUrl name="AthentoPreviewTiles">
             <grantPattern>/nuxeo/restAPI/getTiles/.*</grantPattern>
         </openUrl>

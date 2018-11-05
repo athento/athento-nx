@@ -2,26 +2,14 @@ package org.athento.nuxeo.ui.navigation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.athento.nuxeo.ui.configuration.UserUIConfigurationAction;
-import org.athento.nuxeo.ui.configuration.service.UIConfigurationManager;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.Observer;
-import org.nuxeo.ecm.core.api.CoreInstance;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.platform.contentview.jsf.ContentView;
-import org.nuxeo.ecm.platform.contentview.jsf.ContentViewService;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.nuxeo.ecm.platform.contentview.seam.ContentViewActions;
 import org.nuxeo.ecm.platform.query.api.PageProvider;
-import org.nuxeo.ecm.platform.ui.web.util.SeamComponentCallHelper;
-import org.nuxeo.ecm.webapp.helpers.EventNames;
-import org.nuxeo.runtime.api.Framework;
 
 import java.io.Serializable;
-import java.security.Principal;
-import java.util.*;
-
-import static org.jboss.seam.ScopeType.SESSION;
 
 /**
  * Navigation action.

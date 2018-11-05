@@ -1,56 +1,38 @@
 package org.athento.nuxeo.ui.restlet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.*;
-
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.fileupload.util.mime.MimeUtility;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.ui.util.Utils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.international.LocaleSelector;
 import org.nuxeo.common.Environment;
-import org.nuxeo.ecm.automation.OperationContext;
+import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.automation.core.rendering.RenderingService;
-import org.nuxeo.ecm.automation.core.util.DocumentHelper;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.utils.DocumentModelUtils;
-import org.nuxeo.ecm.platform.ui.web.tag.fn.DocumentModelFunctions;
+import org.nuxeo.ecm.platform.preview.api.HtmlPreviewAdapter;
+import org.nuxeo.ecm.platform.preview.api.NothingToPreviewException;
+import org.nuxeo.ecm.platform.preview.api.PreviewException;
+import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
+import org.nuxeo.ecm.platform.ui.web.restAPI.BaseNuxeoRestlet;
+import org.nuxeo.ecm.platform.util.RepositoryLocation;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
+import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
+import org.nuxeo.runtime.api.Framework;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.OutputRepresentation;
 
-import org.nuxeo.common.utils.FileUtils;
-import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.platform.preview.api.HtmlPreviewAdapter;
-import org.nuxeo.ecm.platform.preview.api.NothingToPreviewException;
-import org.nuxeo.ecm.platform.preview.api.PreviewException;
-import org.nuxeo.ecm.platform.preview.helper.PreviewHelper;
-import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
-import org.nuxeo.ecm.platform.ui.web.restAPI.BaseNuxeoRestlet;
-import org.nuxeo.ecm.platform.util.RepositoryLocation;
-import org.nuxeo.ecm.platform.web.common.locale.LocaleProvider;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
-import org.nuxeo.runtime.api.Framework;
+import javax.security.auth.login.LoginException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * Preview restlet with no auth. Based on PreviewRestlet.java of Nuxeo DM (c).
@@ -60,7 +42,6 @@ import org.nuxeo.runtime.api.Framework;
 public class PreviewRestlet extends BaseNuxeoRestlet {
 
     private static final Log LOG = LogFactory.getLog(PreviewRestlet.class);
-    private static final String TOKEN_ENDCHARS_CONTROL = "#control";
 
     @In(create = true)
     protected NavigationContext navigationContext;
@@ -127,7 +108,7 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
                     repo));
             documentManager = navigationContext.getOrCreateDocumentManager();
             targetDocument = documentManager.getDocument(new IdRef(docid));
-        } catch (ClientException e) {
+        } catch (DocumentNotFoundException e) {
             LOG.error("Unable to get document from session", e);
             handleError(res, e);
             return;
@@ -137,7 +118,7 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
         }
 
         if (!ignoreSubpathAccess(subPath, sb.toString())) {
-            if (!validToken(token, targetDocument)) {
+            if (!Utils.validToken(token, targetDocument)) {
                 handleError(res, "Token is invalid.");
                 return;
             } else {
@@ -192,40 +173,6 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
                 || !subPath.toLowerCase().endsWith(".jpg")
                 || !subPath.toLowerCase().endsWith(".jpeg")
                 || !url.toLowerCase().contains("gettiles"));
-    }
-
-    /**
-     * Check a simple valid token.
-     *
-     * @param token
-     * @param document
-     * @return
-     */
-    private boolean validToken(String token, DocumentModel document) {
-        if (token == null || token.isEmpty()) {
-            return false;
-        }
-        String decodedToken = new String(Base64.decodeBase64(token));
-        if (!decodedToken.endsWith(TOKEN_ENDCHARS_CONTROL)) {
-            return false;
-        }
-        String changeToken = document.getChangeToken();
-        if (changeToken == null) {
-            return false;
-        }
-        String changeDecodedToken = decodedToken.replace(
-                TOKEN_ENDCHARS_CONTROL, "");
-        if (changeDecodedToken == null) {
-            return false;
-        }
-        try {
-            Long changeTokenTime = Long.valueOf(changeToken);
-            Long changeDecodedTokenTime = Long.valueOf(changeDecodedToken);
-            long time = changeTokenTime - changeDecodedTokenTime;
-            return time < 2592000000L; // 30 days in millis
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
     private List<Blob> initCachedBlob(Response res, String xpath,
