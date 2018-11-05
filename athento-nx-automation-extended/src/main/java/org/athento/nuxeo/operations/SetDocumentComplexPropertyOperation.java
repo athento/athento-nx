@@ -10,6 +10,7 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
+import org.nuxeo.ecm.automation.core.collectors.DocumentModelListCollector;
 import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -54,7 +55,6 @@ public class SetDocumentComplexPropertyOperation {
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws Exception {
         Property p = doc.getProperty(xpath);
-
         List<Serializable> array = null;
 
         if (p.getValue() != null) {
@@ -110,7 +110,12 @@ public class SetDocumentComplexPropertyOperation {
                 for (Map.Entry<String, String> entry : properties.entrySet()) {
                     String metadata = entry.getKey();
                     String value = entry.getValue();
-                    item.put(metadata, value);
+                    if (value.startsWith("[") && value.endsWith("]")) {
+                        List<String> li = Arrays.asList(StringUtils.split(value.replace("[","").replace("]", ""), ',', true));
+                        item.put(metadata, li);
+                    } else {
+                        item.put(metadata, value);
+                    }
                 }
                 list = array;
             } catch (IndexOutOfBoundsException e) {

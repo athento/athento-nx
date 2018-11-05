@@ -2,6 +2,8 @@ package org.athento.nuxeo.wf.bean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.wf.api.AthentoRoutingService;
+import org.athento.nuxeo.wf.exception.UpgradeWorkflowException;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -9,6 +11,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoute;
@@ -28,6 +31,7 @@ import org.nuxeo.runtime.api.Framework;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Task action bean.
@@ -52,6 +56,12 @@ public class WorkflowTaskAthActionBean implements Serializable {
 
     @In(create = true)
     protected transient LocaleSelector localeSelector;
+
+    @In(create = true, required = false)
+    protected FacesMessages facesMessages;
+
+    @In(create = true)
+    protected Map<String, String> messages;
 
     protected List<Task> tasks;
 
@@ -148,19 +158,15 @@ public class WorkflowTaskAthActionBean implements Serializable {
         tasks = new ArrayList<>();
         DocumentModel currentDocument = navigationContext.getCurrentDocument();
         if (currentDocument != null) {
-            NuxeoPrincipal principal = (NuxeoPrincipal) documentManager.getPrincipal();
-            List<String> actors = new ArrayList<>();
-            actors.addAll(TaskActorsHelper.getTaskActors(principal));
-            List<Task> tempTasks = taskService.getTaskInstances(currentDocument, actors, true, documentManager);
-            if (route != null) {
-                // Check task for route
-                for (Task task : tempTasks) {
-                    DocumentModel routeModel = WorkflowUtils.getTaskRouteDocumentModel(task, documentManager);
-                    DocumentRoute documentRoute = routeModel.getAdapter(DocumentRoute.class);
-                    if (documentRoute.getModelName().equals(route.getModelName())) {
-                        tasks.add(task);
-                    }
+            LOG.info("Getting task for " + route.getDocument().getId());
+            List<Task> tempTasks = taskService.getAllTaskInstances(route.getDocument().getId(), documentManager);
+            LOG.info("==" + tempTasks);
+            for (Task task : tempTasks) {
+                if (!task.isOpened()) {
+                    continue;
                 }
+                LOG.info("task " + task.getName() + ", " + task.getId() + "=" + task.getDocument().getCurrentLifeCycleState());
+                tasks.add(task);
             }
         }
         return tasks;
@@ -177,5 +183,71 @@ public class WorkflowTaskAthActionBean implements Serializable {
             }
         }
         return items;
+    }
+
+    /**
+     * Upgrade workflow to the last version deployed.
+     *
+     * @param route is the route to upgrade
+     */
+    public void upgradeWorkflow(DocumentRoute route) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Upgrading " + route.getDocument().getId());
+        }
+        DocumentModel currentDoc = navigationContext.getCurrentDocument();
+        AthentoRoutingService athentoRoutingService = Framework.getService(AthentoRoutingService.class);
+        try {
+            athentoRoutingService.upgradeRoute(route, currentDoc, documentManager);
+        } catch (UpgradeWorkflowException e) {
+            LOG.error("Unable to upgrade the route", e);
+        }
+    }
+
+    /**
+     * Check if a workflow has any open task.
+     *
+     * @param route
+     * @return
+     */
+    public boolean hasOpenTask(DocumentRoute route) {
+        TaskService taskService = Framework.getService(TaskService.class);
+        List<Task> tasks = taskService.getAllTaskInstances(route.getDocument().getId(), documentManager);
+        for (Task task : tasks) {
+            if (task.isOpened()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a workflow can be upgrade with a new version.
+     *
+     * @param route
+     * @return
+     */
+    public boolean getCanUpgradeWorkflow(DocumentRoute route) {
+        if (!hasOpenTask(route)) {
+            LOG.info("No open task for " + route.getModelName());
+            return false;
+        }
+        // Get route title and version
+        String workflowTitle = route.getDocument().getTitle();
+        String version = WorkflowUtils.getRouteVersion(route);
+        // Checking upgrade for route
+        LOG.info("Checking " + workflowTitle + ", " + version);
+        // Get all workflows with same title
+        DocumentRoutingService routingService = Framework.getService(DocumentRoutingService.class);
+        List<DocumentRoute> routesForDoc = routingService
+                .getAvailableDocumentRoute(documentManager);
+        for (DocumentRoute routeForDoc : routesForDoc) {
+            if (routeForDoc.getDocument().getTitle().equals(workflowTitle)) {
+                String routeForDocVersion = WorkflowUtils.getRouteVersion(routeForDoc);
+                if (WorkflowUtils.compareVersion(routeForDocVersion, version) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

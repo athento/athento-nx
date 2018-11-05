@@ -2,6 +2,7 @@ package org.athento.nuxeo.wf.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.wf.api.RoutingConstants;
 import org.athento.nuxeo.wf.utils.SchemaUtils;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Hook for task assigned listener.
@@ -59,6 +61,10 @@ public class TaskAssignedListener implements EventListener {
                     String nodeId = WorkflowUtils.getNodeIdFromDocument(event.getContext());
                     if (taskId != null) {
                         Task task = WorkflowUtils.getTaskFromDocument(event.getContext());
+                        String ignoreAssignment = task.getVariable(RoutingConstants.TASK_IGNORE_ASSIGNMENT_NOTIFICATION);
+                        if ("true".equals(ignoreAssignment)) {
+                            return;
+                        }
                         // Set ACLs to Task
                         WorkflowUtils.setACLToTask(session, task);
                         // Set task id

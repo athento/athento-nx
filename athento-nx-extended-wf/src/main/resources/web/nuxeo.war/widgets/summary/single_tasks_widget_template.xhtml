@@ -7,7 +7,9 @@
      xmlns:a4j="http://richfaces.org/a4j"
 >
 
+<c:if test="#{relatedRoute != null}">
   <a4j:outputPanel id="#{widget.id}_panel" layout="block">
+   <h:panelGroup rendered="#{athWorkflowTaskActionBean.hasOpenTask(relatedRoute)}">
 
     <nxu:set var="currentDashBoardItemsExceptPublishingTasks"
              value="#{athWorkflowTaskActionBean.getCurrentDashBoardItemsExceptPublishingTasks(relatedRoute)}"
@@ -132,5 +134,8 @@
       </nxu:set>
     </nxu:set>
 
+   </h:panelGroup>
+
   </a4j:outputPanel>
+</c:if>
 </div>

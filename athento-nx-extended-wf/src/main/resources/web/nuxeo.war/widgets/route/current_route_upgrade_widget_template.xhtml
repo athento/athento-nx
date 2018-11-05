@@ -1,0 +1,17 @@
+<c:if test="true"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core">
+
+  <c:if test="#{athWorkflowTaskActionBean.getCanUpgradeWorkflow(relatedRoute)}">
+    <script type="text/javascript">
+      function confirmUpgradeWorkflow() {
+        return confirm("#{messages['label.document.routing.confirmUpgrade']}");
+      }
+    </script>
+    <h:commandButton action="#{athWorkflowTaskActionBean.upgradeWorkflow(relatedRoute)}"
+                     value="#{messages['label.document.routing.upgrade']}"
+                     styleClass="button smallButton"
+                     onclick="if( !confirmUpgradeWorkflow() ) return false;" />
+  </c:if>
+
+</c:if>
