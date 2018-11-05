@@ -44,7 +44,8 @@ public final class MimeUtils {
                                                             "application/wordperfect, application/rtf," +
                                                             "video/mpeg, video/quicktime, application/visio, audio/midi," +
                                                             "audio/mp3, image/gif, image/png, image/jpg, image/jpeg, image/tiff,"+
-                                                            "application/pdf, application/x-gzip, application/csv, audio/aac, video/x-msvideo";
+                                                            "application/pdf, application/x-gzip, application/csv, audio/aac, video/x-msvideo,"+
+                                                            "application/vnd.ms-project, application/vnd.openxmlformats-officedocument.presentationml.presentation";
 
     private static final String PROPERTY_CHECK_ENABLED = "plugin.athento-nx-security-limit-file-upload-mime-types.enabled";
     private static final String PROPERTY_DOCUMENT_TYPES = "plugin.athento-nx-security-limit-file-upload-mime-types.documentTypesChecked";
