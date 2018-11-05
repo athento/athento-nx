@@ -2,12 +2,12 @@ package org.athento.nuxeo.ui.restlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.nuxeo.common.utils.FileUtils;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.pictures.tiles.api.PictureTiles;
 import org.nuxeo.ecm.platform.pictures.tiles.api.adapter.PictureTilesAdapter;
 import org.nuxeo.ecm.platform.pictures.tiles.restlets.PictureTilesCachedEntry;
