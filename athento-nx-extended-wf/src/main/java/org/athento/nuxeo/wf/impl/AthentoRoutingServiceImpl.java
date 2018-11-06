@@ -242,7 +242,7 @@ public class AthentoRoutingServiceImpl extends DefaultComponent implements Athen
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Upgrade info " + upgradeInfo);
                     }
-                    if (upgradeInfo != null && !upgradeInfo.isEmpty()) {
+                    if (upgradeInfo != null && !upgradeInfo.isEmpty() && !"null".equals(upgradeInfo)) {
                         UpgradeInfo upgradeInfoForNode = new UpgradeInfo(upgradeInfo);
                         for (String openFromNode : upgradeInfoForNode.getOpenFrom()) {
                             if (task.getName().equals(openFromNode)) {

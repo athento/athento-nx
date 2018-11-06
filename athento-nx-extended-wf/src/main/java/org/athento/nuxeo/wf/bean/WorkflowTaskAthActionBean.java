@@ -70,7 +70,7 @@ public class WorkflowTaskAthActionBean implements Serializable {
      * Cancel the workflow.
      */
     public String cancelRoute(DocumentRoute route) {
-        LOG.info("Canceling route " + route);
+        LOG.debug("Canceling route " + route);
         Framework.getLocalService(DocumentRoutingEngineService.class).cancel(route, documentManager);
         // force computing of tabs
         webActions.resetTabList();
@@ -157,14 +157,13 @@ public class WorkflowTaskAthActionBean implements Serializable {
         tasks = new ArrayList<>();
         DocumentModel currentDocument = navigationContext.getCurrentDocument();
         if (currentDocument != null) {
-            LOG.info("Getting task for " + route.getDocument().getId());
+            LOG.debug("Getting task for " + route.getDocument().getId());
             List<Task> tempTasks = taskService.getAllTaskInstances(route.getDocument().getId(), documentManager);
-            LOG.info("==" + tempTasks);
             for (Task task : tempTasks) {
                 if (!task.isOpened()) {
                     continue;
                 }
-                LOG.info("task " + task.getName() + ", " + task.getId() + "=" + task.getDocument().getCurrentLifeCycleState());
+                LOG.debug("task " + task.getName() + ", " + task.getId() + "=" + task.getDocument().getCurrentLifeCycleState());
                 tasks.add(task);
             }
         }
@@ -237,7 +236,9 @@ public class WorkflowTaskAthActionBean implements Serializable {
             return true;
         }
         DocumentRoute lastRoute = athentoRoutingService.getLastVersionRoutedDeployed(route, documentManager);
-        LOG.info("Last route " + lastRoute.getModelName());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Last route " + lastRoute.getModelName());
+        }
         return lastRoute.getDocument().getId().equals(route.getDocument().getId());
     }
 
@@ -249,14 +250,13 @@ public class WorkflowTaskAthActionBean implements Serializable {
      */
     public boolean getCanUpgradeWorkflow(DocumentRoute route) {
         if (!hasOpenTask(route)) {
-            LOG.info("No open task for " + route.getModelName());
+            LOG.trace("No open task for " + route.getModelName());
             return false;
         }
         // Get route title and version
         String workflowTitle = route.getDocument().getTitle();
         String version = WorkflowUtils.getRouteVersion(route);
         // Checking upgrade for route
-        LOG.info("Checking " + workflowTitle + ", " + version);
         // Get all workflows with same title
         DocumentRoutingService routingService = Framework.getService(DocumentRoutingService.class);
         List<DocumentRoute> routesForDoc = routingService
@@ -279,14 +279,18 @@ public class WorkflowTaskAthActionBean implements Serializable {
      * @return
      */
     public String getRouteVersionFromTask(String taskId) {
-        DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
-        Task task = taskDoc.getAdapter(Task.class);
-        if (task == null) {
+        try {
+            DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
+            Task task = taskDoc.getAdapter(Task.class);
+            if (task == null) {
+                return "";
+            }
+            String processId = task.getProcessId();
+            DocumentModel processDoc = documentManager.getDocument(new IdRef(processId));
+            DocumentRoute route = processDoc.getAdapter(DocumentRoute.class);
+            return WorkflowUtils.getRouteVersion(route);
+        } catch (DocumentNotFoundException e) {
             return "";
         }
-        String processId = task.getProcessId();
-        DocumentModel processDoc = documentManager.getDocument(new IdRef(processId));
-        DocumentRoute route = processDoc.getAdapter(DocumentRoute.class);
-        return WorkflowUtils.getRouteVersion(route);
     }
 }
