@@ -5,17 +5,16 @@
       xmlns:c="http://java.sun.com/jstl/core"
       xmlns:nxl="http://nuxeo.org/nxforms/layout"
       xmlns:a4j="http://richfaces.org/a4j">
-
-
+ <nxu:set var="routeIdName" value="#{relatedRoute.document.id.split('-')[0]}" cache="true">
     <script type="text/javascript">
         <h:outputText value="var currentLang='#{restHelper.getLocaleString()}';"/>
-        <h:outputText value="var divContainerTargetId#{relatedRoute.modelName}='#{relatedRoute.modelName}_#{widget.id}_target';"/>
-        var content#{relatedRoute.modelName};
-        function showGraph#{relatedRoute.modelName}(routeId) {
-          if (!content#{relatedRoute.modelName}) content#{relatedRoute.modelName} = jQuery('##{relatedRoute.modelName}_div').html();
-          jQuery('##{relatedRoute.modelName}_div').html(content#{relatedRoute.modelName});
-          loadGraph(routeId, currentLang, divContainerTargetId#{relatedRoute.modelName});
-          openFancyBox('##{relatedRoute.modelName}_#{widget.id}_graphView_box', {
+        <h:outputText value="var divContainerTargetId#{routeIdName}='#{routeIdName}_#{widget.id}_target';"/>
+        var content#{routeIdName};
+        function showGraph#{routeIdName}(routeId) {
+          if (!content#{routeIdName}) content#{routeIdName} = jQuery('##{routeIdName}_div').html();
+          jQuery('##{routeIdName}_div').html(content#{routeIdName});
+          loadGraph(routeId, currentLang, divContainerTargetId#{routeIdName});
+          openFancyBox('##{routeIdName}_#{widget.id}_graphView_box', {
             'autoScale': false,
             'autoDimensions': false,
             'type': 'inline',
@@ -30,17 +29,19 @@
         }
       </script>
 
-    <a href="#" onclick="showGraph#{relatedRoute.modelName}('#{field_0}');return false;" class="button smallButton">
+    <a href="#" onclick="showGraph#{routeIdName}('#{field_0}');return false;" class="button smallButton">
         #{messages['label.document.routing.show.graph']}
     </a>
 
-    <div id="#{relatedRoute.modelName}_div">
+    <div id="#{routeIdName}_div">
         <div style="display:none">
-            <div id="#{relatedRoute.modelName}_#{widget.id}_graphView_box">
+            <div id="#{routeIdName}_#{widget.id}_graphView_box">
                 <!-- div container for the graph -->
-                <div id="#{relatedRoute.modelName}_#{widget.id}_target" class="targetDiv"></div>
+                <div id="#{routeIdName}_#{widget.id}_target" class="targetDiv"></div>
             </div>
         </div>
     </div>
+
+ </nxu:set>
 
 </c:if>
