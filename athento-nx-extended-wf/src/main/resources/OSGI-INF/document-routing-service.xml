@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.platform.routing.service">
+
+  <documentation>
+    The Document Routing Service for Athento.
+  </documentation>
+
+  <implementation
+    class="org.athento.nuxeo.wf.impl.AthentoRoutingServiceImpl" />
+
+  <service>
+    <provide interface="org.athento.nuxeo.wf.api.AthentoRoutingService" />
+  </service>
+
+</component>

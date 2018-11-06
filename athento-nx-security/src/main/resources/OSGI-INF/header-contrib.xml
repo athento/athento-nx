@@ -3,8 +3,8 @@
 
     <extension target="org.nuxeo.ecm.platform.web.common.requestcontroller.service.RequestControllerService"
                point="responseHeaders">
-        <header name="X-XSS-Protection">1; mode=ock</header>
-        <header name="Content-Security-Policy">default-src https: 'self'; script-src 'unsafe-inline' 'unsafe-eval' data: *; style-src 'unsafe-inline' *; font-src data: *</header>
+        <header name="X-XSS-Protection">1; mode=block</header>
+        <header name="Content-Security-Policy">default-src https: 'self'; script-src 'unsafe-inline' 'unsafe-eval' data: *; style-src 'unsafe-inline' *; font-src data: *; img-src * 'self' data: https:;</header>
     </extension>
 
     <extension target="org.nuxeo.ecm.platform.web.common.requestcontroller.service.RequestControllerService" point="corsConfig">

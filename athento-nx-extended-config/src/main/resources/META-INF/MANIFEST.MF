@@ -7,7 +7,8 @@ Nuxeo-Component: OSGI-INF/Automation/Automation-chains/chains-contrib.xml,
  OSGI-INF/Automation/User-actions/actions-contrib.xml,
  OSGI-INF/Content-model/Documents/doctype-contrib.xml, 
  OSGI-INF/Content-model/Life-cycle/lifecycle-contrib.xml,
- OSGI-INF/Content-model/Structure-Templates/structure-templates-contrib.xml
+ OSGI-INF/Content-model/Structure-Templates/structure-templates-contrib.xml,
+ OSGI-INF/configuration-contrib.xml
 Bundle-ManifestVersion: 2
 Created-By: Athento
 Bundle-SymbolicName: athento-nx-extended-config

@@ -41,6 +41,14 @@
             <filter-id>currentUserIsWorkflowInitatior</filter-id>
         </action>
 
+        <action id="current_route_synchronize" type="widget" order="300">
+            <category>CURRENT_ROUTE_PANEL_RIGHT</category>
+            <properties>
+                <property name="widgetName">current_route_upgrade</property>
+            </properties>
+            <filter-id>only_for_manager</filter-id>
+        </action>
+
         <action id="current_route_previous_tasks" type="widget" order="300">
             <category>CURRENT_ROUTE_PANEL_LEFT</category>
             <properties>

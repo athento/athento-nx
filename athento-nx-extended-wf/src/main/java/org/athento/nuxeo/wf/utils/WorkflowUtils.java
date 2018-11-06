@@ -23,12 +23,14 @@ import org.nuxeo.ecm.platform.audit.api.AuditLogger;
 import org.nuxeo.ecm.platform.audit.api.ExtendedInfo;
 import org.nuxeo.ecm.platform.audit.api.LogEntry;
 import org.nuxeo.ecm.platform.audit.impl.ExtendedInfoImpl;
+import org.nuxeo.ecm.platform.routing.api.DocumentRoute;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoutingService;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphNode;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphRoute;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskComment;
+import org.nuxeo.ecm.platform.task.TaskService;
 import org.nuxeo.ecm.platform.ui.web.util.SeamContextHelper;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
@@ -670,4 +672,76 @@ public final class WorkflowUtils {
             }
         }
     }
+
+    /**
+     * Get task from route.
+     *
+     * @param task
+     * @param route
+     * @param session
+     * @return
+     */
+    public static Task getTaskFromRoute(Task task, DocumentRoute route, CoreSession session) {
+        TaskService taskService = Framework.getService(TaskService.class);
+        List<Task> routeTasks = taskService.getAllTaskInstances(route.getDocument().getId(), session);
+        for (Task routeTask : routeTasks) {
+            LOG.info("Task of " + route.getModelName() + ": " + routeTask.getName());
+            if (routeTask.getName().equals(task.getName())) {
+                return routeTask;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get a route version.
+     *
+     * @param route
+     * @return
+     */
+    public static String getRouteVersion(DocumentRoute route) {
+        if (route == null) {
+            return "";
+        }
+        String title = route.getDocument().getTitle();
+        Set<String> facets = route.getDocument().getFacets();
+        for (String facet : facets) {
+            if (facet.startsWith("facet-" + title)) {
+                String tmpVersion = facet.replace("facet-" + title, "");
+                if (tmpVersion.startsWith("_")) {
+                    return tmpVersion.substring(1).replace("_", ".");
+                } else if (tmpVersion.equals("")) {
+                    return "0.0";
+                } else {
+                    return tmpVersion.replace("_", ".");
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Compare versions.
+     * Method gotten from https://gist.github.com/antalindisguise
+     *
+     * @param v1
+     * @param v2
+     * @return
+     */
+    public static int compareVersion(String v1, String v2) {
+        String[] vals1 = v1.split("\\.");
+        String[] vals2 = v2.split("\\.");
+        int i = 0;
+        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+            i++;
+        }
+        if (i < vals1.length && i < vals2.length) {
+            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
+            return Integer.signum(diff);
+        }
+        else {
+            return Integer.signum(vals1.length - vals2.length);
+        }
+    }
+
 }

@@ -25,12 +25,27 @@
   </c:if>
   <nxl:widget name="start_route_widget" mode="edit" value="#{routingActions}" />
   <c:forEach var="relatedRoute" items="#{routingActions.getRelatedRoutes()}">
-    <div>
-      <strong><h:outputText value="#{messages[relatedRoute.title]} "/></strong><br/>
-      <h:outputText value="#{nxu:userFullName(relatedRoute.document.docri.initiator)}" />
-    </div>
-    <c:if test="#{routingActions.isRouteGraph(relatedRoute)}">
-      <nxl:layout name="workflowInfoLayout" mode="view" value="#{relatedRoute}"/>
-    </c:if>
+      <nxu:set var="hasTasks" value="#{athWorkflowTaskActionBean.hasOpenTask(relatedRoute)}" cache="true">
+          <c:if test="#{hasTasks}">
+            <div>
+              <strong><h:outputText value="#{messages[relatedRoute.title]} "/></strong><br/>
+              <h:outputText value="#{nxu:userFullName(relatedRoute.document.docri.initiator)}" />
+            </div>
+              <c:if test="#{routingActions.isRouteGraph(relatedRoute)}">
+                <nxl:layout name="workflowInfoLayout" mode="view" value="#{relatedRoute}"/>
+              </c:if>
+        </c:if>
+        <c:if test="#{not hasTasks}">
+           <div style="clear: both">
+           <strong><h:outputText style="color: #ccc;" value="#{messages[relatedRoute.title]} "/></strong><span style="color: #bbb;
+                font-size: 0.7em;
+                border: 1px solid #eee;
+                padding: 2px 3px;
+                border-radius: 3px;
+                background: #f5f5f5;
+                opacity: 0.8;">#{relatedRoute.modelName}</span><br/>
+           </div>
+        </c:if>
+      </nxu:set>
   </c:forEach>
 </c:if>

@@ -24,5 +24,6 @@ Nuxeo-Component: OSGI-INF/Automation/Automation-chains/chains-contrib.xml,
  OSGI-INF/Listing-forms/layouts-contrib.xml,
  OSGI-INF/Automation/actions-contrib.xml,
  OSGI-INF/Listing-forms/contentviews-contrib.xml,
- OSGI-INF/Listing-forms/task-pageprovider-contrib.xml
+ OSGI-INF/Listing-forms/task-pageprovider-contrib.xml,
+ OSGI-INF/document-routing-service.xml
 Created-By: Athento

@@ -219,6 +219,7 @@
                 <row>
                     <widget>current_route_show_graph</widget>
                     <widget>current_route_abandon</widget>
+                    <widget>current_route_upgrade</widget>
                 </row>
             </rows>
         </layout>
@@ -304,6 +305,15 @@
             </controls>
         </widget>
 
+        <widget name="current_route_upgrade" type="current_route_upgrade">
+            <controls mode="any">
+                <control name="requireSurroundingForm">true</control>
+            </controls>
+            <controls mode="any">
+                <control name="handleLabels">true</control>
+            </controls>
+        </widget>
+
         <widget name="current_route_previous_tasks" type="contentViewWithForms">
             <labels>
                 <label mode="any"></label>
@@ -357,6 +367,31 @@
             </handler-class>
             <property name="template">
                 /widgets/task/task_workflow_list_name_widget_template.xhtml
+            </property>
+        </widgetType>
+
+        <widgetType name="current_route_upgrade">
+            <configuration>
+                <sinceVersion>8.10</sinceVersion>
+                <title>Description</title>
+                <description>
+                    <p>
+                        This widget displays an 'Upgrade' action to make a upgrade process.
+                    </p>
+                </description>
+                <categories>
+                    <category>routing</category>
+                </categories>
+                <supportedModes>
+                    <mode>view</mode>
+                </supportedModes>
+                <!-- no configurable properties -->
+            </configuration>
+            <handler-class>
+                org.nuxeo.ecm.platform.forms.layout.facelets.plugins.TemplateWidgetTypeHandler
+            </handler-class>
+            <property name="template">
+                /widgets/route/current_route_upgrade_widget_template.xhtml
             </property>
         </widgetType>
 
