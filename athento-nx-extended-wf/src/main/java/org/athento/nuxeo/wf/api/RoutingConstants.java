@@ -11,6 +11,8 @@ public final class RoutingConstants {
 
     public static String TASK_IGNORE_ASSIGNMENT_NOTIFICATION = "task.ignore.assignment.notification";
 
+    public static String UPGRADE_EVENT_NAME = "upgradeWorkflowEvent";
+
     /**
      * Check if a property is a core property.
      *

@@ -700,6 +700,9 @@ public final class WorkflowUtils {
      * @return
      */
     public static String getRouteVersion(DocumentRoute route) {
+        if (route == null) {
+            return "";
+        }
         String title = route.getDocument().getTitle();
         Set<String> facets = route.getDocument().getFacets();
         for (String facet : facets) {

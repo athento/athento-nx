@@ -21,7 +21,6 @@ import org.nuxeo.ecm.platform.routing.core.api.DocumentRoutingEngineService;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskEventNames;
 import org.nuxeo.ecm.platform.task.TaskService;
-import org.nuxeo.ecm.platform.task.core.helpers.TaskActorsHelper;
 import org.nuxeo.ecm.platform.task.dashboard.DashBoardItem;
 import org.nuxeo.ecm.platform.task.dashboard.DashBoardItemImpl;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
@@ -221,6 +220,28 @@ public class WorkflowTaskAthActionBean implements Serializable {
     }
 
     /**
+     * Check if is the last deployed route.
+     *
+     * @param route
+     * @return true if route is last deployed, otherwise false
+     */
+    public boolean isLastDeployedRoute(DocumentRoute route) {
+        if (route == null) {
+            LOG.warn("Route is mandatory to check last deployed");
+            return false;
+        }
+        DocumentModel doc = navigationContext.getCurrentDocument();
+        AthentoRoutingService athentoRoutingService = Framework.getService(AthentoRoutingService.class);
+        List<DocumentRoute> routes = athentoRoutingService.getDocumentRoutes(doc, route.getTitle(), documentManager);
+        if (routes.size() == 1) {
+            return true;
+        }
+        DocumentRoute lastRoute = athentoRoutingService.getLastVersionRoutedDeployed(route, documentManager);
+        LOG.info("Last route " + lastRoute.getModelName());
+        return lastRoute.getDocument().getId().equals(route.getDocument().getId());
+    }
+
+    /**
      * Check if a workflow can be upgrade with a new version.
      *
      * @param route
@@ -249,5 +270,23 @@ public class WorkflowTaskAthActionBean implements Serializable {
             }
         }
         return false;
+    }
+
+    /**
+     * Get route version from task.
+     *
+     * @param taskId
+     * @return
+     */
+    public String getRouteVersionFromTask(String taskId) {
+        DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
+        Task task = taskDoc.getAdapter(Task.class);
+        if (task == null) {
+            return "";
+        }
+        String processId = task.getProcessId();
+        DocumentModel processDoc = documentManager.getDocument(new IdRef(processId));
+        DocumentRoute route = processDoc.getAdapter(DocumentRoute.class);
+        return WorkflowUtils.getRouteVersion(route);
     }
 }

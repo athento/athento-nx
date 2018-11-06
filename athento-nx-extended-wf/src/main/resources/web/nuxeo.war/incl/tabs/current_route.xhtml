@@ -6,9 +6,11 @@
      xmlns:nxl="http://nuxeo.org/nxforms/layout">
 
   <c:forEach items="#{routingActions.getRelatedRoutes()}" var="relatedRoute">
-    <nxl:layout name="current_route_layout" mode="view"
+    <c:if test="#{relatedRoute != null and athWorkflowTaskActionBean.hasOpenTask(relatedRoute)}">
+      <nxl:layout name="current_route_layout" mode="view"
                 value="#{relatedRoute}"
                 currentDocumentForRoute="#{currentDocument}" />
+    </c:if>
   </c:forEach>
 
 </div>

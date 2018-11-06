@@ -1,7 +1,7 @@
 package org.athento.nuxeo.wf.exception;
 
 /**
- * Sincronize exception.
+ * Upgrade exception.
  */
 public class UpgradeWorkflowException extends Exception {
 
