@@ -20,5 +20,7 @@
 
 		<operation class="org.athento.nx.upgrade.operation.RebuildLogsOperation"/>
 
+		<operation class="org.athento.nx.upgrade.operation.RecalculateThumbnailsOperation"/>
+
 	</extension>
 </component>

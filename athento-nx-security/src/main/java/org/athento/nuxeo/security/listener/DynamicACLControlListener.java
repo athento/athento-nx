@@ -83,8 +83,8 @@ public class DynamicACLControlListener implements EventListener {
         ACLImpl aclImpl = new ACLImpl(destinyAcl);
         acp.addACL(aclImpl);
         for (ACE ace : aces) {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Creating dynamic ACE for " + ace.getUsername() +
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Creating dynamic ACE for " + ace.getUsername() +
                         " for document " + doc.getName() +
                         " in Dynamic ACL " + acl.name + " for " + destinyAcl);
             }
