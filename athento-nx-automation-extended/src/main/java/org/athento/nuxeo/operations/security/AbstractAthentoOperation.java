@@ -52,7 +52,9 @@ public abstract class AbstractAthentoOperation {
         String enabledIpsValue = AthentoOperationsHelper
                 .readConfigValue(ctx.getCoreSession(), "automationExtendedConfig:enabledIPs");
 
-        LOG.info("Enabled IPs " + enabledIpsValue);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Enabled IPs " + enabledIpsValue);
+        }
 
         // Check ip in list
         if (enabledIpsValue != null && !enabledIpsValue.isEmpty()) {

@@ -729,6 +729,9 @@ public final class WorkflowUtils {
      * @return
      */
     public static int compareVersion(String v1, String v2) {
+        if (v1 == null || v2 == null) {
+            return 0;
+        }
         String[] vals1 = v1.split("\\.");
         String[] vals2 = v2.split("\\.");
         int i = 0;
