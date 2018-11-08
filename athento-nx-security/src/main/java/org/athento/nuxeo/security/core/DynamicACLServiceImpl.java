@@ -211,7 +211,7 @@ public class DynamicACLServiceImpl extends DefaultComponent implements DynamicAC
                     params.put("principal", result);
                     if (checkRules(aced, params)) {
                         String username = result.toString();
-                        if (username != null && !username.isEmpty()) {
+                        if (username != null && !username.isEmpty() && !"null".equals(username)) {
                             ACE ace = new ACE(username, aced.getPermission(), true);
                             resultACEs.add(ace);
                         }
@@ -254,7 +254,7 @@ public class DynamicACLServiceImpl extends DefaultComponent implements DynamicAC
                             params.put("principal", complexValue);
                             if (checkRules(aced, params)) {
                                 String username = complexValue.toString();
-                                if (username != null && !username.isEmpty()) {
+                                if (username != null && !username.isEmpty() && !"null".equals(username)) {
                                     aces.add(new ACE(username, aced.getPermission(), true));
                                 }
                             }
@@ -269,7 +269,7 @@ public class DynamicACLServiceImpl extends DefaultComponent implements DynamicAC
                 params.put("principal", value);
                 if (checkRules(aced, params)) {
                     String username = value.toString();
-                    if (username != null && !username.isEmpty()) {
+                    if (username != null && !username.isEmpty() && !"null".equals(username)) {
                         aces.add(new ACE(username, aced.getPermission(), true));
                     }
                 }
