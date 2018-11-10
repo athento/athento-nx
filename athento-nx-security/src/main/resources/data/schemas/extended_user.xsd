@@ -28,7 +28,6 @@
     <!-- Delegated user -->
     <xs:element name="delegatedUser" type="xs:string"/>
 
-
 </xs:schema>
 
 

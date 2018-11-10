@@ -57,7 +57,9 @@ public class CaptchaServiceImpl extends DefaultComponent implements CaptchaServi
         }
         user.setPropertyValue("user:loginAttempts", 0);
         userManager.updateUser(user);
-        LOG.info("Reseting login attempts for " + user.getPropertyValue("user:username") + " => " + user.getPropertyValue("user:loginAttempts"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Reseting login attempts for " + user.getPropertyValue("user:username") + " => " + user.getPropertyValue("user:loginAttempts"));
+        }
     }
 
     /**
