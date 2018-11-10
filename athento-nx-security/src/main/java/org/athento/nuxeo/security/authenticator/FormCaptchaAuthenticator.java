@@ -139,7 +139,7 @@ public class FormCaptchaAuthenticator implements NuxeoAuthenticationPlugin {
         DocumentModel userModel = userManager.getUserModel(userName);
         if (userModel == null) {
             // Find user for other fields
-            String [] userFields = Framework.getProperty("athento.login.alternativefields", "").split(",");
+            String[] userFields = Framework.getProperty("athento.login.alternativefields", "").split(",");
             for (String userField : userFields) {
                 if (userField.isEmpty()) {
                     continue;

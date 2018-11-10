@@ -3,10 +3,13 @@ package org.athento.nuxeo.security.authenticator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.security.api.SecurityConstants;
 import org.nuxeo.common.utils.Base64;
 import org.nuxeo.ecm.platform.api.login.UserIdentificationInfo;
 import org.nuxeo.ecm.platform.ui.web.auth.NXAuthConstants;
 import org.nuxeo.ecm.platform.ui.web.auth.interfaces.NuxeoAuthenticationPlugin;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.runtime.api.Framework;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
 /**
  * Basic authenticator based on Nuxeo but with securization.
@@ -100,7 +105,7 @@ public class BasicAuthenticator implements NuxeoAuthenticationPlugin {
     public UserIdentificationInfo handleRetrieveIdentity(HttpServletRequest httpRequest,
                                                          HttpServletResponse httpResponse) {
 
-        String auth = httpRequest.getHeader("authorization");
+        String auth = httpRequest.getHeader(AUTHORIZATION);
 
         if (auth != null && auth.toLowerCase().startsWith("basic")) {
             int idx = auth.indexOf(' ');
@@ -122,6 +127,18 @@ public class BasicAuthenticator implements NuxeoAuthenticationPlugin {
             }
         }
         return null;
+    }
+
+    /**
+     * Check if user is systemic.
+
+     * @param userName
+     * @return
+     */
+    private boolean isSystemicUser(String userName) {
+        UserManager um = Framework.getService(UserManager.class);
+        List<String> users = um.getUsersInGroup(SecurityConstants.SYSTEMIC_GROUP);
+        return users.contains(userName);
     }
 
     @Override
