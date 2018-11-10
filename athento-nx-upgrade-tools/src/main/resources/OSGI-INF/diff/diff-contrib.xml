@@ -3,20 +3,6 @@
 <component name="org.athento.nuxeo.athento-nx-upgrade-tools.diff-contrib"
 	version="1.0.0">
 
-	
-	<extension target="org.nuxeo.ecm.diff.service.DiffDisplayService"
-		point="diffDisplay">
-
-		<!-- Your diffDisplay contributions here -->
-
-	</extension>
-
-	<extension target="org.nuxeo.ecm.diff.service.DiffDisplayService"
-		point="diffBlock">
-
-		<!-- Your diffBlock contributions here -->
-
-	</extension>
 
 	<extension point="widgets" target="org.nuxeo.ecm.platform.forms.layout.LayoutStore">
 

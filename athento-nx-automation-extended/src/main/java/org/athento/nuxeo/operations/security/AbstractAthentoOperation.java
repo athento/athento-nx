@@ -19,7 +19,7 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by victorsanchez on 17/10/16.
+ * Abstract Athento operation.
  *
  * @since #AT-987
  */
@@ -71,6 +71,19 @@ public abstract class AbstractAthentoOperation {
             }
         }
 
+        // It will be changed to manage in athento-nx-security
+        checkLoginAs(ctx);
+
+    }
+
+    /**
+     * Check loginAs into operations.
+     *
+     * @param ctx
+     * @throws RestrictionException
+     */
+    @Deprecated
+    private void checkLoginAs(OperationContext ctx) throws RestrictionException {
         // Check login for user with loginAs context var
         NuxeoPrincipal nxPrincipal = (NuxeoPrincipal) ctx.getPrincipal();
         if (SecurityUtil.isLoginAsEnabled() && nxPrincipal.isAdministrator()) {
@@ -95,7 +108,6 @@ public abstract class AbstractAthentoOperation {
                 }
             }
         }
-
     }
 
     /**

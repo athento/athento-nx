@@ -3,11 +3,5 @@
 <component name="org.athento.nuxeo.athento-nx-upgrade-tools.workflow-contrib"
 	version="1.0.0">
 
-	<extension target="org.nuxeo.ecm.platform.jbpm.core.JbpmService"
-		point="typeFilter">
-
-		<!-- Your typeFilter contributions here -->
-
-	</extension>
 	
 </component>
