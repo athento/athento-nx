@@ -170,14 +170,14 @@ public class WorkflowAthActionBean implements Serializable {
      * @return
      */
     public boolean isTaskCollapsible(String taskId) {
-        DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
-        Task task = taskDoc.getAdapter(Task.class);
-        DocumentModel taskNodeDoc = WorkflowUtils.getDocumentNodeFromTask(documentManager, task);
-        if (taskNodeDoc == null) {
-            return false;
-        }
-        String nodeId = (String) taskNodeDoc.getPropertyValue("rnode:nodeId");
         try {
+            DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
+            Task task = taskDoc.getAdapter(Task.class);
+            DocumentModel taskNodeDoc = WorkflowUtils.getDocumentNodeFromTask(documentManager, task);
+            if (taskNodeDoc == null) {
+                return false;
+            }
+            String nodeId = (String) taskNodeDoc.getPropertyValue("rnode:nodeId");
             return (Boolean) taskNodeDoc.getPropertyValue("var-" + nodeId + ":collapsible");
         } catch (Exception e) {
             return false;
@@ -190,10 +190,14 @@ public class WorkflowAthActionBean implements Serializable {
      * @return
      */
     public String getTaskDescription(String taskId) {
-        DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
-        Task task = taskDoc.getAdapter(Task.class);
-        DocumentModel taskNodeDoc = WorkflowUtils.getDocumentNodeFromTask(documentManager, task);
-        return (String) taskNodeDoc.getPropertyValue("rnode:taskDescription");
+        try {
+            DocumentModel taskDoc = documentManager.getDocument(new IdRef(taskId));
+            Task task = taskDoc.getAdapter(Task.class);
+            DocumentModel taskNodeDoc = WorkflowUtils.getDocumentNodeFromTask(documentManager, task);
+            return (String) taskNodeDoc.getPropertyValue("rnode:taskDescription");
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     /**
