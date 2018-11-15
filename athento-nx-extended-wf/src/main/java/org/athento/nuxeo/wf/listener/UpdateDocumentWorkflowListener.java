@@ -56,47 +56,49 @@ public class UpdateDocumentWorkflowListener implements EventListener {
                 DocumentModel selectedRoute = WorkflowUtils.getRouteModelForDocument(document, session);
                 if (selectedRoute != null) {
                     // Get current task document
-                    final DocumentModel taskDocument = WorkflowUtils.getTaskDocument(session, document, "opened");
-                    if (taskDocument == null) {
+                    final DocumentModelList taskDocuments = WorkflowUtils.getTaskDocuments(session, document, "opened");
+                    if (taskDocuments.isEmpty()) {
                         return;
                     }
+                    for (DocumentModel taskDocument : taskDocuments) {
                     final Task task = taskDocument.getAdapter(Task.class);
-                    if (task.isOpened()) {
-                        // Get node for the task
-                        final DocumentModel routeNode = WorkflowUtils.getDocumentNodeFromTask(session, task);
-                        if (routeNode != null && routeNode.getCurrentLifeCycleState().equals("suspended")) {
-                            LOG.debug("Route node " + routeNode.getId());
-                            // Check waiting for task
-                            if (isWaitingForNode(routeNode, task)) {
-                                LOG.info("Trying with route node " + routeNode.getId());
-                                final Map<String, Object> params = new HashMap<>();
-                                Map<String, Serializable> taskInfo = WorkflowUtils.getTaskInfo(session, task, true);
-                                params.put("WorkflowVariables", taskInfo);
-                                params.put("NodeVariables", taskInfo);
-                                new UnrestrictedSessionRunner(session) {
-                                    @Override
-                                    public void run() {
-                                        // End task
-                                        getDocumentRoutingService()
-                                                .endTask(session, task, params, "end");
-                                        DocumentModel nextTaskDocument = WorkflowUtils.getTaskDocument(session, document, "opened");
-                                        if (nextTaskDocument != null) {
-                                            Task nextTask = nextTaskDocument.getAdapter(Task.class);
-                                            DocumentModel nextRouteNode = WorkflowUtils.getDocumentNodeFromTask(session, nextTask);
-                                            if (nextRouteNode != null && !nextRouteNode.getId().equals(routeNode.getId())) {
+                        if (task.isOpened()) {
+                            // Get node for the task
+                            final DocumentModel routeNode = WorkflowUtils.getDocumentNodeFromTask(session, task);
+                            if (routeNode != null && routeNode.getCurrentLifeCycleState().equals("suspended")) {
+                                LOG.debug("Route node " + routeNode.getId());
+                                // Check waiting for task
+                                if (isWaitingForNode(routeNode, task)) {
+                                    LOG.info("Trying with route node " + routeNode.getId());
+                                    final Map<String, Object> params = new HashMap<>();
+                                    Map<String, Serializable> taskInfo = WorkflowUtils.getTaskInfo(session, task, true);
+                                    params.put("WorkflowVariables", taskInfo);
+                                    params.put("NodeVariables", taskInfo);
+                                    new UnrestrictedSessionRunner(session) {
+                                        @Override
+                                        public void run() {
+                                            // End task
+                                            getDocumentRoutingService()
+                                                    .endTask(session, task, params, "end");
+                                            DocumentModel nextTaskDocument = WorkflowUtils.getTaskDocument(session, document, "opened");
+                                            if (nextTaskDocument != null) {
+                                                Task nextTask = nextTaskDocument.getAdapter(Task.class);
+                                                DocumentModel nextRouteNode = WorkflowUtils.getDocumentNodeFromTask(session, nextTask);
+                                                if (nextRouteNode != null && !nextRouteNode.getId().equals(routeNode.getId())) {
+                                                    // Add audit
+                                                    //addTaskAudit(task, document, event.getContext().getPrincipal().getName());
+                                                    // Refresh seam events
+                                                    refreshSeam();
+                                                }
+                                            } else {
                                                 // Add audit
-                                                addTaskAudit(task, document, event.getContext().getPrincipal().getName());
+                                                //addTaskAudit(task, document, event.getContext().getPrincipal().getName());
                                                 // Refresh seam events
                                                 refreshSeam();
                                             }
-                                        } else {
-                                            // Add audit
-                                            addTaskAudit(task, document, event.getContext().getPrincipal().getName());
-                                            // Refresh seam events
-                                            refreshSeam();
                                         }
-                                    }
-                                }.runUnrestricted();
+                                    }.runUnrestricted();
+                                }
                             }
                         }
                     }

@@ -155,6 +155,19 @@ public final class WorkflowUtils {
         return null;
     }
 
+    /**
+     * Get tasks document with state.
+     *
+     * @param session is the session
+     * @param doc is the document
+     * @param state is the state of task
+     * @return
+     */
+    public static DocumentModelList getTaskDocuments(CoreSession session, DocumentModel doc, String state) {
+        DocumentModelList tasks =
+                session.query("SELECT * FROM TaskDoc WHERE nt:targetDocumentId = '" + doc.getId() + "' AND ecm:currentLifeCycleState = '" + state + "' ORDER BY dc:modified DESC");
+        return tasks;
+    }
 
     /**
      * Generate a simple preview token based on dublincore:modified metadata.

@@ -168,6 +168,9 @@ public class TaskCompletedListener implements EventListener {
      */
     private void executeTransition(CoreSession session, DocumentModel targetDocument, GraphNode node, String transitionExecuted) {
         try {
+            if (transitionExecuted == null) {
+                return;
+            }
             String transitionsData = (String) node.getDocument().getPropertyValue("var-" + node.getId() + ":lfTransitions");
             String[] transitions = transitionsData.split(";");
             for (String transitionInfo : transitions) {
