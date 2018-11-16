@@ -12,6 +12,8 @@ import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseNuxeoRestlet;
 import org.nuxeo.ecm.platform.util.RepositoryLocation;
+import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
+import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationServiceImpl;
 import org.nuxeo.runtime.api.Framework;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -51,22 +53,35 @@ public class DocumentViewInlineRestlet extends BaseNuxeoRestlet {
             return;
         }
 
+        boolean isAuthenticated = false;
         String token = getQueryParamValue(req, "token", "");
-        if (token == null) {
-            handleError(res, "Token is mandatory for view inline");
-            return;
+        if (token == null || token.isEmpty()) {
+            try {
+                Framework.login();
+                // Get token from user
+                navigationContext.setCurrentServerLocation(new RepositoryLocation(
+                        repo));
+                documentManager = navigationContext.getOrCreateDocumentManager();
+                isAuthenticated = true;
+            } catch (Exception e) {
+                LOG.error("Error for preview pdf inline", e);
+                // DO NOTHING
+            }
         }
 
         DocumentModel dm;
         try {
-            Framework.login();
-            navigationContext.setCurrentServerLocation(new RepositoryLocation(
-                    repo));
-            documentManager = navigationContext.getOrCreateDocumentManager();
+            if (!isAuthenticated) {
+                Framework.login();
+                navigationContext.setCurrentServerLocation(new RepositoryLocation(
+                        repo));
+                documentManager = navigationContext.getOrCreateDocumentManager();
+            }
             String docid = (String) req.getAttributes().get("docid");
             if (docid != null) {
                 dm = documentManager.getDocument(new IdRef(docid));
-                if (token != null) {
+                // Check if session is authenticate to manage or not the token
+                if (token != null && !isAuthenticated) {
                     if (!Utils.validToken(token, dm)) {
                         handleError(res, "Token is invalid.");
                         return;
