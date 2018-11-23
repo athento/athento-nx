@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @author athento
  */
-@Operation(id = AthentoDocumentCopyOperation.ID, category = "Athento", label = "Athento Document Copy", description = "Copy a document")
+@Operation(id = AthentoDocumentCopyOperation.ID, category = "Athento", label = "Athento Document Copy", description = "Copy a document with relations")
 public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
 
     private static final Log LOG = LogFactory
