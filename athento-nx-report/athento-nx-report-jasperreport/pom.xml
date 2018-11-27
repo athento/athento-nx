@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.athento.nx</groupId>
     <artifactId>athento-nx-report</artifactId>
-		<version>8.10-AT3-SNAPSHOT</version>
+		<version>8.10-AT4</version>
 	</parent>
 	<artifactId>athento-nx-report-jasperreport</artifactId>
 	<name>Athento NX Reports - Plugin for JasperReport</name>
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.athento.nx</groupId>
 			<artifactId>athento-nx-report-api</artifactId>
-			<version>8.10-AT3-SNAPSHOT</version>
+			<version>8.10-AT4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.common</groupId>
@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>org.athento.nx</groupId>
 			<artifactId>athento-nx-report-core</artifactId>
-			<version>8.10-AT3-SNAPSHOT</version>
+			<version>8.10-AT4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
