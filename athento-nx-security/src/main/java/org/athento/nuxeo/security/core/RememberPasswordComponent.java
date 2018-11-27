@@ -188,11 +188,11 @@ public class RememberPasswordComponent extends DefaultComponent implements
             rememberPasswordUuid = sendRememberPasswordModel.getId();
 
             // Send email
-            /*Map<String, Serializable> additionnalInfo = new HashMap<String, Serializable>();
+            Map<String, Serializable> additionnalInfo = new HashMap<String, Serializable>();
             if (!additionnalInfo.containsKey("enterPasswordUrl")) {
                 additionnalInfo.put("enterPasswordUrl", buildEnterPasswordUrl());
             }
-            sendChangePasswordEmail(additionnalInfo, sendRememberPasswordModel);*/
+            sendChangePasswordEmail(additionnalInfo, sendRememberPasswordModel);
 
             // Send event
             sendEvent(session, sendRememberPasswordModel, getNameEventSendRememberPasswordSubmitted());
