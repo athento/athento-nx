@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.athento.nx</groupId>
 		<artifactId>athento-nx-report</artifactId>
-		<version>8.10-AT5-SNAPSHOT</version>
+		<version>8.10-AT6-SNAPSHOT</version>
 	</parent>
 	<artifactId>athento-nx-report-api</artifactId>
 	<name>Athento NX Reports - API</name>
