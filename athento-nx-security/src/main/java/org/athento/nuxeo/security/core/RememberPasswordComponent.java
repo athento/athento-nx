@@ -202,6 +202,8 @@ public class RememberPasswordComponent extends DefaultComponent implements
 
     }
 
+
+
     protected String buildEnterPasswordUrl() {
         String baseUrl = Framework.getProperty(NUXEO_URL_KEY);
 
