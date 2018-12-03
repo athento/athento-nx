@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.athento.nuxeo.operations;
 
 import org.apache.commons.logging.Log;
@@ -12,6 +9,7 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
+import org.nuxeo.ecm.automation.core.collectors.DocumentModelListCollector;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -63,6 +61,12 @@ public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
     @Param(name = "copyRelations", required = false)
     protected boolean relations = false;
 
+    /**
+     * Copy a document.
+     *
+     * @param doc
+     * @return
+     */
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) {
         DocumentModel copy = run(doc.getRef());
@@ -79,6 +83,12 @@ public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
         return copy;
     }
 
+    /**
+     * Copy a document given its document ref.
+     *
+     * @param ref
+     * @return
+     */
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentRef ref) {
         String n = name;
@@ -97,6 +107,32 @@ public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
             }
         }
         return copy;
+    }
+
+    /**
+     * Copy a list of documents.
+     *
+     * @param docs
+     * @return
+     */
+    @OperationMethod(collector = DocumentModelListCollector.class)
+    public DocumentModelList run(DocumentModelList docs) {
+        DocumentModelList copies = new DocumentModelListImpl();
+        for (DocumentModel doc : docs) {
+            DocumentModel copy = run(doc.getRef());
+            if (relations) {
+                DocumentModelList outgoingDocs = getDocuments(getDocumentResource(doc), null, true);
+                for (DocumentModel outgoingDoc : outgoingDocs) {
+                    docRelationManager.addRelation(session, copy, outgoingDoc, REFERENCE_PREDICATE, false);
+                }
+                DocumentModelList ingoingDocs = getDocuments(getDocumentResource(doc), null, false);
+                for (DocumentModel ingoingDoc : ingoingDocs) {
+                    docRelationManager.addRelation(session, copy, ingoingDoc, REFERENCE_PREDICATE, true);
+                }
+            }
+            copies.add(copy);
+        }
+        return copies;
     }
 
     protected QNameResource getDocumentResource(DocumentModel document) {
