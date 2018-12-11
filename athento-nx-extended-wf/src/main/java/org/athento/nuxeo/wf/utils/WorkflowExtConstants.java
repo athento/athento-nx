@@ -13,4 +13,8 @@ public final class WorkflowExtConstants {
     public static final String WORKFLOW_CHANGE_EVENT = "workflowChanged";
 
     public static final String WAITING_TASK_TYPE = "Waiting";
+
+    // MAX attachment size for workflow notification
+    public static final long MAX_ATTACHMENT_SIZE = 20971520L;
+
 }

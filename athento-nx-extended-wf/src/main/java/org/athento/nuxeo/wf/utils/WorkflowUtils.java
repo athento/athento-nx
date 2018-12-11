@@ -8,8 +8,11 @@ import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.model.Property;
 import org.nuxeo.ecm.core.api.model.PropertyException;
 import org.nuxeo.ecm.core.api.model.impl.ListProperty;
+import org.nuxeo.ecm.core.api.model.impl.MapProperty;
+import org.nuxeo.ecm.core.api.model.impl.primitives.BlobProperty;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.api.security.ACP;
@@ -355,22 +358,29 @@ public final class WorkflowUtils {
             }
             params.put("subject", "[Athento] Task assigned " + document.getName());
             params.put("html", true);
-            // Add blobs it document has
-            StringList attachments = new StringList();
-            if (document.hasSchema("file")) {
-                Blob mainBlob = (Blob) document.getPropertyValue("file:content");
-                if (mainBlob != null) {
-                    attachments.add("file:content");
+            boolean includeAttachments = Boolean.valueOf(Framework.getProperty("athento.workflow.notification.includeattachments",
+                                                                               "true"));
+            if (includeAttachments) {
+                // Add blobs it document has whether it is a valid attachment
+                StringList attachments = new StringList();
+                if (document.hasSchema("file")) {
+                    if (isValidAttachment(document, "file:content")) {
+                        attachments.add("file:content");
+                    }
                 }
-            }
-            if (document.hasSchema("files")) {
-                ListProperty files = (ListProperty) document.getProperty("files:files");
-                for (int i = 0; i < files.size(); i++) {
-                    attachments.add("files:files/file[" + i + "]/file");
+                if (document.hasSchema("files")) {
+                    ListProperty files = (ListProperty) document.getProperty("files:files");
+                    for (int i = 0; i < files.size(); i++) {
+                        String xpath = "files:files/file[" + i + "]/file";
+                        if (isValidAttachment(document, xpath)) {
+                            attachments.add(xpath);
+                        }
+
+                    }
                 }
-            }
-            if (!attachments.isEmpty()) {
-                params.put("files", attachments);
+                if (!attachments.isEmpty()) {
+                    params.put("files", attachments);
+                }
             }
             if (LOG.isInfoEnabled()) {
                 LOG.info("Sending email notification. Executing operation.");
@@ -378,6 +388,62 @@ public final class WorkflowUtils {
             WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
         } catch (Exception e) {
             LOG.error("Error sending notification", e);
+        }
+    }
+
+    /**
+     * Check if attachment is valid for email notification.
+     * @param doc
+     * @param xpath
+     * @return
+     */
+    private static boolean isValidAttachment(DocumentModel doc, String xpath) {
+        try {
+            ArrayList<Blob> blobs = new ArrayList<>();
+            Property p = doc.getProperty(xpath);
+            if (p instanceof BlobProperty) {
+                getAttachmentBlob(p.getValue(), blobs);
+            } else if (p instanceof ListProperty) {
+                for (Property pp : p) {
+                    getAttachmentBlob(pp.getValue(), blobs);
+                }
+            } else if (p instanceof MapProperty) {
+                for (Property sp : ((MapProperty) p).values()) {
+                    getAttachmentBlob(sp.getValue(), blobs);
+                }
+            } else {
+                Object o = p.getValue();
+                if (o instanceof Blob) {
+                    if (((Blob) o).getLength() <= WorkflowExtConstants.MAX_ATTACHMENT_SIZE) {
+                        blobs.add((Blob) o);
+                    }
+                }
+            }
+            return blobs.size() > 0;
+        } catch (org.nuxeo.ecm.core.api.PropertyException e) {
+            LOG.error("Property error checking valid attachment", e);
+        }
+        return false;
+    }
+
+    /**
+     * Get blob for attachments.
+     * @param o
+     * @param blobs
+     */
+    private static void getAttachmentBlob(Object o, List<Blob> blobs) {
+        if (o instanceof List) {
+            for (Object item : (List<Object>) o) {
+                getAttachmentBlob(item, blobs);
+            }
+        } else if (o instanceof Map) {
+            for (Object item : ((Map<String, Object>) o).values()) {
+                getAttachmentBlob(item, blobs);
+            }
+        } else if (o instanceof Blob) {
+            if (((Blob) o).getLength() <= WorkflowExtConstants.MAX_ATTACHMENT_SIZE) {
+                blobs.add((Blob) o);
+            }
         }
     }
 
