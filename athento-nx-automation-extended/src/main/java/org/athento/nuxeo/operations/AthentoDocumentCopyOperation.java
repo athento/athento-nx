@@ -62,20 +62,28 @@ public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
     protected boolean relations = false;
 
     /**
-     * Copy a document.
+     * Copy a document given its document ref.
      *
-     * @param doc
+     * @param ref
      * @return
      */
     @OperationMethod(collector = DocumentModelCollector.class)
-    public DocumentModel run(DocumentModel doc) {
-        DocumentModel copy = run(doc.getRef());
+    public DocumentModel run(DocumentRef ref) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Copying doc by ref...");
+        }
+        String n = name;
+        DocumentModel doc = session.getDocument(ref);
+        if (name == null || name.length() == 0) {
+            n = doc.getName();
+        }
+        DocumentModel copy = session.copy(ref, target, n);
         if (relations) {
-            DocumentModelList outgoingDocs = getDocuments(getDocumentResource(doc), null, true);
+            DocumentModelList outgoingDocs = getDocuments(getDocumentResource(doc), new ResourceImpl(REFERENCE_PREDICATE), true);
             for (DocumentModel outgoingDoc : outgoingDocs) {
                 docRelationManager.addRelation(session, copy, outgoingDoc, REFERENCE_PREDICATE, false);
             }
-            DocumentModelList ingoingDocs = getDocuments(getDocumentResource(doc), null, false);
+            DocumentModelList ingoingDocs = getDocuments(getDocumentResource(doc), new ResourceImpl(REFERENCE_PREDICATE), false);
             for (DocumentModel ingoingDoc : ingoingDocs) {
                 docRelationManager.addRelation(session, copy, ingoingDoc, REFERENCE_PREDICATE, true);
             }
@@ -84,29 +92,17 @@ public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
     }
 
     /**
-     * Copy a document given its document ref.
+     * Copy a document.
      *
-     * @param ref
+     * @param doc
      * @return
      */
     @OperationMethod(collector = DocumentModelCollector.class)
-    public DocumentModel run(DocumentRef ref) {
-        String n = name;
-        if (name == null || name.length() == 0) {
-            n = session.getDocument(ref).getName();
+    public DocumentModel run(DocumentModel doc) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Copying a doc...");
         }
-        DocumentModel copy = session.copy(ref, target, n);
-        if (relations) {
-            DocumentModelList outgoingDocs = getDocuments(getDocumentResource(copy), new ResourceImpl(REFERENCE_PREDICATE), true);
-            for (DocumentModel outgoingDoc : outgoingDocs) {
-                docRelationManager.addRelation(session, copy, outgoingDoc, REFERENCE_PREDICATE, false);
-            }
-            DocumentModelList ingoingDocs = getDocuments(getDocumentResource(copy), new ResourceImpl(REFERENCE_PREDICATE), false);
-            for (DocumentModel ingoingDoc : ingoingDocs) {
-                docRelationManager.addRelation(session, copy, ingoingDoc, REFERENCE_PREDICATE, true);
-            }
-        }
-        return copy;
+        return run(doc.getRef());
     }
 
     /**
@@ -117,19 +113,12 @@ public class AthentoDocumentCopyOperation extends AbstractAthentoOperation {
      */
     @OperationMethod(collector = DocumentModelListCollector.class)
     public DocumentModelList run(DocumentModelList docs) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Copying multiple docs...");
+        }
         DocumentModelList copies = new DocumentModelListImpl();
         for (DocumentModel doc : docs) {
             DocumentModel copy = run(doc.getRef());
-            if (relations) {
-                DocumentModelList outgoingDocs = getDocuments(getDocumentResource(doc), null, true);
-                for (DocumentModel outgoingDoc : outgoingDocs) {
-                    docRelationManager.addRelation(session, copy, outgoingDoc, REFERENCE_PREDICATE, false);
-                }
-                DocumentModelList ingoingDocs = getDocuments(getDocumentResource(doc), null, false);
-                for (DocumentModel ingoingDoc : ingoingDocs) {
-                    docRelationManager.addRelation(session, copy, ingoingDoc, REFERENCE_PREDICATE, true);
-                }
-            }
             copies.add(copy);
         }
         return copies;

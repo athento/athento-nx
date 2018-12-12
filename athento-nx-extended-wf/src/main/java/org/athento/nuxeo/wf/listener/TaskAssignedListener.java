@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.api.RoutingConstants;
 import org.athento.nuxeo.wf.utils.SchemaUtils;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
+import org.nuxeo.ecm.automation.core.operations.notification.MailTemplateHelper;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -135,6 +136,9 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
                                     + "/file:content/?token=" + WorkflowUtils.generatePreviewToken(document));
                         }
+                        // Override url with workflow tab
+                        properties.put("docUrl",
+                                MailTemplateHelper.getDocumentUrl(document, "view_documents") + "?tabIds=:TAB_ROUTE_WORKFLOW");
                         // Set back to
                         properties.put("backUrl", "/");
                         // Add access token
