@@ -7,6 +7,7 @@ import org.athento.nuxeo.security.api.DynamicACLService;
 import org.athento.nuxeo.security.api.descriptor.DynamicACLDescriptor;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.impl.ACLImpl;
 import org.nuxeo.ecm.core.api.security.impl.ACPImpl;
@@ -41,28 +42,38 @@ public class DynamicACLControlListener implements EventListener {
         if (ctx instanceof DocumentEventContext) {
             DocumentEventContext docCtx = (DocumentEventContext) ctx;
             CoreSession session = ctx.getCoreSession();
-            DocumentModel doc = docCtx.getSourceDocument();
-            if (doc != null) {
-                DynamicACLService dynamicACLService = Framework.getLocalService(DynamicACLService.class);
-                if (!dynamicACLService.isIgnoredDoctype(doc.getDocumentType().getName())) {
-                    List<DynamicACLDescriptor> dynamicACLsForDoctype = dynamicACLService.getDynamicACLsForDoctype(doc);
-                    for (DynamicACLDescriptor acl : dynamicACLsForDoctype) {
-                        List<ACE> aces = dynamicACLService.getACEsForDocument(acl, doc);
-                        setACEs(session, doc, aces, acl);
-                    }
-                    for (String facet : doc.getFacets()) {
-                        List<DynamicACLDescriptor> dynamicACLsForFacet = dynamicACLService.getDynamicACLsForFacet(facet);
-                        for (DynamicACLDescriptor acl : dynamicACLsForFacet) {
-                            List<ACE> aces = dynamicACLService.getACEsForDocument(acl, doc);
-                            setACEs(session, doc, aces, acl);
+            new UnrestrictedSessionRunner(session) {
+                @Override
+                public void run() {
+                    DocumentModel doc = docCtx.getSourceDocument();
+                    if (doc != null) {
+                        DynamicACLService dynamicACLService = Framework.getLocalService(DynamicACLService.class);
+                        if (!dynamicACLService.isIgnoredDoctype(doc.getDocumentType().getName())) {
+                            List<DynamicACLDescriptor> dynamicACLsForDoctype = dynamicACLService.getDynamicACLsForDoctype(doc);
+                            for (DynamicACLDescriptor acl : dynamicACLsForDoctype) {
+                                List<ACE> aces = dynamicACLService.getACEsForDocument(acl, doc);
+                                if (!aces.isEmpty()) {
+                                    setACEs(session, doc, aces, acl);
+                                }
+                            }
+                            for (String facet : doc.getFacets()) {
+                                List<DynamicACLDescriptor> dynamicACLsForFacet = dynamicACLService.getDynamicACLsForFacet(facet);
+                                for (DynamicACLDescriptor acl : dynamicACLsForFacet) {
+                                    List<ACE> aces = dynamicACLService.getACEsForDocument(acl, doc);
+                                    if (!aces.isEmpty()) {
+                                        setACEs(session, doc, aces, acl);
+                                    }
+                                }
+                            }
+                        } else {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Doctype " + doc.getDocumentType().getName() + " is ignored for DynamicACLs");
+                            }
                         }
                     }
-                } else {
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace("Doctype " + doc.getDocumentType().getName() + " is ignored for DynamicACLs");
-                    }
                 }
-            }
+            }.runUnrestricted();
+
         }
     }
 
@@ -75,6 +86,7 @@ public class DynamicACLControlListener implements EventListener {
      * @param acl
      */
     private void setACEs(CoreSession session, DocumentModel doc, List<ACE> aces, DynamicACLDescriptor acl) {
+        LOG.info("Set ACES for DynamicACLS in " + doc.getName() + ", " + aces   );
         String destinyAcl = DEFAULT_ACL_NAME;
         if (acl.acl != null && !acl.acl.isEmpty()) {
             destinyAcl = acl.acl;
@@ -91,13 +103,15 @@ public class DynamicACLControlListener implements EventListener {
             ACE aceImpl = new ACE(ace.getUsername(), ace.getPermission(), ace.isGranted());
             aclImpl.add(aceImpl);
         }
-        if (acl.blockInheritance) {
-            boolean permissionChanged = acp.blockInheritance(destinyAcl, session.getPrincipal().getName());
-            if (permissionChanged) {
+        if (!aces.isEmpty()) {
+            if (acl.blockInheritance) {
+                boolean permissionChanged = acp.blockInheritance(destinyAcl, session.getPrincipal().getName());
+                if (permissionChanged) {
+                    session.setACP(doc.getRef(), acp, acl.overwrite);
+                }
+            } else {
                 session.setACP(doc.getRef(), acp, acl.overwrite);
             }
-        } else {
-            session.setACP(doc.getRef(), acp, acl.overwrite);
         }
     }
 
