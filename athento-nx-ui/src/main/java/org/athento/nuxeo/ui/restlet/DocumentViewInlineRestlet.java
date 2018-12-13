@@ -12,8 +12,6 @@ import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseNuxeoRestlet;
 import org.nuxeo.ecm.platform.util.RepositoryLocation;
-import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
-import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationServiceImpl;
 import org.nuxeo.runtime.api.Framework;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -44,7 +42,6 @@ public class DocumentViewInlineRestlet extends BaseNuxeoRestlet {
 
     protected CoreSession documentManager;
 
-    @Override
     public void handle(Request req, Response res) {
 
         String repo = (String) req.getAttributes().get("repo");
