@@ -44,7 +44,6 @@ public class DocumentViewInlineRestlet extends BaseNuxeoRestlet {
 
     protected CoreSession documentManager;
 
-    @Override
     public void handle(Request req, Response res) {
 
         String repo = (String) req.getAttributes().get("repo");
