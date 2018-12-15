@@ -6,6 +6,8 @@
             replace="true" />
         <operation class="org.athento.nuxeo.operations.AthentoFilterDocuments"
                    replace="true" />
+
+        <!-- Document operations -->
         <operation class="org.athento.nuxeo.operations.AthentoDocumentCreateOperation" />
         <operation class="org.athento.nuxeo.operations.AthentoDocumentFindOperation" />
         <operation class="org.athento.nuxeo.operations.AthentoDocumentMultiCreateOperation" />
@@ -16,10 +18,28 @@
         <operation class="org.athento.nuxeo.operations.AthentoDocumentPermanentDeleteOperation"/>
         <operation class="org.athento.nuxeo.operations.AthentoExceptionCreateOperation" />
         <operation class="org.athento.nuxeo.operations.AthentoMultiAttachBlobOperation" />
+        <operation class="org.athento.nuxeo.operations.AthentoDocumentMutateOperation" />
+        <operation class="org.athento.nuxeo.operations.DocumentFetchOrCreateOperation" />
+
+        <!-- Properties operations -->
+        <operation class="org.athento.nuxeo.operations.SetDocumentComplexPropertyOperation" />
+        <operation class="org.athento.nuxeo.operations.CheckComplexPropertyValueOperation"/>
+
+        <!-- Vocabulary operations -->
+        <operation class="org.athento.nuxeo.operations.VocabularyGetChildrenOperation" />
         <operation class="org.athento.nuxeo.operations.CompareVocabulariesOperation" />
+
+        <!-- Run and context operations -->
+        <operation class="org.athento.nuxeo.operations.RunOperationAsBatch" />
+        <operation class="org.athento.nuxeo.operations.RunOperationAsWorkerOperation" />
+        <operation class="org.athento.nuxeo.operations.RunOperationAsVar" />
+        <operation class="org.athento.nuxeo.operations.RunScriptAsVarOperation" />
+        <operation class="org.athento.nuxeo.operations.utils.ClearContextOperation" />
+        <operation class="org.athento.nuxeo.operations.utils.ClearInputOperation" />
+
+        <!-- Utils operations -->
         <operation class="org.athento.nuxeo.operations.CopyFileOperation" />
         <operation class="org.athento.nuxeo.operations.DocumentsFeedOperation" />
-        <operation class="org.athento.nuxeo.operations.DocumentFetchOrCreateOperation" />
         <operation class="org.athento.nuxeo.operations.ExtractLinesOperation" />
         <operation class="org.athento.nuxeo.operations.GetPreviewIFrameOperation" />
         <operation class="org.athento.nuxeo.operations.ListToProviderOperation" />
@@ -28,21 +48,15 @@
         <operation class="org.athento.nuxeo.operations.PushPaginableProviderOperation" />
         <operation class="org.athento.nuxeo.operations.RefreshPictureOperation" />
         <operation class="org.athento.nuxeo.operations.RefreshVideoOperation" />
-        <operation class="org.athento.nuxeo.operations.RunOperationAsBatch" />
-        <operation class="org.athento.nuxeo.operations.RunOperationAsWorkerOperation" />
-        <operation class="org.athento.nuxeo.operations.RunOperationAsVar" />
-        <operation class="org.athento.nuxeo.operations.RunScriptAsVarOperation" />
-        <operation class="org.athento.nuxeo.operations.VocabularyGetChildrenOperation" />
-        <operation class="org.athento.nuxeo.operations.utils.ClearContextOperation" />
         <operation class="org.athento.nuxeo.operations.utils.GetJSONAttributeOperation" />
         <operation class="org.athento.nuxeo.operations.utils.PushObjectOperation" />
-        <operation class="org.athento.nuxeo.operations.SetDocumentComplexPropertyOperation" />
         <operation class="org.athento.nuxeo.operations.CSVToListOperation" />
-        <operation class="org.athento.nuxeo.operations.utils.ClearInputOperation" />
         <operation class="org.athento.nuxeo.operations.BusinessDaysOperation" />
-        <operation class="org.athento.nuxeo.operations.AthentoDocumentMutateOperation" />
         <operation class="org.athento.nuxeo.operations.ExportDocumentsToZIPOperation" />
         <operation class="org.athento.nuxeo.operations.AthentoBlobToFileOperation"/>
-        <operation class="org.athento.nuxeo.operations.CheckComplexPropertyValueOperation"/>
+
+        <!-- Request operations -->
+        <operation class="org.athento.nuxeo.operations.request.GetRequestOperation"/>
+
     </extension>
 </component>
