@@ -58,7 +58,7 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
 
     protected static final List<String> previewInProcessing = Collections
             .synchronizedList(new ArrayList<String>());
-    
+
     public void handle(Request req, Response res) {
 
         String repo = (String) req.getAttributes().get("repo");
