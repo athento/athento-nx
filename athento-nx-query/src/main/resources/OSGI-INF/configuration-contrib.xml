@@ -6,7 +6,7 @@
     </documentation>
 
     <extension target="org.nuxeo.runtime.ConfigurationService" point="configuration">
-        <property name="nuxeo.pageprovider.default-max-page-size">${athento.maxpagesize:=2000}</property>
+        <property name="nuxeo.pageprovider.default-max-page-size">${athento.maxpagesize:=100000}</property>
     </extension>
 
 </component>
