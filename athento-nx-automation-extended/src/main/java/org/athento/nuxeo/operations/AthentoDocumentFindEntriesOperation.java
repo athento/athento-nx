@@ -1,11 +1,11 @@
 package org.athento.nuxeo.operations;
 
+import net.sf.json.JSONArray;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.operations.exception.AthentoException;
 import org.athento.nuxeo.operations.security.AbstractAthentoOperation;
 import org.athento.nuxeo.operations.utils.AthentoOperationsHelper;
-import org.athento.utils.RegisterHelper;
 import org.athento.utils.SecurityUtil;
 import org.athento.utils.StringUtils;
 import org.nuxeo.ecm.automation.OperationContext;
@@ -16,10 +16,11 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.util.RecordSet;
 import org.nuxeo.ecm.automation.core.util.StringList;
+import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.runtime.api.Framework;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,18 +28,16 @@ import java.util.Map;
 /**
  * @author athento
  */
-@Operation(id = AthentoDocumentResultSetOperation.ID, category = "Athento", label = "Athento Document ResultSet", description = "ResultSets a document in Athento's way")
-public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation {
+@Operation(id = AthentoDocumentFindEntriesOperation.ID, category = "Athento", label = "Athento Document Find Entries", description = "Return a found entries")
+public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperation {
 
     /**
      * Log.
      */
-    private static final Log LOG = LogFactory.getLog(AthentoDocumentResultSetOperation.class);
+    private static final Log LOG = LogFactory.getLog(AthentoDocumentFindEntriesOperation.class);
 
-    public static final String ID = "Athento.Document.ResultSet";
+    public static final String ID = "Athento.DocumentFindEntries";
 
-    public static final String CONFIG_WATCHED_DOCTYPE = "automationExtendedConfig:documentResultSetWatchedDocumentTypes";
-    public static final String CONFIG_OPERATION_ID = "automationExtendedConfig:documentResultSetOperationId";
     public static final String DESC = "DESC";
 
     public static final String ASC = "ASC";
@@ -73,8 +72,8 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
 
     @Param(name = "sortOrder", required = false, description = "Sort order, "
             + "ASC or DESC", widget = Constants.W_OPTION, values = {
-            AthentoDocumentResultSetOperation.ASC,
-            AthentoDocumentResultSetOperation.DESC})
+            AthentoDocumentFindEntriesOperation.ASC,
+            AthentoDocumentFindEntriesOperation.DESC})
     protected String sortOrder;
 
     @Param(name = "fieldList", required = false)
@@ -86,13 +85,18 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
     @Param(name = "showCastingSource", required = false)
     protected boolean showCastingSource = false;
 
+    /**
+     * Return a stringify JSON into Blob.
+     *
+     * @return
+     * @throws Exception
+     */
     @OperationMethod
-    public RecordSet run() throws Exception {
+    public Blob run() throws Exception {
         // Check access
         checkAllowedAccess(ctx);
         // Get session from context
         session = ctx.getCoreSession();
-        ArrayList<String> docTypes = getDocumentTypesFromQuery();
         try {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Executing query " + query);
@@ -112,22 +116,8 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
                     modifiedQuery = SecurityUtil.decrypt(secret, query);
                 }
             }
-            Map<String, Object> config = AthentoOperationsHelper
-                    .readConfig(session);
-            String watchedDocumentTypes = String.valueOf(config
-                    .get(AthentoDocumentResultSetOperation.CONFIG_WATCHED_DOCTYPE));
-            String operationId = String.valueOf(config
-                    .get(AthentoDocumentResultSetOperation.CONFIG_OPERATION_ID));
-            if (isWatchedDocumentType(docTypes, watchedDocumentTypes)) {
-                Object input = null;
-                Map<String, Object> params = new HashMap<>();
-                params.put("query", query);
-                Object retValue = AthentoOperationsHelper.runOperation(
-                        operationId, input, params, session);
-                modifiedQuery = String.valueOf(retValue);
-            }
             Object input = null;
-            operationId = "Resultset.PageProvider";
+            String operationId = "Resultset.PageProvider";
             Map<String, Object> params = new HashMap<>();
             params.put("query", modifiedQuery);
             params.put("page", page);
@@ -142,14 +132,10 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
                     params.put("sortOrder", sortOrder);
                 }
             }
-            long startTime = System.currentTimeMillis();
             Object retValue = AthentoOperationsHelper.runOperation(operationId,
                     input, params, session);
             if (retValue instanceof RecordSet) {
-                long endTime = System.currentTimeMillis();
-                // Register an entry into queryRequest registry
-                RegisterHelper.registerQuery(modifiedQuery, session.getPrincipal().getName(), pageSize, page, startTime, endTime);
-                return (RecordSet) retValue;
+                return Blobs.createBlob(JSONArray.fromObject(retValue).toString(), "application/json");
             } else {
                 LOG.error("Unexpected return type for operation: "
                         + operationId);
@@ -158,7 +144,7 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
         } catch (Exception e) {
             LOG.error(
                     "Unable to complete operation: "
-                            + AthentoDocumentResultSetOperation.ID + " due to: "
+                            + AthentoDocumentFindEntriesOperation.ID + " due to: "
                             + e.getMessage(), e);
             if (e instanceof AthentoException) {
                 throw e;
@@ -167,41 +153,4 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
             throw exc;
         }
     }
-
-    private ArrayList<String> getDocumentTypesFromQuery() {
-        String upperQuery = query.toUpperCase();
-        try {
-            int idx1 = upperQuery.indexOf(StringUtils.FROM);
-            int idx2 = upperQuery.indexOf(StringUtils.WHERE);
-            String subquery;
-            if (idx2 > idx1) {
-                subquery = query.substring(idx1 + StringUtils.FROM.length(),
-                        idx2);
-            } else {
-                subquery = query.substring(idx1 + StringUtils.FROM.length());
-            }
-            subquery = subquery.trim();
-            return StringUtils.asList(subquery, StringUtils.COMMA);
-        } catch (Throwable t) {
-            LOG.error("Error looking for document Type in query: " + query, t);
-        }
-        return new ArrayList<>();
-    }
-
-    private boolean isWatchedDocumentType(ArrayList<String> docTypes,
-                                          String watchedDocumentTypes) {
-        if (StringUtils.isNullOrEmpty(watchedDocumentTypes)) {
-            return false;
-        }
-        boolean isIncluded = false;
-        for (String docType : docTypes) {
-            isIncluded = StringUtils.isIncludedIn(docType,
-                    watchedDocumentTypes, StringUtils.COMMA);
-            if (isIncluded) {
-                break;
-            }
-        }
-        return isIncluded;
-    }
-
 }
