@@ -1,15 +1,25 @@
 package org.athento.utils;
 
 import org.apache.commons.httpclient.util.DateUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.query.sql.NXQL;
 
-import java.util.GregorianCalendar;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Created by victorsanchez on 18/7/16.
+ * Document functions.
  */
 public final class DocumentFunctions {
+
+    /**
+     * Log.
+     */
+    private static final Log LOG = LogFactory.getLog(DocumentFunctions.class);
 
     /** Date format to export. */
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -60,9 +70,21 @@ public final class DocumentFunctions {
             }
         } else if (column.contains(":")) {
             Object value = doc.getPropertyValue(column);
+            if (value == null) {
+                return "";
+            }
+            LOG.info("VAlue " + value.getClass());
             if (value instanceof GregorianCalendar) {
                 return DateUtil.formatDate(((GregorianCalendar) value).getTime(), DATE_FORMAT);
+            } else if (value instanceof Collection) {
+                LOG.info("Coll");
+                Collection<Serializable> items = (Collection) value;
+                return items.stream().map(e -> e.toString()).reduce("|", String::concat);
+            } else if (value.getClass().isArray()) {
+                List<Serializable> values = Arrays.asList((Serializable[]) value);
+                return values.stream().map(item -> item.toString()).collect(Collectors.joining("|"));
             } else {
+                LOG.info("yea");
                 return value;
             }
         } else {

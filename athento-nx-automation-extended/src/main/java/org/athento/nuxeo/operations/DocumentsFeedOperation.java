@@ -97,7 +97,7 @@ public class DocumentsFeedOperation {
     }
 
     /**
-     * Spplit string to list.
+     * Split string to list.
      *
      * @param headers
      * @return
