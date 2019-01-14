@@ -73,18 +73,15 @@ public final class DocumentFunctions {
             if (value == null) {
                 return "";
             }
-            LOG.info("VAlue " + value.getClass());
             if (value instanceof GregorianCalendar) {
                 return DateUtil.formatDate(((GregorianCalendar) value).getTime(), DATE_FORMAT);
             } else if (value instanceof Collection) {
-                LOG.info("Coll");
                 Collection<Serializable> items = (Collection) value;
                 return items.stream().map(e -> e.toString()).reduce("|", String::concat);
             } else if (value.getClass().isArray()) {
                 List<Serializable> values = Arrays.asList((Serializable[]) value);
                 return values.stream().map(item -> item.toString()).collect(Collectors.joining("|"));
             } else {
-                LOG.info("yea");
                 return value;
             }
         } else {
