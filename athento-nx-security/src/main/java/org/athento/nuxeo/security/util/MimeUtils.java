@@ -41,7 +41,7 @@ public final class MimeUtils {
                                                             "application/vnd.oasis.opendocument.text," +
                                                             "application/vnd.oasis.opendocument.text-template," +
                                                             "audio/ogg, video/ogg, application/ogg, audio/wav" +
-                                                            "application/wordperfect, application/rtf," +
+                                                            "application/wordperfect, application/rtf, application/vnd.ms-outlook," +
                                                             "video/mpeg, video/quicktime, application/visio, audio/midi," +
                                                             "audio/mp3, image/gif, image/png, image/jpg, image/jpeg, image/tiff,"+
                                                             "application/pdf, application/x-gzip, application/csv, audio/aac, video/x-msvideo";
