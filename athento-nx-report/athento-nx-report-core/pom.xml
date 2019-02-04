@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.athento.nx</groupId>
 		<artifactId>athento-nx-report</artifactId>
-		<version>8.10-AT6-SNAPSHOT</version>
+		<version>8.10-AT7-SNAPSHOT</version>
 	</parent>
 	<artifactId>athento-nx-report-core</artifactId>
 	<name>Athento NX Reports - Core</name>
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.athento.nx</groupId>
 			<artifactId>athento-nx-report-api</artifactId>
-			<version>8.10-AT6-SNAPSHOT</version>
+			<version>8.10-AT7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.common</groupId>
