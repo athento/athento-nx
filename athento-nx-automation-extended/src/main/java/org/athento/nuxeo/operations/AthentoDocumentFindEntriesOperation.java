@@ -178,8 +178,9 @@ public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperatio
      */
     private String getQueryById(String queryId) {
         DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
+        Session dir = null;
         try {
-            Session dir = directoryService.open(QUERY_DIRECTORY_NAME);
+            dir = directoryService.open(QUERY_DIRECTORY_NAME);
             DocumentModel entry = dir.getEntry(queryId);
             if (entry == null) {
                 return null;
@@ -188,6 +189,10 @@ public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperatio
         } catch (DirectoryException e) {
             LOG.error("Unable to get query by id: " + queryId);
             return null;
+        } finally {
+            if (dir != null) {
+                dir.close();
+            }
         }
     }
 }
