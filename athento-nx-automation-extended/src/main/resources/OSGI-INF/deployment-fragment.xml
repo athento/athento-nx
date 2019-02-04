@@ -24,4 +24,17 @@
 		<delete path="${bundle.fileName}.tmp" />
 	</install>
 
+	<extension target="web#SERVLET">
+		<servlet>
+			<servlet-name>Athento Extended API Forward servlet</servlet-name>
+			<servlet-class>
+				org.athento.nuxeo.module.ExtendedServlet
+			</servlet-class>
+		</servlet>
+		<servlet-mapping>
+			<servlet-name>Athento Extended API Forward servlet</servlet-name>
+			<url-pattern>/api/athento/*</url-pattern>
+		</servlet-mapping>
+	</extension>
+
 </fragment>
