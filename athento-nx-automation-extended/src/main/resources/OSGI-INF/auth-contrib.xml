@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.automation-extended.auth.config">
+
+  <require>org.nuxeo.ecm.automation.server.auth.config</require>
+
+  <extension point="openUrl" target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService">
+    <openUrl name="AthentoRestApiDoc">
+      <grantPattern>/nuxeo/api/athento/v[0-9]+/doc/.*</grantPattern>
+    </openUrl>
+  </extension>
+
+  <extension
+      target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+      point="specificChains">
+
+    <specificAuthenticationChain name="AthentoRestAPI">
+        <urlPatterns>
+            <url>(.*)/api/athento/v.*</url>
+        </urlPatterns>
+
+        <replacementChain>
+            <plugin>AUTOMATION_BASIC_AUTH</plugin>
+            <plugin>TOKEN_AUTH</plugin>
+        </replacementChain>
+    </specificAuthenticationChain>
+
+  </extension>
+</component>

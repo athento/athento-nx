@@ -19,6 +19,10 @@ import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.directory.DirectoryException;
+import org.nuxeo.ecm.directory.Session;
+import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.runtime.api.Framework;
 
 import java.util.HashMap;
@@ -35,6 +39,8 @@ public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperatio
      * Log.
      */
     private static final Log LOG = LogFactory.getLog(AthentoDocumentFindEntriesOperation.class);
+
+    private static final String QUERY_DIRECTORY_NAME = "saved_queries";
 
     public static final String ID = "Athento.DocumentFindEntries";
 
@@ -53,6 +59,9 @@ public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperatio
 
     @Param(name = "query", required = false)
     protected String query;
+
+    @Param(name = "queryId", required = false)
+    protected String queryId;
 
     @Param(name = "maxResults", required = false)
     protected String maxResults = "20";
@@ -98,34 +107,41 @@ public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperatio
         // Get session from context
         session = ctx.getCoreSession();
         try {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Executing query " + query);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Executing query " + query);
             }
-            if (query != null) {
-                query = query.trim();
-            }
-            String modifiedQuery = query;
-            // Check if query is ciphered
-            if (query.startsWith("{cipher}")) {
-                String secret = Framework.getProperty("athento.cipher.secret", null);
-                if (secret != null) {
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info("Query is ready to decrypt...");
+            if (queryId != null) {
+                String tmpQuery = getQueryById(queryId);
+                if (tmpQuery != null) {
+                    query = tmpQuery;
+                }
+            } else {
+                if (query != null) {
+                    query = query.trim();
+                }
+                // Check if query is ciphered
+                if (query.startsWith("{cipher}")) {
+                    String secret = Framework.getProperty("athento.cipher.secret", null);
+                    if (secret != null) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Query is ready to decrypt...");
+                        }
+                        query = query.substring(8);
+                        query = SecurityUtil.decrypt(secret, query);
                     }
-                    query = query.substring(8);
-                    modifiedQuery = SecurityUtil.decrypt(secret, query);
                 }
             }
             Object input = null;
             String operationId = "Resultset.PageProvider";
             Map<String, Object> params = new HashMap<>();
-            params.put("query", modifiedQuery);
+            params.put("query", query);
             params.put("page", page);
             params.put("maxResults", maxResults);
             params.put("pageSize", pageSize);
             params.put("fieldList", fieldList);
             params.put("fieldComplex", fieldComplex);
             params.put("showCastingSource", showCastingSource);
+            params.put("providerName", providerName);
             if (!StringUtils.isNullOrEmpty(sortBy)) {
                 params.put("sortBy", sortBy);
                 if (!StringUtils.isNullOrEmpty(sortOrder)) {
@@ -151,6 +167,27 @@ public class AthentoDocumentFindEntriesOperation extends AbstractAthentoOperatio
             }
             AthentoException exc = new AthentoException(e.getMessage(), e);
             throw exc;
+        }
+    }
+
+    /**
+     * Get a query from a store-vocabulary given a query id.
+     *
+     * @param queryId is the query name
+     * @return a query or null if it does not exist
+     */
+    private String getQueryById(String queryId) {
+        DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
+        try {
+            Session dir = directoryService.open(QUERY_DIRECTORY_NAME);
+            DocumentModel entry = dir.getEntry(queryId);
+            if (entry == null) {
+                return null;
+            }
+            return (String) entry.getPropertyValue("vocabulary:label");
+        } catch (DirectoryException e) {
+            LOG.error("Unable to get query by id: " + queryId);
+            return null;
         }
     }
 }

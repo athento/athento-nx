@@ -5,6 +5,7 @@
 
     <marshaller>
       <writer>org.athento.nuxeo.api.writer.JsonBatchResultWriter</writer>
+      <writer>org.athento.nuxeo.api.writer.JsonEntryWriter</writer>
     </marshaller>
   </extension>
 
