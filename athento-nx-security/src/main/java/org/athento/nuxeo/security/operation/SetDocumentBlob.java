@@ -35,7 +35,7 @@ public class SetDocumentBlob {
 
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws Exception {
-        MimeUtils.checkMimeType(blob);
+        MimeUtils.checkMimeType(doc, blob);
         attachBlob(doc, blob);
         return doc;
     }

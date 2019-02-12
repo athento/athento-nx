@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.mimetypecontrol.formlayout-contrib"
+    version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+
+    <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager" point="layouts">
+        <layout name="layout@formlayout-mimetypescontrol">
+            <templates>
+                <template mode="any">/layouts/mimetypecontrol_widget_layout_template.xhtml
+                </template>
+            </templates>
+            <rows>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>mimetypeControlEnabled</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>allowedDoctypes</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>allowedMimetypes</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>allowEmptyMimetype</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>useExtractAndCheckMimetype</widget>
+                </row>
+            </rows>
+            <widget name="mimetypeControlEnabled" type="checkbox">
+                <labels>
+                    <label mode="any">label.mimetypecontrol.mimetypeControlEnabled
+                    </label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>mimetypes_extendedconfig:enabled</field>
+                </fields>
+            </widget>
+            <widget name="allowedDoctypes" type="text">
+                <labels>
+                    <label mode="any">label.mimetypecontrol.allowedDoctypes
+                    </label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>mimetypes_extendedconfig:allowedDoctypes</field>
+                </fields>
+            </widget>
+            <widget name="allowedMimetypes" type="text">
+                <labels>
+                    <label mode="any">label.mimetypecontrol.allowedMimetypes
+                    </label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>mimetypes_extendedconfig:allowedMimetypes</field>
+                </fields>
+            </widget>
+            <widget name="allowEmptyMimetype" type="checkbox">
+                <labels>
+                    <label mode="any">label.mimetypecontrol.useExtract
+                    </label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>mimetypes_extendedconfig:useExtract
+                    </field>
+                </fields>
+            </widget>
+            <widget name="useExtractAndCheckMimetype" type="checkbox">
+                <labels>
+                    <label mode="any">label.mimetypecontrol.allowEmptyMimetype
+                    </label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>mimetypes_extendedconfig:allowEmptyMimetype
+                    </field>
+                </fields>
+            </widget>
+        </layout>
+    </extension>
+</component>

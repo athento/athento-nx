@@ -4,8 +4,10 @@ package org.athento.nuxeo.security.listener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.security.api.MimetypeException;
+import org.athento.nuxeo.security.util.ConfigUtils;
 import org.athento.nuxeo.security.util.MimeUtils;
 import org.jboss.seam.faces.FacesMessages;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
@@ -35,16 +37,32 @@ public class DocumentSaveRestrictListener implements EventListener {
         if (ctx instanceof DocumentEventContext) {
             DocumentEventContext docCtx = (DocumentEventContext) ctx;
             DocumentModel doc = docCtx.getSourceDocument();
-            try {
-                MimeUtils.checkMimeType(doc);
-            } catch (MimetypeException e) {
-                LOG.error("Mimetype control exception", e);
-                String message = ComponentUtils.translate(FacesContext.getCurrentInstance(),
-                        "mimetype.error.notallowed");
-                FacesMessage fm = FacesMessages.createFacesMessage(FacesMessage.SEVERITY_ERROR, message);
-                FacesMessages.instance().add(fm);
-                throw e;
-            }
+            // Manage mimetype control
+            manageMimetype(doc, ctx.getCoreSession());
+        }
+    }
+
+    /**
+     * Manage mimetype control.
+     *
+     * @param doc is the document to check
+     * @param session is the core session
+     */
+    private void manageMimetype(DocumentModel doc, CoreSession session) {
+        //Check if mime control is enabled
+        boolean enabled = ConfigUtils.readConfigValue(session, "mimetypes_extendedconfig:enabled", true);
+        if (!enabled) {
+            return;
+        }
+        try {
+            MimeUtils.checkMimeType(doc);
+        } catch (MimetypeException e) {
+            LOG.error("Mimetype control exception", e);
+            String message = ComponentUtils.translate(FacesContext.getCurrentInstance(),
+                    "mimetype.error.notallowed");
+            FacesMessage fm = FacesMessages.createFacesMessage(FacesMessage.SEVERITY_ERROR, message);
+            FacesMessages.instance().add(fm);
+            throw e;
         }
     }
 

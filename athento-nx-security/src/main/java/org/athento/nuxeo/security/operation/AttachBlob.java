@@ -39,7 +39,7 @@ public class AttachBlob {
     public Blob run(Blob blob) throws Exception {
         Blob returnedValue;
         // will throw an Exception if is not allowed (if DocType and mimeType match)
-        MimeUtils.checkMimeType(blob);
+        MimeUtils.checkMimeType(doc, blob);
         returnedValue = attachBlob(blob);
         return returnedValue;
     }

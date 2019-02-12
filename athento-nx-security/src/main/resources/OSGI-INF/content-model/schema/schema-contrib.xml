@@ -18,6 +18,9 @@
 		<!-- Extends security to document-->
 		<schema name="athentosec" prefix="athentosec" src="data/schemas/extended_security.xsd" override="true"/>
 
+		<!-- Extended config -->
+		<schema name="mimetypes_extendedconfig" prefix="mimetypes_extendedconfig" src="data/schemas/mimetypes_extendedconfig.xsd" />
+
 	</extension>
 
 </component>

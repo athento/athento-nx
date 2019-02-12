@@ -46,7 +46,6 @@ public final class MimeUtils {
                                                             "audio/mp3, image/gif, image/png, image/jpg, image/jpeg, image/tiff,"+
                                                             "application/pdf, application/x-gzip, application/csv, audio/aac, video/x-msvideo";
 
-    private static final String PROPERTY_CHECK_ENABLED = "plugin.athento-nx-security-limit-file-upload-mime-types.enabled";
     private static final String PROPERTY_DOCUMENT_TYPES = "plugin.athento-nx-security-limit-file-upload-mime-types.documentTypesChecked";
     private static final String PROPERTY_MIMETYPES_ALLOWED = "plugin.athento-nx-security-limit-file-upload-mime-types.mimeTypesAllowed";
     private static final String XPATH_FILE_CONTENT = "file:content";
@@ -87,25 +86,62 @@ public final class MimeUtils {
         }
     }
 
-    public static List<String> getIncludedDocumentTypes() {
+    /**
+     * Get included document types.
+     *
+     * @param doc
+     * @return
+     */
+    public static List<String> getIncludedDocumentTypes(DocumentModel doc) {
+        // Getting allowed document types
+        String allowedDocumentTypes = ConfigUtils.readConfigValue(doc.getCoreSession(), "mimetypes_extendedconfig:allowedDoctypes", "");
+        if (!"".equals(allowedDocumentTypes)) {
+            includedDocumentTypes = Arrays.stream(allowedDocumentTypes.split(",")).map(String::trim).collect(Collectors.toList());
+        }
         return includedDocumentTypes;
     }
 
-    public static List<String> getMimeTypesAllowed() {
+    /**
+     * Get mimetypes allowed.
+     *
+     * @param doc
+     * @return
+     */
+    public static List<String> getMimeTypesAllowed(DocumentModel doc) {
+        // Getting allowed mimetypes
+        String allowedMimetypes = ConfigUtils.readConfigValue(doc.getCoreSession(), "mimetypes_extendedconfig:allowedMimetypes", "");
+        if (!"".equals(allowedMimetypes)) {
+            mimeTypesAllowed = Arrays.stream(allowedMimetypes.split(",")).map(String::trim).collect(Collectors.toList());
+        }
         return mimeTypesAllowed;
     }
 
+    /**
+     * Check mimetypes.
+     *
+     * @param doc
+     * @throws MimetypeException
+     */
     public static void checkMimeType(DocumentModel doc) throws MimetypeException {
         if (!doc.hasSchema("file")) {
             return;
         }
-        if (getIncludedDocumentTypes() == null) {
+        List<String> allowedDocumentTypes = getIncludedDocumentTypes(doc);
+        if (allowedDocumentTypes == null || allowedDocumentTypes.isEmpty()) {
+            LOG.debug("Included document types is undefined, no mimetypes checking executed.");
+            return;
+        }
+        if (getMimeTypesAllowed(doc) == null) {
+            LOG.debug("Included mimetypes, no checking executed.");
             return;
         }
         String documentType = doc.getDocumentType().getName();
+        if (LOG.isDebugEnabled()) {
+            LOG.info("Checking mimetype for doctype: " + documentType);
+        }
         if (isWatchedDocumentType(documentType)) {
             try {
-                checkMimeType((Blob) doc
+                checkMimeType(doc, (Blob) doc
                         .getPropertyValue(XPATH_FILE_CONTENT));
             }
             catch (MimetypeException e) {
@@ -120,7 +156,7 @@ public final class MimeUtils {
                 List<Map<String, Serializable>> files = (List<Map<String, Serializable>>) doc.getPropertyValue("files:files");
                 for (Map<String, Serializable> file : files) {
                     try {
-                        checkMimeType((Blob) file.get("file"));
+                        checkMimeType(doc, (Blob) file.get("file"));
                         validFiles.add(file);
                     } catch (MimetypeException e) {
                         LOG.warn("Removing mimetype in files for " + file.get("filename"));
@@ -135,36 +171,66 @@ public final class MimeUtils {
         }
     }
 
-    public static void checkMimeType(Blob blob) throws MimetypeException {
+    /**
+     * Check mimetype for a blob.
+     *
+     * @param doc is the document to check
+     * @param blob is the blob
+     * @throws MimetypeException when mimetype is not allowed
+     */
+    public static void checkMimeType(DocumentModel doc, Blob blob) throws MimetypeException {
         if (blob == null) {
             return;
         }
-        if (getMimeTypesAllowed() == null) {
-            return;
-        }
-        Boolean check = Boolean.valueOf(Framework.getProperty(PROPERTY_CHECK_ENABLED, "true"));
-        if (!check) {
-            return;
-        }
         boolean allowed;
-        // Extracting mimetype from blob to check it
-        String extractedMimetype = extractMimetype(blob.getFile());
-        LOG.info("Extracted " + extractedMimetype);
         String mimeType = blob.getMimeType();
-        if (extractedMimetype != null && !extractedMimetype.equals(mimeType)) {
-            throw new MimetypeException("Mimetype " + mimeType + " and extracted " + extractedMimetype + " are different.");
+        // Check if mimetype is empty
+        if (isEmpty(mimeType)) {
+            boolean emptyEnabled = ConfigUtils.readConfigValue(doc.getCoreSession(), "mimetypes_extendedconfig:allowEmptyMimetype", false);
+            if (emptyEnabled) {
+                if (LOG.isDebugEnabled())) {
+                    LOG.debug("Mimetype empty is enabled, blob is allowed.");
+                }
+                return;
+            }
+        }
+        boolean extractAndCompare = ConfigUtils.readConfigValue(doc.getCoreSession(), "mimetypes_extendedconfig:useExtract", false);
+        if (extractAndCompare) {
+            // Extracting mimetype from blob to check it
+            String extractedMimetype = extractMimetype(blob.getFile());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Mimetype extracted " + extractedMimetype);
+            }
+            if (extractedMimetype != null && !extractedMimetype.equals(mimeType)) {
+                throw new MimetypeException("Mimetype " + mimeType + " and extracted " + extractedMimetype + " are different.");
+            }
         }
         allowed = isMimeTypeAllowed(mimeType);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("This mimeType [" + mimeType + "] is allowed: " + allowed);
-        }
-        if (allowed) {
-            return;
-        } else {
+        if (!allowed) {
             throw new MimetypeException("This mimeType is NOT allowed: " + mimeType);
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("This mimetype " + mimeType + " is allowed");
+            }
         }
     }
 
+    /**
+     * Check if mimetype is empty (or null).
+     *
+     * @param mimeType to check
+     * @return
+     */
+    private static boolean isEmpty(String mimeType) {
+        return mimeType == null || "".equals(mimeType);
+    }
+
+    /**
+     * Extracting mimetype from file. Using Apache(c) Tika.
+     *
+     * @param file
+     * @return
+     */
     private static String extractMimetype(File file) {
         try {
             Tika tika = new Tika();
@@ -175,6 +241,12 @@ public final class MimeUtils {
         return null;
     }
 
+    /**
+     * Is watched documenttype.
+     *
+     * @param documentType
+     * @return
+     */
     private static boolean isWatchedDocumentType (String documentType) {
         if (includedDocumentTypes.isEmpty()) {
             // all documents are allowed
@@ -198,17 +270,17 @@ public final class MimeUtils {
         return false;
     }
 
+    /**
+     * Check if mimetype is allowed.
+     *
+     * @param mimeType
+     * @return
+     */
     private static boolean isMimeTypeAllowed (String mimeType) {
         for (String mt : mimeTypesAllowed) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("  mimeType allowed [" + mt + "]");
-            }
             if (mt.equalsIgnoreCase(mimeType)) {
                 return true;
             }
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(" NOT allowed mimeType [" + mimeType + "]");
         }
         return false;
     }
