@@ -188,7 +188,7 @@ public final class MimeUtils {
         if (isEmpty(mimeType)) {
             boolean emptyEnabled = ConfigUtils.readConfigValue(doc.getCoreSession(), "mimetypes_extendedconfig:allowEmptyMimetype", false);
             if (emptyEnabled) {
-                if (LOG.isDebugEnabled())) {
+                if (LOG.isDebugEnabled()) {
                     LOG.debug("Mimetype empty is enabled, blob is allowed.");
                 }
                 return;
