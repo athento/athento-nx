@@ -81,6 +81,17 @@ public class GetRequestOperation extends RequestOperation {
     /**
      * Run, get request call.
      *
+     * @return
+     * @throws RequestException
+     */
+    @OperationMethod
+    public String run() throws RequestException {
+        return run(null);
+    }
+
+    /**
+     * Run, get request call.
+     *
      * @param doc is the source document
      * @return get the request response
      * @throws RequestException on error
@@ -99,7 +110,7 @@ public class GetRequestOperation extends RequestOperation {
             // Execute request
             String response = executeRequest(callUrl);
             // Check to save
-            if (save) {
+            if (doc != null && save) {
                 if (xpath == null) {
                     LOG.warn("xpath value is mandatory to save request result into the document.");
                 } else {
