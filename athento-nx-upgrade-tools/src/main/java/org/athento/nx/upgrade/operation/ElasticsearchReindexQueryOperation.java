@@ -25,6 +25,8 @@ public class ElasticsearchReindexQueryOperation {
     /** Operation ID. */
     public static final String ID = "Athento.ReindexQuery";
 
+    public static final String WHERE_CLAUSE = " where ";
+
     /** Context. */
     @Context
     protected OperationContext ctx;
@@ -37,6 +39,11 @@ public class ElasticsearchReindexQueryOperation {
     public void run() {
         if (LOG.isInfoEnabled()) {
             LOG.info("Reindex with query " + query);
+        }
+        // Control from global query (reindex)
+        if (!query.toLowerCase().contains(WHERE_CLAUSE)) {
+            LOG.info("Ignore reindex operation with query: " + query);
+            return;
         }
         ElasticSearchIndexing esi = Framework.getService(ElasticSearchIndexing.class);
         esi.runReindexingWorker("default", query);
