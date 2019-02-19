@@ -287,12 +287,16 @@ public class DynamicACLServiceImpl extends DefaultComponent implements DynamicAC
     private Object getExpressionValue(String expr, Map<String, Object> params) {
         if (expr.startsWith("expr:")) {
             expr = expr.substring(5);
-            if (expr.contains("@{")) {
-                MvelTemplate mvel = new MvelTemplate(expr);
-                return mvel.eval(params);
-            } else {
-                MvelExpression mvel = new MvelExpression(expr);
-                return mvel.eval(params);
+            try {
+                if (expr.contains("@{")) {
+                    MvelTemplate mvel = new MvelTemplate(expr);
+                    return mvel.eval(params);
+                } else {
+                    MvelExpression mvel = new MvelExpression(expr);
+                    return mvel.eval(params);
+                }
+            } catch (Exception e) {
+                return null;
             }
         } else {
             return expr;

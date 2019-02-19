@@ -23,9 +23,18 @@ import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.collectors.BlobCollector;
 import org.nuxeo.ecm.automation.core.operations.blob.AttachBlob;
 import org.nuxeo.ecm.automation.core.util.DocumentHelper;
+import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.event.Event;
+import org.nuxeo.ecm.core.event.EventProducer;
+import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.runtime.api.Framework;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Override Blob.Attach filling file:filename metadata.
@@ -37,6 +46,8 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
     private static final Log LOG = LogFactory.getLog(AthentoAttachBlobOperation.class);
 
     public static final String ID = "Blob.Attach";
+
+    public static final String BLOB_ATTACH_EVENT = "blobAttachEvent";
 
     private static final String FILENAME_FIELD = "file:filename";
     private static final String CONTENT_FIELD = "file:content";
@@ -57,21 +68,42 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
     @Param(name = "save", required = false, values = "true")
     protected boolean save = true;
 
+    @Param(name = "properties", required = false, description = "Properties for the event context raised")
+    protected Properties properties;
+
     @OperationMethod(collector = BlobCollector.class)
     public Blob run(Blob blob) throws Exception {
         // Check access
         checkAllowedAccess(ctx);
         DocumentHelper.addBlob(doc.getProperty(xpath), blob);
         if (save) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Attaching Blob " + blob.getFilename() + " into " + doc.getId());
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Attaching Blob " + blob.getFilename() +
+                        " into " + doc.getId() +
+                        ", properties: " + properties);
             }
+            // Fire event before update xpath
+            fireEvent(blob);
             if (FILENAME_FIELD.equals(xpath)) {
                 doc.setPropertyValue(FILENAME_FIELD, blob.getFilename());
             }
             doc = session.saveDocument(doc);
         }
         return blob;
+    }
+
+    /**
+     * Fire event before attach for xpath.
+     *
+     * @param blob is the blob to attach
+     */
+    private void fireEvent(Blob blob) {
+        DocumentEventContext envContext = new DocumentEventContext(session, session.getPrincipal(), doc);
+        Event event = envContext.newEvent(BLOB_ATTACH_EVENT);
+        envContext.getProperties().put("xpath", xpath);
+        envContext.getProperties().put("blob", (Serializable) blob);
+        envContext.getProperties().putAll(properties);
+        Framework.getLocalService(EventProducer.class).fireEvent(event);
     }
 
 }
