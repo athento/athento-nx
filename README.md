@@ -1,3 +1,7 @@
 # Athento ECM Plugins
 
-This is a list of addons with funcs in Nuxeo
+# Release notes
+
+## 8.10-AT9
+
+- Fix authentication chain for NXDrive.
