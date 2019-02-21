@@ -47,6 +47,7 @@ public class WorkflowChangeListener implements EventListener {
                 if (task == null) {
                     return;
                 }
+                LOG.info("Executing workflow change listener...");
                 CoreSession session = event.getContext().getCoreSession();
                 // Notifications
                 Map<String, Serializable> properties = event.getContext().getProperties();

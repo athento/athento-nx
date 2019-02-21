@@ -55,6 +55,7 @@ public class UpdateDocumentWorkflowListener implements EventListener {
                 }
                 DocumentModel selectedRoute = WorkflowUtils.getRouteModelForDocument(document, session);
                 if (selectedRoute != null) {
+                    LOG.info("Selected route executing: " + selectedRoute.getId());
                     // Get current task document
                     final DocumentModelList taskDocuments = WorkflowUtils.getTaskDocuments(session, document, "opened");
                     if (taskDocuments.isEmpty()) {

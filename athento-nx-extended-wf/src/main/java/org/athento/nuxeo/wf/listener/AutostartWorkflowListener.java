@@ -48,6 +48,7 @@ public class AutostartWorkflowListener implements EventListener {
             if (event.getContext() instanceof DocumentEventContext) {
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
                 if (document.hasFacet("autoinitiable")) {
+                    LOG.info("Autostart workflow executing...");
                     // Start workflow (without Seam events threw)
                     DocumentModel selectedRoute = getFirstAutostartRouteModelForDocument(document, event.getContext().getCoreSession());
                     if (selectedRoute != null) {

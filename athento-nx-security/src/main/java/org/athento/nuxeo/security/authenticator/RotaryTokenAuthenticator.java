@@ -75,7 +75,6 @@ public class RotaryTokenAuthenticator implements NuxeoAuthenticationPlugin {
             return null;
         }
 
-
         token = getToken(userName, app, device);
         if (token == null) {
             LOG.info(String.format(
