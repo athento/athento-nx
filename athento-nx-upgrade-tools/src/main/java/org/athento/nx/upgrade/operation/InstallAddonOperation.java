@@ -2,7 +2,6 @@ package org.athento.nx.upgrade.operation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.athento.nx.upgrade.worker.UpgradePermissionWorker;
 import org.nuxeo.connect.update.LocalPackage;
 import org.nuxeo.connect.update.PackageException;
 import org.nuxeo.connect.update.PackageUpdateService;
@@ -15,9 +14,6 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.work.api.WorkManager;
-import org.nuxeo.runtime.api.Framework;
 
 import java.io.File;
 import java.util.HashMap;

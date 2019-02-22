@@ -1,12 +1,5 @@
 package org.athento.nuxeo.report.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.report.api.ReportManager;
@@ -16,6 +9,9 @@ import org.athento.nuxeo.report.api.model.ReportEngine;
 import org.athento.nuxeo.report.api.xpoint.OutputDescriptor;
 import org.athento.nuxeo.report.api.xpoint.ReportDescriptor;
 import org.athento.nuxeo.report.api.xpoint.ReportEngineDescriptor;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Report Manager implementation is an adapter for ReportService.

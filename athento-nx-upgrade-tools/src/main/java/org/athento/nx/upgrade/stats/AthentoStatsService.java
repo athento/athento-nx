@@ -2,8 +2,6 @@ package org.athento.nx.upgrade.stats;
 
 import org.nuxeo.ecm.core.api.CoreSession;
 
-import java.security.Principal;
-
 /**
  * Athento Stats Service.
  */

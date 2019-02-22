@@ -5,22 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
-import org.nuxeo.ecm.automation.core.annotations.Param;
-import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.model.Property;
 import org.nuxeo.ecm.core.api.model.impl.AbstractProperty;
-import org.nuxeo.ecm.core.api.model.impl.ComplexProperty;
-import org.nuxeo.ecm.core.api.model.impl.ScalarProperty;
-import org.nuxeo.ecm.core.storage.sql.RepositoryDescriptor;
-import org.nuxeo.ecm.core.storage.sql.coremodel.SQLRepositoryService;
-import org.nuxeo.ecm.core.storage.sql.ra.ConnectionFactoryImpl;
-import org.nuxeo.ecm.core.storage.sql.ra.ManagedConnectionFactoryImpl;
-import org.nuxeo.runtime.api.Framework;
-
-import javax.resource.ResourceException;
 
 /**
  * Recalculate thumbnails.

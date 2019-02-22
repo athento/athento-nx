@@ -5,10 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.athento.nx.upgrade.api.DocumentInfo;
 import org.athento.nx.upgrade.util.UpgradeUtils;
 import org.nuxeo.ecm.automation.core.util.PaginableRecordSet;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.CoreSession;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**

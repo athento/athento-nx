@@ -1,13 +1,11 @@
 package org.athento.nuxeo.report.plugin;
 
-import java.io.Serializable;
-import java.util.Map;
-
 import net.sf.jasperreports.engine.JasperReport;
-
 import org.athento.nuxeo.report.api.model.DataSource;
 import org.athento.nuxeo.report.api.model.Report;
 import org.athento.nuxeo.report.api.xpoint.ReportDescriptor;
+
+import java.util.Map;
 
 /**
  * JasperReport definition.

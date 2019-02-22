@@ -3,14 +3,13 @@ package org.athento.nx.upgrade.stats;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nx.upgrade.api.DiskInfo;
-import org.athento.nx.upgrade.api.DocumentInfo;
-import org.athento.nx.upgrade.api.UsersInfo;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.IterableQueryResult;
 import org.nuxeo.runtime.api.Framework;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileStore;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Disk stats.

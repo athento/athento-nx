@@ -1,12 +1,12 @@
 package org.athento.nuxeo.report.api.event;
 
-import java.security.Principal;
-
 import org.athento.nuxeo.report.api.model.Report;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.event.impl.EventContextImpl;
+
+import java.security.Principal;
 
 /**
  * Report event context.

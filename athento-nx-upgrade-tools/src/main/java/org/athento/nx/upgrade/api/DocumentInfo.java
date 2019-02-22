@@ -1,7 +1,5 @@
 package org.athento.nx.upgrade.api;
 
-import java.io.Serializable;
-
 /**
  * Document information class.
  */

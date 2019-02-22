@@ -6,17 +6,12 @@ package org.athento.nuxeo.worker;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.operations.InheritMetadataFromParentOperation;
-import org.athento.nuxeo.operations.InheritMetadataOperation;
-import org.athento.nuxeo.utils.InheritUtil;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.work.AbstractWork;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Propagate metadata from parent worker.

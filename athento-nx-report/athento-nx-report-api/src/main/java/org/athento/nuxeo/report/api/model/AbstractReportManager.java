@@ -1,9 +1,9 @@
 package org.athento.nuxeo.report.api.model;
 
+import org.athento.nuxeo.report.api.ReportException;
+
 import java.io.Serializable;
 import java.util.Map;
-
-import org.athento.nuxeo.report.api.ReportException;
 
 /**
  * Abstract report manager.

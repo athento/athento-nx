@@ -1,7 +1,6 @@
 package org.athento.nuxeo.report.api.model;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Map Report data.

@@ -1,11 +1,11 @@
 package org.athento.nuxeo.report.api.model;
 
+import org.athento.nuxeo.report.api.xpoint.ReportDescriptor;
+
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.athento.nuxeo.report.api.xpoint.ReportDescriptor;
 
 /**
  * Default report.

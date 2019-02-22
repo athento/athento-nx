@@ -10,8 +10,6 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.runtime.api.Framework;
 
-import java.security.Principal;
-
 /**
  * Reindex stat.
  */

@@ -3,11 +3,12 @@
  */
 package org.athento.nuxeo.validator;
 
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.sun.faces.component.visit.FullVisitContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.*;
+import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -19,17 +20,11 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.xml.bind.ValidationException;
-
-import com.sun.faces.component.visit.FullVisitContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author athento

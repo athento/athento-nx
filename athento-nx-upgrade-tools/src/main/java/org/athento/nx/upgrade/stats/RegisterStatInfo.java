@@ -3,7 +3,6 @@ package org.athento.nx.upgrade.stats;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nx.upgrade.api.GenericInfo;
-import sun.net.www.content.text.Generic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
