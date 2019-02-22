@@ -137,7 +137,7 @@ public final class MimeUtils {
         }
         String documentType = doc.getDocumentType().getName();
         if (LOG.isDebugEnabled()) {
-            LOG.info("Checking mimetype for doctype: " + documentType);
+            LOG.debug("Checking mimetype for doctype: " + documentType);
         }
         if (isWatchedDocumentType(documentType)) {
             try {

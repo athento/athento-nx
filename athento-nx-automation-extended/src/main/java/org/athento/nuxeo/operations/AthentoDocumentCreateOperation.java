@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.operations.exception.AthentoException;
 import org.athento.nuxeo.operations.security.AbstractAthentoOperation;
 import org.athento.nuxeo.operations.utils.AthentoOperationsHelper;
+import org.athento.nuxeo.operations.utils.ExternalContentHelper;
 import org.athento.nuxeo.report.api.ReportException;
 import org.athento.nuxeo.report.api.ReportManager;
 import org.athento.nuxeo.report.api.model.OutputReport;
@@ -321,27 +322,22 @@ public class AthentoDocumentCreateOperation extends AbstractAthentoOperation {
     private void addContent(DocumentModel newDoc) {
         // Check external Content
         if (externalContent != null) {
-            if (externalContent.startsWith("sftp:") || externalContent.startsWith("ftp:")) {
-                // Connect to SFTP Server to get content
-                try {
-                    boolean remove = FTPUtils.checkRemoveRemoteFile(externalContent);
-                    String remoteFilePath = FTPUtils.getRemoteFilePath(externalContent);
-                    File remoteFile = FTPUtils.getFile(remoteFilePath, remove);
-                    if (remoteFile != null) {
-                        blob = new FileBlob(remoteFile);
-                        blob.setFilename(remoteFile.getName());
-                        // Add dc:source metadata
-                        if (!FTPUtils.hasPassword(externalContent)) {
-                            newDoc.setPropertyValue("dc:source", "Content from " + externalContent);
-                        } else {
-                            newDoc.setPropertyValue("dc:source", "Content from sftp");
-                        }
+            if (externalContent.startsWith("sftp://") || externalContent.startsWith("ftp://")) {
+                blob = ExternalContentHelper.addContentFromSFTP(externalContent);
+                if (blob != null) {
+                    // Add dc:source metadata
+                    if (!FTPUtils.hasPassword(externalContent)) {
+                        newDoc.setPropertyValue("dc:source", "Content from " + externalContent);
+                    } else {
+                        newDoc.setPropertyValue("dc:source", "Content from sftp");
                     }
-                } catch (FTPException e) {
-                    LOG.error("Unable to set blob from external content SFTP", e);
+                }
+            } else if (externalContent.startsWith("file://")) {
+                blob = ExternalContentHelper.addContentFromURI(externalContent);
+                if (blob != null) {
+                    newDoc.setPropertyValue("dc:source", "Content from uri: " + externalContent);
                 }
             }
-            // TODO: Include other external content implementations
         }
         // Check if document must have the blob #AT-1066
         if (blob != null) {

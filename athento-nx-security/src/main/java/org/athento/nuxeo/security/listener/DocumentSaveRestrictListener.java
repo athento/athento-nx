@@ -58,10 +58,12 @@ public class DocumentSaveRestrictListener implements EventListener {
             MimeUtils.checkMimeType(doc);
         } catch (MimetypeException e) {
             LOG.error("Mimetype control exception", e);
-            String message = ComponentUtils.translate(FacesContext.getCurrentInstance(),
-                    "mimetype.error.notallowed");
-            FacesMessage fm = FacesMessages.createFacesMessage(FacesMessage.SEVERITY_ERROR, message);
-            FacesMessages.instance().add(fm);
+            if (FacesContext.getCurrentInstance() != null) {
+                String message = ComponentUtils.translate(FacesContext.getCurrentInstance(),
+                        "mimetype.error.notallowed");
+                FacesMessage fm = FacesMessages.createFacesMessage(FacesMessage.SEVERITY_ERROR, message);
+                FacesMessages.instance().add(fm);
+            }
             throw e;
         }
     }
