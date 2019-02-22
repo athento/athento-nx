@@ -1,10 +1,10 @@
 package org.athento.nuxeo.report.plugin.datasource;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.athento.nuxeo.report.api.model.BasicReportData;
 import org.athento.nuxeo.report.api.model.DefaultDataSource;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Bean list datasource.

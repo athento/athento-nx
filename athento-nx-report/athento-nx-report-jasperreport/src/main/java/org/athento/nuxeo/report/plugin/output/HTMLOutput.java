@@ -1,17 +1,7 @@
 package org.athento.nuxeo.report.plugin.output;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +11,15 @@ import org.athento.nuxeo.report.api.model.OutputReport;
 import org.athento.nuxeo.report.api.model.Report;
 import org.athento.nuxeo.report.plugin.JRReport;
 import org.nuxeo.runtime.api.Framework;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * HTML output definition.

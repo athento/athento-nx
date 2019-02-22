@@ -1,14 +1,14 @@
 package org.athento.nuxeo.report.test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.athento.nuxeo.report.api.ReportException;
 import org.athento.nuxeo.report.api.model.BasicReportData;
 import org.athento.nuxeo.report.api.model.Report;
 import org.athento.nuxeo.report.api.model.ReportHandler;
 import org.athento.nuxeo.report.plugin.datasource.BeanListDatasource;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Sample Report Handler.

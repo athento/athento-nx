@@ -5,7 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.operations.utils.AthentoOperationsHelper;
 import org.nuxeo.ecm.automation.OperationException;
-import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.automation.server.jaxrs.RestOperationException;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.platform.query.api.PageProviderService;

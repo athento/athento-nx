@@ -1,10 +1,8 @@
 <c:if test="true"
       xmlns:nxu="http://nuxeo.org/nxweb/util"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:nxl="http://nuxeo.org/nxforms/layout"
-      xmlns:a4j="http://richfaces.org/a4j">
+>
  <nxu:set var="routeIdName" value="#{relatedRoute.document.id.split('-')[0]}" cache="true">
     <script type="text/javascript">
         <h:outputText value="var currentLang='#{restHelper.getLocaleString()}';"/>
