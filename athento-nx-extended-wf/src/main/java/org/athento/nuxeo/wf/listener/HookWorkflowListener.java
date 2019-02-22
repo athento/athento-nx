@@ -45,7 +45,6 @@ public class HookWorkflowListener implements NotificationListenerHook {
     @Override
     public void handleNotifications(Event event) throws ClientException {
         if (event != null && event.getContext() instanceof DocumentEventContext) {
-            LOG.info("Notification Hook executing...");
             DocumentModel doc = ((DocumentEventContext) event.getContext()).getSourceDocument();
             Map<String, Serializable> properties = event.getContext().getProperties();
             Object recipientProperty = properties.get(NotificationConstants.RECIPIENTS_KEY);
