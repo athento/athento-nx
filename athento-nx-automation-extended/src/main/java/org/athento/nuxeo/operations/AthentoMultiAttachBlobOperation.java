@@ -26,7 +26,6 @@ import org.nuxeo.ecm.automation.core.collectors.BlobListCollector;
 import org.nuxeo.ecm.automation.core.util.BlobList;
 import org.nuxeo.ecm.core.api.*;
 
-import javax.swing.text.Document;
 import java.util.*;
 
 /**

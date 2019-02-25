@@ -23,7 +23,6 @@ import org.restlet.representation.OutputRepresentation;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
