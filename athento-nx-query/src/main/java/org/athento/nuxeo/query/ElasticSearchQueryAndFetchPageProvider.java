@@ -2,6 +2,7 @@ package org.athento.nuxeo.query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.platform.query.api.*;
 import org.nuxeo.ecm.platform.query.nxql.NXQLQueryBuilder;
@@ -51,7 +52,7 @@ public class ElasticSearchQueryAndFetchPageProvider extends AbstractPageProvider
                 buildQuery();
             }
             if (query == null) {
-                throw new ClientRuntimeException(String.format("Cannot perform null Elastic query: check provider '%s'",
+                throw new NuxeoException(String.format("Cannot perform null Elastic query: check provider '%s'",
                         getName()));
             }
 
@@ -60,7 +61,7 @@ public class ElasticSearchQueryAndFetchPageProvider extends AbstractPageProvider
             Map<String, Serializable> props = getProperties();
             CoreSession coreSession = (CoreSession) props.get(CORE_SESSION_PROPERTY);
             if (coreSession == null) {
-                throw new ClientRuntimeException("cannot find core session");
+                throw new NuxeoException("cannot find core session");
             }
 
             IterableQueryResult result = null;
@@ -75,19 +76,14 @@ public class ElasticSearchQueryAndFetchPageProvider extends AbstractPageProvider
                 }
                 // Build and execute the ES query
                 ElasticSearchService ess = Framework.getLocalService(ElasticSearchService.class);
-                try {
-                    NxQueryBuilder nxQuery = new NxQueryBuilder(getCoreSession()).nxql(query).offset(
-                            (int) getCurrentPageOffset()).limit((int) getMinMaxPageSize()).addAggregates(buildAggregates());
-                    if (searchOnAllRepositories()) {
-                        nxQuery.searchOnAllRepositories();
-                    }
-                    EsResult ret = ess.queryAndAggregate(nxQuery);
-                    if (!nxQuery.returnsDocuments()) {
-                        result = ret.getRows();
-                    }
-
-                } catch (ClientException e) {
-                    throw new ClientRuntimeException(e);
+                NxQueryBuilder nxQuery = new NxQueryBuilder(getCoreSession()).nxql(query).offset(
+                        (int) getCurrentPageOffset()).limit((int) getMinMaxPageSize()).addAggregates(buildAggregates());
+                if (searchOnAllRepositories()) {
+                    nxQuery.searchOnAllRepositories();
+                }
+                EsResult ret = ess.queryAndAggregate(nxQuery);
+                if (!nxQuery.returnsDocuments()) {
+                    result = ret.getRows();
                 }
 
                 if (result == null) {
@@ -144,7 +140,7 @@ public class ElasticSearchQueryAndFetchPageProvider extends AbstractPageProvider
                     }
                 }
 
-            } catch (ClientException e) {
+            } catch (NuxeoException e) {
                 errorMessage = e.getMessage();
                 error = e;
                 log.warn(e.getMessage(), e);
@@ -161,14 +157,14 @@ public class ElasticSearchQueryAndFetchPageProvider extends AbstractPageProvider
         Map<String, Serializable> props = getProperties();
         CoreSession coreSession = (CoreSession) props.get(CORE_SESSION_PROPERTY);
         if (coreSession == null) {
-            throw new ClientRuntimeException("cannot find core session");
+            throw new NuxeoException("cannot find core session");
         }
         return coreSession;
     }
 
-    private List<AggregateEsBase<? extends Bucket>> buildAggregates() {
+    private List<AggregateEsBase<? extends Aggregation, ? extends Bucket>> buildAggregates() {
         List<AggregateDefinition> aggregateDefinitions = getAggregateDefinitions();
-        ArrayList<AggregateEsBase<? extends Bucket>> ret = null;
+        ArrayList<AggregateEsBase<? extends Aggregation, ? extends Bucket>> ret;
         if (aggregateDefinitions != null) {
             ret = new ArrayList<>(
                     getAggregateDefinitions().size());
@@ -195,26 +191,25 @@ public class ElasticSearchQueryAndFetchPageProvider extends AbstractPageProvider
         }
     }
 
+    /**
+     * Build query.
+     */
     protected void buildQuery() {
-        try {
-            PageProviderDefinition def = getDefinition();
-            String originalQuery = def.getPattern();
+        PageProviderDefinition def = getDefinition();
+        String originalQuery = def.getPattern();
 
-            SortInfo[] sortArray = null;
-            if (sortInfos != null) {
-                sortArray = sortInfos.toArray(new SortInfo[] {});
-            }
-            String newQuery = NXQLQueryBuilder.getQuery(originalQuery, getParameters(),
-                    def.getQuotePatternParameters(), def.getEscapePatternParameters(), getSearchDocumentModel(),
-                    sortArray);
-
-            if (query != null && newQuery != null && !newQuery.equals(query)) {
-                refresh();
-            }
-            query = newQuery;
-        } catch (ClientException e) {
-            throw new ClientRuntimeException(e);
+        SortInfo[] sortArray = null;
+        if (sortInfos != null) {
+            sortArray = sortInfos.toArray(new SortInfo[] {});
         }
+        String newQuery = NXQLQueryBuilder.getQuery(originalQuery, getParameters(),
+                def.getQuotePatternParameters(), def.getEscapePatternParameters(), getSearchDocumentModel(),
+                sortArray);
+
+        if (query != null && newQuery != null && !newQuery.equals(query)) {
+            refresh();
+        }
+        query = newQuery;
     }
 
     @Override

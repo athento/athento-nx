@@ -1,5 +1,6 @@
 package org.athento.nuxeo.report.core.datasource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.report.api.ReportException;
@@ -7,7 +8,6 @@ import org.athento.nuxeo.report.api.model.KeyValueReportData;
 import org.athento.nuxeo.report.api.model.MapReportData;
 import org.athento.nuxeo.report.api.model.Report;
 import org.athento.nuxeo.report.api.model.ReportHandler;
-import org.nuxeo.common.utils.StringUtils;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 

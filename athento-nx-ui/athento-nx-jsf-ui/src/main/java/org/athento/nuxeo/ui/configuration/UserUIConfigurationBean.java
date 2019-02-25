@@ -7,6 +7,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.nuxeo.ecm.core.api.CloseableCoreSession;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.platform.contentview.jsf.ContentView;
@@ -39,7 +40,7 @@ public class UserUIConfigurationBean implements UserUIConfigurationAction, Seria
      * Document manager.
      */
     @In(create = true, required = false)
-    protected transient CoreSession documentManager;
+    protected transient CloseableCoreSession documentManager;
 
     @In(create = true)
     protected transient ContentViewActions contentViewActions;

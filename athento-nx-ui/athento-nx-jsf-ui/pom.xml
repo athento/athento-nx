@@ -105,11 +105,7 @@
             <artifactId>nuxeo-platform-htmlsanitizer</artifactId>
         </dependency>
         <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.restlet</groupId>
+            <groupId>org.restlet.jse</groupId>
             <artifactId>org.restlet</artifactId>
         </dependency>
         <dependency>

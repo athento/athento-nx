@@ -1,6 +1,5 @@
 package org.athento.utils;
 
-import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -66,7 +65,7 @@ public final class DocumentFunctions {
             }
         } else if (NXQL.ECM_LOCK_CREATED.equals(column)) {
             if (doc.isLocked()) {
-                return DateUtil.formatDate(doc.getLockInfo().getCreated().getTime(), DATE_FORMAT);
+                return DateUtils.formatDate(doc.getLockInfo().getCreated().getTime(), DATE_FORMAT);
             } else {
                 return "Unlocked";
             }
@@ -76,7 +75,7 @@ public final class DocumentFunctions {
                 return "";
             }
             if (value instanceof GregorianCalendar) {
-                return DateUtil.formatDate(((GregorianCalendar) value).getTime(), DATE_FORMAT);
+                return DateUtils.formatDate(((GregorianCalendar) value).getTime(), DATE_FORMAT);
             } else if (value instanceof Collection) {
                 Collection<Serializable> items = (Collection) value;
                 return items.stream().map(e -> e.toString()).reduce("|", String::concat);

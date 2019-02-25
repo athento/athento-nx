@@ -4,8 +4,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.utils.StringUtils;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.PropertyException;
 import org.nuxeo.ecm.core.api.model.PropertyNotFoundException;
 import org.nuxeo.ecm.directory.BaseSession;
 import org.nuxeo.ecm.directory.Session;
@@ -53,7 +54,7 @@ public class AutomationRegistryServiceImpl implements AutomationRegistryService 
         try {
             lc = Framework.login();
             } catch (LoginException e) {
-                throw new ClientException("Cannot log in as system user", e);
+                throw new NuxeoException("Cannot log in as system user", e);
             }
             try {
                 // Create entry into session for directory {@link AutomationRegistryServiceImpl.DIRECTORY_NAME}
@@ -81,7 +82,7 @@ public class AutomationRegistryServiceImpl implements AutomationRegistryService 
                     lc.logout();
                 }
             } catch (LoginException e) {
-                throw new ClientException("Cannot log out system user", e);
+                throw new NuxeoException("Cannot log out system user", e);
             }
         }
     }
@@ -101,9 +102,9 @@ public class AutomationRegistryServiceImpl implements AutomationRegistryService 
      *
      * @param directoryService
      * @return
-     * @throws ClientException
+     * @throws PropertyException on getting error
      */
-    protected DocumentModel getEntryFromQueryRequest(DirectoryService directoryService) throws ClientException {
+    protected DocumentModel getEntryFromQueryRequest(DirectoryService directoryService) throws PropertyException {
         String directorySchema = directoryService.getDirectorySchema(DIRECTORY_NAME);
         return BaseSession.createEntryModel(null, directorySchema, null, null);
     }

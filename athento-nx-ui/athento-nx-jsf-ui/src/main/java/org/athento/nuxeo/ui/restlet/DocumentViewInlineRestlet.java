@@ -1,5 +1,6 @@
 package org.athento.nuxeo.ui.restlet;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.ui.util.Utils;
@@ -7,7 +8,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -16,9 +16,9 @@ import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseNuxeoRestlet;
 import org.nuxeo.ecm.platform.util.RepositoryLocation;
 import org.nuxeo.runtime.api.Framework;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.OutputRepresentation;
+import org.restlet.Request;
+import org.restlet.Response;
+import org.restlet.representation.OutputRepresentation;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletResponse;
@@ -118,9 +118,7 @@ public class DocumentViewInlineRestlet extends BaseNuxeoRestlet {
             res.setEntity(new OutputRepresentation(null) {
                 @Override
                 public void write(OutputStream outputStream) throws IOException {
-                    FileInputStream instream = new FileInputStream(tempfile);
-                    FileUtils.copy(instream, outputStream);
-                    instream.close();
+                    FileUtils.copyFile(tempfile, outputStream);
                 }
             });
             HttpServletResponse response = getHttpResponse(res);

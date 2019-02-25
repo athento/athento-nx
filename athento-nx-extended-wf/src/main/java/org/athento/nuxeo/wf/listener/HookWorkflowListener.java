@@ -3,7 +3,6 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoGroup;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
@@ -40,10 +39,9 @@ public class HookWorkflowListener implements NotificationListenerHook {
      * Handle notification.
      *
      * @param event
-     * @throws Exception
      */
     @Override
-    public void handleNotifications(Event event) throws ClientException {
+    public void handleNotifications(Event event) {
         if (event != null && event.getContext() instanceof DocumentEventContext) {
             DocumentModel doc = ((DocumentEventContext) event.getContext()).getSourceDocument();
             Map<String, Serializable> properties = event.getContext().getProperties();
@@ -97,10 +95,8 @@ public class HookWorkflowListener implements NotificationListenerHook {
      *
      * @param groupId
      * @return
-     * @throws ClientException
      */
-    protected List<String> getGroupMembers(String groupId)
-            throws ClientException {
+    protected List<String> getGroupMembers(String groupId) {
         return getUserManager().getUsersInGroupAndSubGroups(groupId);
     }
 

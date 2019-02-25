@@ -11,7 +11,7 @@
 					  version="${athento.platform.version}" />
 			<artifact group="org.athento.nx" name="athento-nx-metadata-inheritance"
 					  version="${athento.platform.version}" />
-			<artifact group="org.athento.nx" name="athento-nx-ui"
+			<artifact group="org.athento.nx" name="athento-nx-web-ui"
 					  version="${athento.platform.version}" />
 			<artifact group="org.athento.nx" name="athento-nx-upgrade-tools"
 					  version="${athento.platform.version}" />

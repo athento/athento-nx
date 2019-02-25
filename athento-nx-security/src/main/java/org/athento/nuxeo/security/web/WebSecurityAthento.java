@@ -3,8 +3,8 @@ package org.athento.nuxeo.security.web;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.security.api.*;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.ecm.webengine.forms.FormData;
 import org.nuxeo.ecm.webengine.model.Template;
@@ -122,7 +122,7 @@ public class WebSecurityAthento extends ModuleRoot {
             LOG.warn("Unable to validate change password request", ue);
             return getView("ChangePasswordErrorTemplate").arg("exceptionMsg",
                     ctx.getMessage("label.errror.requestNotAccepted")).arg("logout", logoutUrl);
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             LOG.error("Error while validating change password request", e);
             return getView("ChangePasswordErrorTemplate").arg("error", e);
         }

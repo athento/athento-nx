@@ -9,7 +9,6 @@ import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
-import org.nuxeo.ecm.automation.core.operations.services.AuditPageProviderOperation;
 import org.nuxeo.ecm.automation.core.util.*;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -32,7 +31,7 @@ import java.util.Map;
 /**
  * Elasticsearch query and fetch for Audit.
  */
-@Operation(id = AuditPageProviderOperation.ID, category = Constants.CAT_FETCH, label = "Audit Query With Page Provider", description = "Perform "
+@Operation(id = ResultSetAuditPageProviderOperation.ID, category = Constants.CAT_FETCH, label = "Audit Query With Page Provider", description = "Perform "
         + "a query or a named provider query against Audit logs. Result is "
         + "paginated. The query result will become the input for the next "
         + "operation. If no query or provider name is given, a query based on default Audit page provider will be executed.", addToStudio = false, aliases = { "Audit.PageProvider" })

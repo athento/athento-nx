@@ -3,7 +3,6 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
@@ -33,10 +32,9 @@ public class WorkflowChangeListener implements EventListener {
      * Handle notification.
      *
      * @param event
-     * @throws Exception
      */
     @Override
-    public void handleEvent(Event event) throws ClientException {
+    public void handleEvent(Event event) {
         if (event != null) {
             if (!Framework.getRuntime().isStarted()) {
                 return;

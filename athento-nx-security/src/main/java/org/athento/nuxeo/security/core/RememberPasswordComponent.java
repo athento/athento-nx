@@ -86,9 +86,8 @@ public class RememberPasswordComponent extends DefaultComponent implements
      * @param email is the email
      * @param mode is the change password mode
      * @return get remember password model
-     * @throws ClientException on error
      */
-    public DocumentModel getRememberPasswordModel(String email, String mode) throws ClientException {
+    public DocumentModel getRememberPasswordModel(String email, String mode) {
         RememberPasswordModelCreator creator = new RememberPasswordModelCreator(email, mode);
         creator.runUnrestricted();
         return creator.getRememberPasswordModel();
@@ -99,9 +98,8 @@ public class RememberPasswordComponent extends DefaultComponent implements
      *
      * @param session
      * @return the root document
-     * @throws ClientException on error
      */
-    public DocumentModel getOrCreateRootDocument(CoreSession session) throws ClientException {
+    public DocumentModel getOrCreateRootDocument(CoreSession session) {
         String targetPath = "/management/RememberPasswordRequests";
         DocumentRef targetRef = new PathRef(targetPath);
         DocumentModel root;
@@ -139,7 +137,7 @@ public class RememberPasswordComponent extends DefaultComponent implements
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             rememberPasswordModel = session.createDocumentModel(REMEMBER_PASSWORD_DOCTYPE);
             rememberPasswordModel.setPropertyValue("remember:email", email);
             rememberPasswordModel.setPropertyValue("remember:mode", mode);
@@ -169,12 +167,10 @@ public class RememberPasswordComponent extends DefaultComponent implements
         }
 
         @Override
-        public void run() throws ClientException {
-
+        public void run() {
             String title = "Remember password request for "
                     + sendRememberPasswordModel.getPropertyValue("remember:email");
-            String name = IdUtils.generateId(title + "-"
-                    + System.currentTimeMillis());
+            String name = IdUtils.generateStringId();
 
             String targetPath = getOrCreateRootDocument(session).getPathAsString();
 
@@ -192,7 +188,13 @@ public class RememberPasswordComponent extends DefaultComponent implements
             if (!additionnalInfo.containsKey("enterPasswordUrl")) {
                 additionnalInfo.put("enterPasswordUrl", buildEnterPasswordUrl());
             }
-            sendChangePasswordEmail(additionnalInfo, sendRememberPasswordModel);
+
+            try {
+                sendChangePasswordEmail(additionnalInfo, sendRememberPasswordModel);
+
+            } catch (Exception e) {
+
+            }
 
             // Send event
             sendEvent(session, sendRememberPasswordModel, getNameEventSendRememberPasswordSubmitted());
@@ -279,7 +281,7 @@ public class RememberPasswordComponent extends DefaultComponent implements
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             UserManager userManager = Framework.getService(UserManager.class);
             DocumentModel rememberPasswordDocument = session.getDocument(new IdRef(rememberDocId));
             String email = (String) rememberPasswordDocument.getPropertyValue("remember:email");
@@ -312,7 +314,7 @@ public class RememberPasswordComponent extends DefaultComponent implements
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             // Check valid password at first
             if (!PasswordHelper.isValidPassword((String) this.additionnalInfo.get("password"))) {
                 throw new InvalidPasswordException("Invalid password.");
@@ -354,7 +356,7 @@ public class RememberPasswordComponent extends DefaultComponent implements
         }
 
         @Override
-        public void run() throws ClientException {
+        public void run() {
             DocumentRef idRef = new IdRef(requestId);
             if (!session.exists(idRef)) {
                 throw new RememberPasswordException(
@@ -408,11 +410,11 @@ public class RememberPasswordComponent extends DefaultComponent implements
      *
      * @param additionnalInfo
      * @param rememberPasswordDoc
-     * @throws ClientException
+     * @throws Exception on error
      */
     protected void sendChangePasswordEmail(
             Map<String, Serializable> additionnalInfo,
-            DocumentModel rememberPasswordDoc) throws ClientException {
+            DocumentModel rememberPasswordDoc) throws Exception {
 
         String emailAdress = (String) rememberPasswordDoc.getPropertyValue("remember:email");
 
@@ -421,19 +423,13 @@ public class RememberPasswordComponent extends DefaultComponent implements
         input.put("info", (Serializable) additionnalInfo);
         StringWriter writer = new StringWriter();
 
-        try {
-            templatesHelper.getRenderingEngine().render(
-                    "skin/views/webSecurity/ChangePasswordTemplate.ftl", input, writer);
-        } catch (Exception e) {
-            throw new ClientException("Error during rendering email", e);
-        }
+        // Render change password template
+        templatesHelper.getRenderingEngine().render(
+                "skin/views/webSecurity/ChangePasswordTemplate.ftl", input, writer);
 
+        // Notify
         String body = writer.getBuffer().toString();
-        try {
-            generateMail(emailAdress, null, "Change your password", body);
-        } catch (Exception e) {
-            throw new ClientException("Error while sending mail : ", e);
-        }
+        generateMail(emailAdress, null, "Change your password", body);
     }
 
     /**
@@ -506,14 +502,13 @@ public class RememberPasswordComponent extends DefaultComponent implements
      *
      * @param session
      * @param rememberPasswordDocs
-     * @throws ClientException
      */
     @Override
     public void deleteRememberPasswordRequests(CoreSession session,
-            List<DocumentModel> rememberPasswordDocs) throws ClientException {
+            List<DocumentModel> rememberPasswordDocs) {
         for (DocumentModel rememberPasswordDoc : rememberPasswordDocs) {
             if (!rememberPasswordDoc.hasSchema("remember")) {
-                throw new ClientException(
+                throw new NuxeoException(
                         "Recovery password document do not contains needed schema");
             }
             session.removeDocument(rememberPasswordDoc.getRef());
@@ -525,15 +520,14 @@ public class RememberPasswordComponent extends DefaultComponent implements
      *
      * @param email
      * @return
-     * @throws ClientException
      */
     @Override
     public DocumentModelList getRememberPasswordForEmail(
-                                                     final String email, final String mode) throws ClientException {
+                                                     final String email, final String mode) {
         final DocumentModelList rememberPasswordDocs = new DocumentModelListImpl();
         new UnrestrictedSessionRunner(getTargetRepositoryName()) {
             @Override
-            public void run() throws ClientException {
+            public void run() {
                 String query = "SELECT * FROM Document WHERE ecm:currentLifeCycleState != 'validated' AND"
                         + " ecm:mixinType = 'RememberPassword' AND"
                         + " remember:email = '%s'AND remember:mode = '%s' AND ecm:isCheckedInVersion = 0";
@@ -549,12 +543,10 @@ public class RememberPasswordComponent extends DefaultComponent implements
      *
      * @param requestId
      * @param mode is "recovery" or "expiration" or null for both
-     * @throws ClientException
      * @throws RememberPasswordException
      */
     @Override
-    public void checkChangePasswordRequestId(final String requestId, final String mode) throws ClientException,
-            RememberPasswordException {
+    public void checkChangePasswordRequestId(final String requestId, final String mode) throws RememberPasswordException {
         ChangePasswordRequestIdValidator runner = new ChangePasswordRequestIdValidator(requestId, mode);
         runner.runUnrestricted();
     }

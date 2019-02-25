@@ -13,8 +13,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.repository.RepositoryManager;
 import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
@@ -118,7 +118,7 @@ public class UserActionBean implements Serializable {
         // Get selected user
         DocumentModel selectedUser = userManagementActions.getSelectedUser();
         if (selectedUser == null) {
-            throw new ClientException("Selected user must be not null");
+            throw new NuxeoException("Selected user must be not null");
         }
 
         if (!userManager.checkUsernamePassword((String) selectedUser.getPropertyValue("user:username"), (String) currentPasswordInput.getLocalValue())) {
@@ -144,7 +144,7 @@ public class UserActionBean implements Serializable {
 
     }
 
-    protected DocumentModel getCurrentUserModel(String username) throws ClientException {
+    protected DocumentModel getCurrentUserModel(String username) {
         return userManager.getUserModel(username);
     }
 
@@ -160,7 +160,7 @@ public class UserActionBean implements Serializable {
         // Get selected user
         DocumentModel selectedUser = userManagementActions.getSelectedUser();
         if (selectedUser == null) {
-            throw new ClientException("Selected user must be not null");
+            throw new NuxeoException("Selected user must be not null");
         }
         try {
             RememberPasswordSave save = new RememberPasswordSave(getTargetRepositoryName(), selectedUser,

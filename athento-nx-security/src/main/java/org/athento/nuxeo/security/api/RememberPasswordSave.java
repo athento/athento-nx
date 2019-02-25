@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.security.core.RememberPasswordComponent;
 import org.athento.nuxeo.security.util.PasswordHelper;
-import org.nuxeo.ecm.core.api.ClientException;
+
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
@@ -34,9 +34,10 @@ public class RememberPasswordSave extends UnrestrictedSessionRunner {
     }
 
     @Override
-    public void run() throws ClientException {
+    public void run() {
         if (!PasswordHelper.isValidPassword(password)) {
-            throw new InvalidPasswordException("Invalid password.");
+            LOG.error("Invalid password");
+            return;
         }
         // Update user password
         UserManager userManager = Framework.getService(UserManager.class);

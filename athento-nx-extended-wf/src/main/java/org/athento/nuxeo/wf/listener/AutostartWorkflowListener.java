@@ -40,10 +40,9 @@ public class AutostartWorkflowListener implements EventListener {
      * Handle auto-start.
      *
      * @param event
-     * @throws Exception
      */
     @Override
-    public void handleEvent(Event event) throws ClientException {
+    public void handleEvent(Event event) {
         if (event != null) {
             if (event.getContext() instanceof DocumentEventContext) {
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
@@ -78,7 +77,7 @@ public class AutostartWorkflowListener implements EventListener {
         try {
             return Framework.getService(DocumentRoutingService.class);
         } catch (Exception e) {
-            throw new ClientRuntimeException(e);
+            throw new NuxeoException(e);
         }
     }
 
@@ -86,10 +85,9 @@ public class AutostartWorkflowListener implements EventListener {
      * Get first autostart route model.
      *
      * @return
-     * @throws ClientException
      */
-    public DocumentModel getFirstAutostartRouteModelForDocument(DocumentModel document, CoreSession session) throws ClientException {
-        DocumentRoutingService documentRoutingService = Framework.getLocalService(DocumentRoutingService.class);
+    public DocumentModel getFirstAutostartRouteModelForDocument(DocumentModel document, CoreSession session) {
+        DocumentRoutingService documentRoutingService = Framework.getService(DocumentRoutingService.class);
         List<DocumentModel> routeModels = documentRoutingService.searchRouteModels(
                 session, "");
         for (Iterator<DocumentModel> it = routeModels.iterator(); it.hasNext(); ) {

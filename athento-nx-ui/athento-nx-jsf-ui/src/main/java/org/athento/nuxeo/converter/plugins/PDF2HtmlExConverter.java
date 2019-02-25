@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.convert.api.ConversionException;
@@ -69,7 +69,7 @@ public class PDF2HtmlExConverter extends CommandLineBasedConverter {
         Map<String, Blob> cmdBlobParams = new HashMap<String, Blob>();
         try {
             cmdBlobParams.put("inFilePath", blobHolder.getBlob());
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             throw new ConversionException("Unable to get Blob for holder", e);
         }
         return cmdBlobParams;

@@ -84,7 +84,7 @@ public class CSVToListOperation {
                     try {
                         DocumentModel rowDoc = session.getDocument(new IdRef(uuid));
                         docList.add(rowDoc);
-                    } catch (ClientException e) {
+                    } catch (DocumentNotFoundException e) {
                         LOG.warn("Parse CSV error because document with id " + uuid + " is not found");
                     }
                 } catch (IllegalArgumentException e) {

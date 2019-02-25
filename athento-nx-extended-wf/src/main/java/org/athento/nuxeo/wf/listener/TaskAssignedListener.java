@@ -6,11 +6,10 @@ import org.athento.nuxeo.wf.api.RoutingConstants;
 import org.athento.nuxeo.wf.utils.SchemaUtils;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.nuxeo.ecm.automation.core.operations.notification.MailTemplateHelper;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.model.PropertyException;
+import org.nuxeo.ecm.core.api.PropertyException;
 import org.nuxeo.ecm.core.api.model.PropertyNotFoundException;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
@@ -44,10 +43,9 @@ public class TaskAssignedListener implements EventListener {
      * Handle notification.
      *
      * @param event
-     * @throws Exception
      */
     @Override
-    public void handleEvent(Event event) throws ClientException {
+    public void handleEvent(Event event) {
         if (event != null) {
             Map<String, Serializable> properties = event.getContext().getProperties();
             // Add host property
@@ -234,7 +232,7 @@ public class TaskAssignedListener implements EventListener {
                 LOG.info("Metadata assignment to execute " + metadataAssignment);
             }
             if (metadataAssignment != null && metadataAssignment.startsWith("#")) {
-                DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentId()));
+                DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentsIds().get(0)));
                 String[] assignments = metadataAssignment.replace("#", "").split(",");
                 for (String assignment : assignments) {
                     String[] assignmentInfo = assignment.split("=");

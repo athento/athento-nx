@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.security.api.SecurityConstants;
-import org.nuxeo.common.utils.Base64;
 import org.nuxeo.ecm.platform.api.login.UserIdentificationInfo;
 import org.nuxeo.ecm.platform.ui.web.auth.NXAuthConstants;
 import org.nuxeo.ecm.platform.ui.web.auth.interfaces.NuxeoAuthenticationPlugin;
@@ -20,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.commons.codec.binary.Base64;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
@@ -110,7 +111,7 @@ public class BasicAuthenticator implements NuxeoAuthenticationPlugin {
         if (auth != null && auth.toLowerCase().startsWith("basic")) {
             int idx = auth.indexOf(' ');
             String b64userPassword = auth.substring(idx + 1);
-            byte[] clearUp = Base64.decode(b64userPassword);
+            byte[] clearUp = Base64.decodeBase64(b64userPassword);
             String userCredentials = new String(clearUp);
             int idxOfColon = userCredentials.indexOf(':');
             if (idxOfColon > 0 && idxOfColon < userCredentials.length() - 1) {

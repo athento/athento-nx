@@ -26,6 +26,7 @@ import org.nuxeo.ecm.automation.core.collectors.BlobListCollector;
 import org.nuxeo.ecm.automation.core.util.BlobList;
 import org.nuxeo.ecm.core.api.*;
 
+import javax.swing.text.Document;
 import java.util.*;
 
 /**
@@ -75,7 +76,7 @@ public class AthentoMultiAttachBlobOperation extends AbstractAthentoOperation {
                 properties.put("save", String.valueOf(save));
                 properties.put("document", doc.getId());
                 propertiesList.add(properties);
-            } catch (ClientException e) {
+            } catch (DocumentNotFoundException e) {
                 LOG.error("Document '" + document + "' is not found.", e);
             }
         }

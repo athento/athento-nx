@@ -565,7 +565,7 @@ public class QueryUtils {
                         }
                     }
                 }
-            } catch (ClientException e) {
+            } catch (NuxeoException e) {
                 LOG.trace("Document is not found into ResultSet " + uuid);
             }
         }
@@ -611,7 +611,7 @@ public class QueryUtils {
                         }
                     }
                 }
-            } catch (ClientException e) {
+            } catch (NuxeoException e) {
                 LOG.trace("Document is not found into ResultSet " + uuid);
             }
         }

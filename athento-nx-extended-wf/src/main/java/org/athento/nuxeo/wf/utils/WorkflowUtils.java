@@ -9,7 +9,6 @@ import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.model.Property;
-import org.nuxeo.ecm.core.api.model.PropertyException;
 import org.nuxeo.ecm.core.api.model.impl.ListProperty;
 import org.nuxeo.ecm.core.api.model.impl.MapProperty;
 import org.nuxeo.ecm.core.api.model.impl.primitives.BlobProperty;
@@ -44,7 +43,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Created by victorsanchez on 24/11/16.
+ * Workflow utils class.
  */
 public final class WorkflowUtils {
 
@@ -71,7 +70,7 @@ public final class WorkflowUtils {
         final List<T> value = new ArrayList<T>(1);
         new UnrestrictedSessionRunner(session) {
             @Override
-            public void run() throws ClientException {
+            public void run() {
                 DocumentModel conf = session.getDocument(new PathRef(
                         WorkflowUtils.CONFIG_PATH));
                 value.add(clazz.cast(conf.getPropertyValue(key)));
@@ -274,24 +273,22 @@ public final class WorkflowUtils {
      * @param task
      * @param getFormVariables
      * @return
-     * @throws ClientException
      */
-    public static Map<String, Serializable> getTaskInfo(final CoreSession session, final Task task, final boolean getFormVariables)
-            throws ClientException {
+    public static Map<String, Serializable> getTaskInfo(final CoreSession session, final Task task, final boolean getFormVariables) {
         final String routeDocId = task.getVariable(DocumentRoutingConstants.TASK_ROUTE_INSTANCE_DOCUMENT_ID_KEY);
         final String nodeId = task.getVariable(DocumentRoutingConstants.TASK_NODE_ID_KEY);
         if (routeDocId == null) {
-            throw new ClientException(
+            throw new NuxeoException(
                     "Can not get the source graph for this task");
         }
         if (nodeId == null) {
-            throw new ClientException(
+            throw new NuxeoException(
                     "Can not get the source node for this task");
         }
         final HashMap<String, Serializable> map = new HashMap<String, Serializable>();
         new UnrestrictedSessionRunner(session) {
             @Override
-            public void run() throws ClientException {
+            public void run() throws NuxeoException {
                 DocumentModel doc = session.getDocument(new IdRef(routeDocId));
                 GraphRoute route = doc.getAdapter(GraphRoute.class);
                 GraphNode node = route.getNode(nodeId);
@@ -595,7 +592,10 @@ public final class WorkflowUtils {
      * @return
      */
     public static DocumentModel getTargetDocumentFromTask(CoreSession session, Task task) {
-        return session.getDocument(new IdRef(task.getTargetDocumentId()));
+        if (task.getTargetDocumentsIds().size() > 0) {
+            return session.getDocument(new IdRef(task.getTargetDocumentsIds().get(0)));
+        }
+        return null;
     }
 
     /**
@@ -712,7 +712,7 @@ public final class WorkflowUtils {
         if (routeDocId != null) {
             new UnrestrictedSessionRunner(session) {
                 @Override
-                public void run() throws ClientException {
+                public void run() {
                     DocumentModel routeDoc = session.getDocument(new IdRef(routeDocId));
                     doc.add(routeDoc);
                 }

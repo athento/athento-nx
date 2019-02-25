@@ -5,9 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.annotations.In;
 import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.platform.pictures.tiles.api.PictureTiles;
 import org.nuxeo.ecm.platform.pictures.tiles.api.adapter.PictureTilesAdapter;
 import org.nuxeo.ecm.platform.pictures.tiles.restlets.PictureTilesCachedEntry;
@@ -18,13 +18,14 @@ import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.restAPI.BaseStatelessNuxeoRestlet;
 import org.nuxeo.ecm.platform.util.RepositoryLocation;
 import org.nuxeo.runtime.api.Framework;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.*;
-import org.restlet.resource.OutputRepresentation;
+import org.restlet.representation.OutputRepresentation;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
@@ -97,7 +98,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
             navigationContext.setCurrentServerLocation(new RepositoryLocation(
                     repo));
             documentManager = navigationContext.getOrCreateDocumentManager();
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             LOG.error("Unable to get document from session", e);
             handleError(res, e);
             return;
@@ -123,7 +124,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
                 }
                 updateCache(targetDocument, adapter, xpath);
             }
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             handleError(res, e);
             return;
         }
@@ -136,7 +137,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
         PictureTiles tiles = null;
         try {
             tiles = adapter.getTiles(tileWidth, tileHeight, maxTiles);
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             handleError(res, e);
         }
 
@@ -154,7 +155,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
         mt = MediaType.TEXT_HTML;
 
         File file = FileUtils.getResourceFileFromContext("testTiling.html");
-        String html = FileUtils.readFile(file);
+        String html = org.apache.commons.io.FileUtils.readFileToString(file, "UTF-8");
 
         html = html.replace("$repoId$", repoId);
         html = html.replace("$docId$", docId);
@@ -207,13 +208,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
             res.setEntity(new OutputRepresentation(null) {
                 @Override
                 public void write(OutputStream outputStream) throws IOException {
-                    // the write call happens after the seam conversation is
-                    // finished which will garbage collect the CoreSession
-                    // instance, hence we store the blob content in a temporary
-                    // file
-                    FileInputStream instream = new FileInputStream(tempfile);
-                    FileUtils.copy(instream, outputStream);
-                    instream.close();
+                    org.apache.commons.io.FileUtils.copyFile(tempfile, outputStream);
                     tempfile.delete();
                 }
             });
@@ -243,7 +238,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
     }
 
     protected void updateCache(DocumentModel doc, PictureTilesAdapter adapter,
-                               String xpath) throws ClientException {
+                               String xpath) throws NuxeoException {
 
         Calendar modified = (Calendar) doc.getProperty("dublincore", "modified");
         PictureTilesCachedEntry entry = new PictureTilesCachedEntry(modified,
@@ -275,7 +270,7 @@ public class PictureTilesRestlets extends BaseStatelessNuxeoRestlet {
     }
 
     protected PictureTilesAdapter getFromCache(DocumentModel doc, String xpath)
-            throws ClientException {
+            throws NuxeoException {
         if (cachedAdapters.containsKey(doc.getId())) {
             if (xpath == null) {
                 xpath = "";

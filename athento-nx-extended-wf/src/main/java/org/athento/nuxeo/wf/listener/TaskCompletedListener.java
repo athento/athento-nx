@@ -3,11 +3,7 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.model.PropertyException;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.model.PropertyNotFoundException;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
@@ -40,7 +36,6 @@ public class TaskCompletedListener implements EventListener {
      * Handle notification.
      *
      * @param event
-     * @throws Exception
      */
     @Override
     public void handleEvent(Event event) {
@@ -119,7 +114,7 @@ public class TaskCompletedListener implements EventListener {
                 if (isAbleToManage(taskNodeDoc, "var-" + nodeId + ":lfTransitions")) {
                     String transitionsData = (String) taskNodeDoc.getPropertyValue("var-" + nodeId + ":lfTransitions");
                     if (transitionsData != null) {
-                        DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentId()));
+                        DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentsIds().get(0)));
                         DocumentModel nextTaskDocument = WorkflowUtils.getTaskDocument(session, targetDoc, "opened");
                         if (nextTaskDocument != null) {
                             Task nextTask = nextTaskDocument.getAdapter(Task.class);
@@ -136,7 +131,7 @@ public class TaskCompletedListener implements EventListener {
                 }
             } catch (PropertyException e) {
                 LOG.warn("Property lfTransitions is not found for taskNode " + taskNodeDoc.getId());
-            } catch (ClientException e) {
+            } catch (NuxeoException e) {
                 LOG.warn("Follow transition in task complete has an error", e);
             }
         }

@@ -43,7 +43,7 @@ public class InheritMetadataListener implements PostCommitFilteringEventListener
     /**
      * Handler.
      */
-    public void handleEvent(Event event) throws ClientException {
+    public void handleEvent(Event event) {
         CoreSession session = event.getContext().getCoreSession();
         // Check enabled
         if (!InheritUtil.readConfigValue(session, "metadataInheritanceConfig:enableInheritance", true)) {
@@ -137,7 +137,7 @@ public class InheritMetadataListener implements PostCommitFilteringEventListener
                             LOG.info("Work [" + workId + "] queued in state [" + workState + "]");
                         }
                     } catch (Exception e) {
-                        throw new ClientException("Unable to execute inherit metadata operation", e);
+                        throw new NuxeoException("Unable to execute inherit metadata operation", e);
                     }
                 }
             }

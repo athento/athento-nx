@@ -42,7 +42,6 @@ public class UpdateDocumentWorkflowListener implements EventListener {
      * Handle update document.
      *
      * @param event
-     * @throws Exception
      */
     @Override
     public void handleEvent(final Event event) {
@@ -139,12 +138,7 @@ public class UpdateDocumentWorkflowListener implements EventListener {
             contentviewActions.resetAllContent();
             NavigationContext navigationContext = (NavigationContext) Contexts.getConversationContext().get(
                     "navigationContext");
-            try {
-                navigationContext.invalidateCurrentDocument();
-            } catch (ClientException e) {
-                LOG.error("Error invalidating current document "
-                        + "on navigation context", e);
-            }
+            navigationContext.invalidateCurrentDocument();
             DocumentModel dm = navigationContext.getCurrentDocument();
             if (dm != null) {
                 Events.instance().raiseEvent(EventNames.DOCUMENT_CHANGED, dm);
@@ -177,7 +171,7 @@ public class UpdateDocumentWorkflowListener implements EventListener {
         try {
             return Framework.getService(DocumentRoutingService.class);
         } catch (Exception e) {
-            throw new ClientRuntimeException(e);
+            throw new NuxeoException(e);
         }
     }
 

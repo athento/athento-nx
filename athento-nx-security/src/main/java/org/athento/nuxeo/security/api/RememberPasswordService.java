@@ -1,6 +1,5 @@
 package org.athento.nuxeo.security.api;
 
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -49,11 +48,8 @@ public interface RememberPasswordService {
      * @param requestId
      * @param additionalInfo
      * @return
-     * @throws ClientException
-     * @throws RememberPasswordException
      */
-    Map<String, Serializable> validatePasswordChange(String requestId, Map<String, Serializable> additionalInfo) throws ClientException,
-            RememberPasswordException;
+    Map<String, Serializable> validatePasswordChange(String requestId, Map<String, Serializable> additionalInfo);
 
     /**
      * Get remember password request by email.
@@ -61,9 +57,8 @@ public interface RememberPasswordService {
      * @param email is the email
      * @param mode, change by "recovery" or "expiration"
      * @return
-     * @throws ClientException
      */
-    DocumentModelList getRememberPasswordForEmail(final String email, final String mode) throws ClientException;
+    DocumentModelList getRememberPasswordForEmail(final String email, final String mode);
 
     /**
      * Change password.

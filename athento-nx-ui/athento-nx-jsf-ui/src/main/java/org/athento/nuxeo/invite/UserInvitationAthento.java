@@ -17,7 +17,7 @@ package org.athento.nuxeo.invite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.ecm.user.invite.AlreadyProcessedRegistrationException;
 import org.nuxeo.ecm.user.invite.UserInvitationService;
@@ -113,7 +113,7 @@ public class UserInvitationAthento extends ModuleRoot {
             log.warn("Unable to validate registration request", ue);
             return getView("ValidationErrorTemplate").arg("exceptionMsg",
                     ctx.getMessage("label.errror.requestNotAccepted"));
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             log.error("Error while validating registration request", e);
             return getView("ValidationErrorTemplate").arg("error", e);
         }

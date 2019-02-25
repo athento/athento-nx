@@ -7,11 +7,8 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.storage.sql.RepositoryDescriptor;
-import org.nuxeo.ecm.core.storage.sql.coremodel.SQLRepositoryService;
 import org.nuxeo.ecm.core.storage.sql.ra.ConnectionFactoryImpl;
 import org.nuxeo.ecm.core.storage.sql.ra.ManagedConnectionFactoryImpl;
-import org.nuxeo.runtime.api.Framework;
 
 import javax.resource.ResourceException;
 
@@ -38,9 +35,8 @@ public class ACLOptimizationOperation {
     protected CoreSession session;
 
     /** Function name. */
-    @Param(name = "function", required = true, description = "Function to execute")
-    private String function;
-
+    @Param(name = "function", description = "Function to execute")
+    protected String function;
 
     /** Run. */
     @OperationMethod
@@ -63,9 +59,7 @@ public class ACLOptimizationOperation {
      * @return sql session
      */
     public org.nuxeo.ecm.core.storage.sql.Session getSession() throws ResourceException {
-        SQLRepositoryService sqlRepositoryService = Framework.getLocalService(SQLRepositoryService.class);
-        RepositoryDescriptor descriptor = sqlRepositoryService.getRepositoryDescriptor(session.getRepositoryName());
-        ManagedConnectionFactoryImpl managedConnectionFactory = new ManagedConnectionFactoryImpl(descriptor);
+        ManagedConnectionFactoryImpl managedConnectionFactory = new ManagedConnectionFactoryImpl(session.getRepositoryName());
         ConnectionFactoryImpl connectionFactory = (ConnectionFactoryImpl) managedConnectionFactory.createConnectionFactory();
         return connectionFactory.getConnection();
     }

@@ -77,6 +77,15 @@
 			<artifactId>nuxeo-automation-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.nuxeo.ecm.automation</groupId>
+			<artifactId>nuxeo-automation-features</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>${restlet.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging-api</artifactId>
 			<version>1.1</version>
@@ -119,7 +128,16 @@
 	<repositories>
 		<repository>
 			<id>public</id>
-			<name>Nuxeo Public </name>
+			<name>Nuxeo Public</name>
+			<url>https://maven.nuxeo.org/nexus/content/repositories/public</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>public-releases</id>
+			<name>Nuxeo Public Releases</name>
 			<url>https://maven.nuxeo.org/nexus/content/repositories/public-releases</url>
 			<layout>default</layout>
 			<snapshots>
@@ -281,5 +299,7 @@
         <athento.addon.version>1.2</athento.addon.version>
         <athento.platform.version>${project.version}</athento.platform.version>
 		<nuxeo.platform.version>10.10</nuxeo.platform.version>
+		<restlet.version>2.4.1</restlet.version>
+		<seam.version>2.3.1.Final</seam.version>
 	</properties>
 </project>

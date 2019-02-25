@@ -1,13 +1,11 @@
 package org.athento.nuxeo.operations;
 
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
@@ -31,7 +29,7 @@ public class NuxeoDriveGetClientUpdateInfoOperation {
     protected CoreSession session;
 
     @OperationMethod
-    public Blob run() throws ClientException, IOException {
+    public Blob run() throws IOException {
         NuxeoDriveClientUpdateInfo info = new NuxeoDriveClientUpdateInfo();
         if (((NuxeoPrincipal) session.getPrincipal()).isAdministrator()) {
             String serverVersion = Framework.getProperty("org.nuxeo.ecm.product.version");

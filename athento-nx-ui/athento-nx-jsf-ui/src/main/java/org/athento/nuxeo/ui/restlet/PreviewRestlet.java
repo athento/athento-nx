@@ -1,5 +1,6 @@
 package org.athento.nuxeo.ui.restlet;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.ui.util.Utils;
@@ -9,7 +10,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.international.LocaleSelector;
 import org.nuxeo.common.Environment;
-import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.automation.core.rendering.RenderingService;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
@@ -23,10 +23,10 @@ import org.nuxeo.ecm.platform.util.RepositoryLocation;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
 import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 import org.nuxeo.runtime.api.Framework;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.OutputRepresentation;
+import org.restlet.representation.OutputRepresentation;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletResponse;
@@ -175,7 +175,7 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
     }
 
     private List<Blob> initCachedBlob(Response res, String xpath,
-                                      boolean blobPostProcessing) throws ClientException {
+                                      boolean blobPostProcessing) {
 
         HtmlPreviewAdapter preview = null; // getFromCache(targetDocument,
         // xpath);
@@ -189,7 +189,7 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
             return null;
         }
 
-        List<Blob> previewBlobs = null;
+        List<Blob> previewBlobs;
         try {
             if (xpath.equals("default")) {
                 previewBlobs = preview.getFilePreviewBlobs(blobPostProcessing);
@@ -298,13 +298,7 @@ public class PreviewRestlet extends BaseNuxeoRestlet {
         res.setEntity(new OutputRepresentation(null) {
             @Override
             public void write(OutputStream outputStream) throws IOException {
-                // the write call happens after the seam conversation is
-                // finished which will garbage collect the CoreSession
-                // instance, hence we store the blob content in a temporary
-                // file
-                FileInputStream instream = new FileInputStream(tempfile);
-                FileUtils.copy(instream, outputStream);
-                instream.close();
+                FileUtils.copyFile(tempfile, outputStream);
                 tempfile.delete();
             }
         });

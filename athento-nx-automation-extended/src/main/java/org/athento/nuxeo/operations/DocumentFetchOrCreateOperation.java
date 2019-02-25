@@ -1,6 +1,5 @@
 package org.athento.nuxeo.operations;
 
-
 import org.athento.nuxeo.operations.security.AbstractAthentoOperation;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -9,9 +8,9 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.util.DocumentHelper;
 import org.nuxeo.ecm.automation.core.util.Properties;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.PathRef;
 
 /**
@@ -50,7 +49,7 @@ public class DocumentFetchOrCreateOperation extends AbstractAthentoOperation {
 		checkAllowedAccess(ctx);
 		try {
 			return session.getDocument(new PathRef(path));
-		} catch (ClientException e) {
+		} catch (DocumentNotFoundException e) {
 			if (name == null) {
 				name = "Untitled";
 			}

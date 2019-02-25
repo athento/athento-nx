@@ -295,7 +295,7 @@ public class ResultSetElasticPageProviderOperation {
                             }
                         }
                     }
-                } catch (ClientException e) {
+                } catch (NuxeoException e) {
                     LOG.trace("Document is not found into ResultSet " + item.get("ecm:uuid"));
                 }
             } else {
@@ -344,7 +344,7 @@ public class ResultSetElasticPageProviderOperation {
                             }
                         }
                     }
-                } catch (ClientException e) {
+                } catch (NuxeoException e) {
                     LOG.trace("Document is not found into ResultSet " + item.get("ecm:uuid"));
                 }
             } else {

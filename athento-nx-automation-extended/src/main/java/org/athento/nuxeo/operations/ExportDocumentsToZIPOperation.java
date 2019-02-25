@@ -6,9 +6,9 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.io.DocumentPipe;
@@ -81,7 +81,7 @@ public class ExportDocumentsToZIPOperation {
             pipe.setWriter(writer);
             pipe.run();
             return new FileBlob(tmpFile);
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             LOG.error("Error during XML export " + e.getMessage());
         } catch (IOException e) {
             LOG.error("Error during XML export " + e.getMessage());
