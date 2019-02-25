@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: athento-nx-webui
+Bundle-Version: 1.1.0
+Bundle-Name: Athento NX Web User Interface
+Require-Bundle: org.nuxeo.runtime,
+ easyshare,
+ studio.extensions.easyshare,
+ org.nuxeo.ecm.platform.picture.jsf,
+ org.nuxeo.ecm.platform.video.core
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Athento
+Nuxeo-WebModule: org.nuxeo.ecm.webengine.app.WebEngineModule;name=inviteAthento;extends=invite;headless=true
+Nuxeo-AllowOverride: true
+Nuxeo-Component: OSGI-INF/Document-Model/Schemas/schemas-contrib.xml,
+ OSGI-INF/Document-Model/Documents/doctype-contrib.xml,
+ OSGI-INF/ui-configuration-framework.xml,
+ OSGI-INF/restAPI-contrib.xml,
+ OSGI-INF/openURL-contrib.xml,
+ OSGI-INF/Converter/convert-contrib.xml,
+ OSGI-INF/CommandLine/commandline-pdf2htmlex-contrib.xml,
+ OSGI-INF/user-registration-contrib.xml,
+ OSGI-INF/actions-contrib.xml,
+ OSGI-INF/security-contrib.xml
+Created-By: Athento

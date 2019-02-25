@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.ui.user-registration-contrib">
+
+    <require>org.nuxeo.ecm.user.invite.core.service.contrib</require>
+
+    <extension target="org.nuxeo.ecm.user.invite.UserInvitationService"
+               point="configuration">
+
+        <documentation>Remove and create again for default_registration.</documentation>
+
+        <configuration remove="true" />
+
+        <configuration>
+            <requestDocType>UserInvitation</requestDocType>
+            <container>
+                <docType>UserInvitationContainer</docType>
+                <parentPath>/management/</parentPath>
+                <name>invitationRequests</name>
+                <title>Invitation Requests Container</title>
+            </container>
+            <validationEmail>
+                <title>You are invited to access Athento ECM</title>
+                <template>skin/views/userRegistrationAthento/ValidationEmailTemplateAthento.ftl</template>
+            </validationEmail>
+            <reviveEmail>
+                <title>You are invited to access Athento ECM</title>
+                <template>skin/views/userRegistrationAthento/ReviveEmailTemplateAthento.ftl</template>
+            </reviveEmail>
+            <enterPasswordUrl>site/userInvitationAthento/enterpassword/</enterPasswordUrl>
+            <validationRelUrl>site/userInvitationAthento/validate</validationRelUrl>
+        </configuration>
+    </extension>
+
+</component>

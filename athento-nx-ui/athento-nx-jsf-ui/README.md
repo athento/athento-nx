@@ -1,4 +1,4 @@
-# Athento UI for Nuxeo #
+# Athento JSF UI for Nuxeo #
 
 ## How to show a NXQL query document result
 

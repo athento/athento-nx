@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<component name="org.nuxeo.athento.ui.pageprovider.contrib">
+
+    <extension target="org.nuxeo.ecm.platform.query.api.PageProviderService"
+               point="providers">
+
+        <coreQueryPageProvider name="rhombus_document_suggestion">
+            <property name="maxResults">PAGE_SIZE</property>
+            <pattern quoteParameters="false" escapeParameters="true">
+                SELECT * FROM Document WHERE dc:title ILIKE '%?%' AND ecm:parentId = '?' AND ecm:mixinType !=
+                'HiddenInNavigation' AND ecm:isCheckedInVersion = 0 AND
+                ecm:currentLifeCycleState != 'deleted'
+            </pattern>
+            <pageSize>5</pageSize>
+            <parameter>#{currentDocument.id}</parameter>
+        </coreQueryPageProvider>
+
+        <coreQueryPageProvider name="query_search">
+            <trackUsage>true</trackUsage>
+            <searchDocumentType>DefaultSearch</searchDocumentType>
+            <pattern quoteParameters="false" escapeParameters="false">?</pattern>
+            <pageSize>20</pageSize>
+            <pageSizeBinding>#{querySearchUIActions.pageSize}</pageSizeBinding>
+        </coreQueryPageProvider>
+
+    </extension>
+
+</component>

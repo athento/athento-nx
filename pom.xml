@@ -280,6 +280,6 @@
 	<properties>
         <athento.addon.version>1.2</athento.addon.version>
         <athento.platform.version>${project.version}</athento.platform.version>
-		<nuxeo.platform.version>8.10</nuxeo.platform.version>
+		<nuxeo.platform.version>10.10</nuxeo.platform.version>
 	</properties>
 </project>

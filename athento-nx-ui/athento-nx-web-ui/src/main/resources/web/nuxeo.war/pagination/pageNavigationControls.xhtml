@@ -1,0 +1,47 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:a4j="http://richfaces.org/a4j">
+    <h:panelGroup
+            layout="block" styleClass="pageNavigationControls"
+            rendered="#{provider.nextPageAvailable or provider.previousPageAvailable}">
+        <h:commandButton action="#{provider.rewind()}"
+                         alt="#{messages['command.navigation.rewind']}"
+                         image="/icons/navigation_first.png">
+            <f:attribute name="disabled" value="#{not provider.previousPageAvailable}"/>
+        </h:commandButton>
+        <h:commandButton action="#{provider.previous()}"
+                         alt="#{messages['command.navigation.previous']}"
+                         image="/icons/navigation_previous.png">
+            <f:attribute name="disabled" value="#{not provider.previousPageAvailable}"/>
+        </h:commandButton>
+        <a4j:region>
+            <h:panelGroup styleClass="currentPageStatus">
+                <h:inputText styleClass="#{contentViewName}_idx_currentPage" value="#{navigationAction.currentPage}"
+                             style="width: 42px; margin-top: -3px; margin-right: 8px;">
+                    <a4j:ajax render="@form" execute="@this" listener="#{navigationAction.setCurrentContentView(contentViewName)}"/>
+                </h:inputText>
+                <h:outputText style="margin: -3px; margin-right: 3px;" value="/ #{provider.getNumberOfPages()}"
+                              rendered="#{provider.getNumberOfPages() gt 0}"/>
+            </h:panelGroup>
+        </a4j:region>
+        <h:commandButton action="#{provider.next()}"
+                         alt="#{messages['command.navigation.next']}"
+                         image="/icons/navigation_next.png">
+            <f:attribute name="disabled" value="#{not provider.nextPageAvailable}"/>
+        </h:commandButton>
+        <h:commandButton action="#{provider.last()}"
+                         alt="#{messages['command.navigation.fastforward']}"
+                         image="/icons/navigation_last.png">
+            <f:attribute name="disabled" value="#{not provider.lastPageAvailable}"/>
+        </h:commandButton>
+    </h:panelGroup>
+
+    <script>
+                jQuery('.#{contentViewName}_idx_currentPage').val('#{provider.currentPageIndex + 1}');
+
+    </script>
+
+</ui:composition>

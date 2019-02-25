@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.convert.contrib">
+
+    <extension target="org.nuxeo.ecm.core.convert.service.ConversionServiceImpl"
+               point="converter">
+
+        <documentation>
+            Override pdf2html with new converter.
+        </documentation>
+        <converter name="pdf2html" class="org.athento.nuxeo.converter.plugins.PDF2HtmlExConverter">
+            <sourceMimeType>application/pdf</sourceMimeType>
+            <destinationMimeType>text/html</destinationMimeType>
+            <parameters>
+                <parameter name="CommandLineName">pdf2htmlEX</parameter>
+            </parameters>
+        </converter>
+
+    </extension>
+
+</component>

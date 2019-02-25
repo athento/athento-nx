@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.ui.configuration.service">
+
+    <implementation class="org.athento.nuxeo.ui.configuration.service.UIConfigurationService" />
+
+    <service>
+        <provide interface="org.athento.nuxeo.ui.configuration.service.UIConfigurationManager" />
+    </service>
+
+</component>

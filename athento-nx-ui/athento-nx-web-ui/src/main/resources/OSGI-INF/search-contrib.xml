@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.athento.nuxeo.ui.urlservice-contrib">
+
+  <extension
+    target="org.nuxeo.ecm.platform.url.service.DocumentViewCodecService"
+    point="codecs">
+
+    <documentViewCodec name="querypathsearch" enabled="true" default="false"
+      prefix="nxqsearch"
+      class="org.athento.nuxeo.search.QuerySearchCodec" />
+
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.ui.web.rest.URLService"
+    point="urlpatterns">
+
+    <urlPattern name="querysearch" enabled="true">
+      <defaultURLPolicy>false</defaultURLPolicy>
+      <needBaseURL>true</needBaseURL>
+      <needRedirectFilter>true</needRedirectFilter>
+      <needFilterPreprocessing>true</needFilterPreprocessing>
+      <codecName>querypathsearch</codecName>
+      <actionBinding>
+        #{querySearchUIActions.loadPermanentLink}
+      </actionBinding>
+      <documentViewBindingApplies>
+        #{mainTabsActions.isOnMainTab('qsearch')}
+      </documentViewBindingApplies>
+      <documentViewBinding>#{restHelper.documentView}</documentViewBinding>
+      <newDocumentViewBinding>
+        #{restHelper.getNewDocumentView(null)}
+      </newDocumentViewBinding>
+      <bindings>
+        <binding name="language" callGetter="false">
+          #{restHelper.localeString}
+        </binding>
+        <binding name="contentViewName" callGetter="true">
+          #{querySearchUIActions.contentViewName}
+        </binding>
+        <binding name="query" callGetter="true">
+          #{querySearchUIActions.query}
+        </binding>
+        <binding name="currentPage" callGetter="true">
+          #{querySearchUIActions.currentPage}
+        </binding>
+        <binding name="pageSize" callGetter="true">
+          #{querySearchUIActions.pageSize}
+        </binding>
+      </bindings>
+    </urlPattern>
+
+  </extension>
+
+  <extension
+          target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+          point="startURL">
+
+    <startURLPattern>
+      <patterns>
+        <pattern>qsearch/</pattern>
+      </patterns>
+    </startURLPattern>
+
+  </extension>
+
+</component>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.ui.openurl.contrib">
+
+    <extension point="openUrl"
+               target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService">
+        <!-- Preview -->
+        <openUrl name="AthentoPreview">
+            <grantPattern>/nuxeo/restAPI/athpreview/.*</grantPattern>
+        </openUrl>
+        <openUrl name="AthentoInlineFile">
+            <grantPattern>/nuxeo/restAPI/.*/inlineFile</grantPattern>
+        </openUrl>
+        <openUrl name="AthentoPreviewTiles">
+            <grantPattern>/nuxeo/restAPI/getTiles/.*</grantPattern>
+        </openUrl>
+        <!-- Invitation -->
+        <openUrl name="RegisterUser_validate_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/userInvitationAthento/validate</grantPattern>
+        </openUrl>
+        <openUrl name="RegisterUser_enterpassword_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/userInvitationAthento/enterpassword/.*</grantPattern>
+        </openUrl>
+        <openUrl name="Graphical_Resources_athento">
+            <grantPattern>${org.nuxeo.ecm.contextPath}/site/skin/inviteAthento/.*</grantPattern>
+        </openUrl>
+    </extension>
+
+</component>

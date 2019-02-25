@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.ui.restAPI.contrib">
+
+    <extension target="org.nuxeo.ecm.platform.ui.web.restAPI.service.PluggableRestletService"
+               point="restlets">
+
+        <documentation>
+            GET /nuxeo/restAPI/athpreview/{repoId}/{docId}/{fieldPath}?subPath=(subPath)&amp;token=(token)
+        </documentation>
+
+        <restletPlugin
+                name="athPreview"
+                class="org.athento.nuxeo.ui.restlet.PreviewRestlet"
+                enabled="true"
+                useSeam="true">
+            <urlPatterns>
+                <urlPattern>/athpreview/{repo}/{docid}/{fieldPath}/{subPath}</urlPattern>
+                <urlPattern>/athpreview/{repo}/{docid}/{fieldPath}/</urlPattern>
+            </urlPatterns>
+        </restletPlugin>
+
+        <restletPlugin
+                name="getTiles" enabled="false" />
+
+        <restletPlugin
+                name="athTiles"
+                class="org.athento.nuxeo.ui.restlet.PictureTilesRestlets"
+                enabled="true"
+                useSeam="true">
+            <urlPatterns>
+                <urlPattern>/getTiles/{repoId}/{docId}/{tileWidth}/{tileHeight}/{maxTiles}</urlPattern>
+            </urlPatterns>
+        </restletPlugin>
+
+        <restletPlugin
+                name="inlineFileRestlet"
+                class="org.athento.nuxeo.ui.restlet.DocumentViewInlineRestlet"
+                enabled="true"
+                useSeam="true">
+            <urlPatterns>
+                <urlPattern>/{repo}/{docid}/inlineFile</urlPattern>
+            </urlPatterns>
+        </restletPlugin>
+    </extension>
+
+</component>
