@@ -31,14 +31,14 @@ import java.util.List;
  * Writer used as list result.
  */
 @Provider
-@Produces({"application/json+nxentity", "application/json"})
+@Produces({"application/json+nxentity", MediaType.APPLICATION_JSON})
 @Setup(mode = Instantiations.SINGLETON)
 public class JsonBatchResultWriter implements
         MessageBodyWriter<BatchResult> {
 
     private static final Log LOG = LogFactory.getLog(JsonBatchResultWriter.class);
 
-    public static final String DOCUMENT_PROPERTIES_HEADER = "X-NXDocumentProperties";
+    public static final String DOCUMENT_PROPERTIES_HEADER = "properties";
 
     @Context
     protected HttpHeaders headers;

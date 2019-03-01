@@ -1,12 +1,15 @@
 <component name="org.athento.nuxeo.automation.extended.marshallers">
 
-  <extension target="org.nuxeo.ecm.automation.server.AutomationServer"
-    point="marshallers">
+    <require>org.nuxeo.ecm.automation.server.marshallers</require>
 
-    <marshaller>
-      <writer>org.athento.nuxeo.api.writer.JsonBatchResultWriter</writer>
-      <writer>org.athento.nuxeo.api.writer.JsonEntryWriter</writer>
-    </marshaller>
-  </extension>
+    <extension target="org.nuxeo.ecm.automation.server.AutomationServer"
+        point="marshallers">
+
+        <marshaller>
+            <writer>org.athento.nuxeo.api.writer.JsonBatchResultWriter</writer>
+            <writer>org.athento.nuxeo.api.writer.JsonEntryWriter</writer>
+        </marshaller>
+
+    </extension>
 
 </component>

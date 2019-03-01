@@ -8,12 +8,10 @@ import org.athento.nuxeo.api.writer.JsonBatchResultWriter;
 import org.nuxeo.ecm.automation.io.services.codec.ObjectCodec;
 import org.nuxeo.ecm.core.api.CoreSession;
 
-import java.io.IOException;
-
 /**
  * Code for BatchResult.
  */
-public class BatchResultCodec<T extends BatchResult> extends ObjectCodec<T> {
+public class BatchResultCodec extends ObjectCodec<BatchResult> {
 
     @Override
     public String getType() {
@@ -26,7 +24,7 @@ public class BatchResultCodec<T extends BatchResult> extends ObjectCodec<T> {
     }
 
     @Override
-    public void write(JsonGenerator jg, T value) {
+    public void write(JsonGenerator jg, BatchResult value) {
         try {
             JsonBatchResultWriter.writeBatchResult(jg, value, null);
         } catch (Exception e) {
@@ -35,9 +33,7 @@ public class BatchResultCodec<T extends BatchResult> extends ObjectCodec<T> {
     }
 
     @Override
-    public T read(JsonParser jp, CoreSession session) throws
-            IOException {
-        // FIXME:
+    public BatchResult read(JsonParser jp, CoreSession session) {
         return null;
     }
 }

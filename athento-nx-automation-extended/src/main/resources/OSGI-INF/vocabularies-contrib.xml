@@ -4,34 +4,26 @@
 	version="1.0.0">
 	<require>org.nuxeo.runtime.started</require>
 
-	<extension target="org.nuxeo.ecm.directory.sql.SQLDirectoryFactory"
+	<extension target="org.nuxeo.ecm.directory.GenericDirectory"
 		point="directories">
-		<directory name="example_categories">
+		<directory name="example_categories" extends="template-directory">
 			<schema>vocabulary</schema>
-			<dataSource>java:/nxsqldirectory</dataSource>
-			<cacheTimeout>3600</cacheTimeout>
-			<cacheMaxSize>1000</cacheMaxSize>
 			<idField>id</idField>
 			<autoincrementIdField>false</autoincrementIdField>
 			<createTablePolicy>always</createTablePolicy>
-			<table>vocabulary_example_categories</table>
 			<dataFile>data/vocabularies/categories.csv</dataFile>
 		</directory>
-		<directory name="example_subcategories">
+		<directory name="example_subcategories" extends="template-directory">
 			<schema>xvocabulary</schema>
-			<dataSource>java:/nxsqldirectory</dataSource>
-			<cacheTimeout>3600</cacheTimeout>
-			<cacheMaxSize>1000</cacheMaxSize>
 			<idField>id</idField>
 			<autoincrementIdField>false</autoincrementIdField>
 			<createTablePolicy>always</createTablePolicy>
-			<table>vocabulary_example_subcategories</table>
 			<dataFile>data/vocabularies/subcategories.csv</dataFile>
+            <deleteConstraint class="org.nuxeo.ecm.directory.HierarchicalDirectoryDeleteConstraint">
+                <property name="targetDirectory">example_categories</property>
+                <property name="targetDirectoryField">parent</property>
+            </deleteConstraint>
 		</directory>
 	</extension>
-	<extension target="org.nuxeo.ecm.directory.ui.DirectoryUIManager"
-		point="directories">
-		<directory name="example_categories" layout="vocabulary" sortField="label" />
-		<directory name="example_subcategories" layout="vocabulary" sortField="label" />
-	</extension>
+
 </component>

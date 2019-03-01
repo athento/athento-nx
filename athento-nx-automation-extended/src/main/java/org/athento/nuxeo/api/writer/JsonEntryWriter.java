@@ -1,16 +1,15 @@
 package org.athento.nuxeo.api.writer;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.api.EntrySet;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.nuxeo.ecm.automation.jaxrs.io.JsonRecordSetWriter;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -26,18 +25,14 @@ import java.util.Map;
  * Manage JSON Marshalling for EntrySet.
  */
 @Provider
-@Produces({ "application/json+nxentity", "application/json" })
+@Produces(MediaType.APPLICATION_JSON)
 public class JsonEntryWriter implements MessageBodyWriter<EntrySet> {
 
     protected static Log log = LogFactory.getLog(JsonRecordSetWriter.class);
 
-    @Context
-    JsonFactory factory;
-
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        boolean canUse = EntrySet.class.isAssignableFrom(type);
-        return canUse;
+        return EntrySet.class.equals(type);
     }
 
     @Override
@@ -57,6 +52,7 @@ public class JsonEntryWriter implements MessageBodyWriter<EntrySet> {
     }
 
     protected void writeEntries(OutputStream out, EntrySet entries) throws IOException {
+        JsonFactory factory = new JsonFactory();
         JsonGenerator jg = factory.createJsonGenerator(out, JsonEncoding.UTF8);
         jg.writeStartObject();
         jg.writeStartArray();

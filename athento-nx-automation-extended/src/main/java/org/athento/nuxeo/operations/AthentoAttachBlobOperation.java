@@ -75,8 +75,8 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
         checkAllowedAccess(ctx);
         DocumentHelper.addBlob(doc.getProperty(xpath), blob);
         if (save) {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Attaching Blob " + blob.getFilename() +
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Attaching Blob " + blob.getFilename() +
                         " into " + doc.getId() +
                         ", properties: " + properties);
             }
@@ -101,7 +101,7 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
         envContext.getProperties().put("xpath", xpath);
         envContext.getProperties().put("blob", (Serializable) blob);
         envContext.getProperties().putAll(properties);
-        Framework.getLocalService(EventProducer.class).fireEvent(event);
+        Framework.getService(EventProducer.class).fireEvent(event);
     }
 
 }

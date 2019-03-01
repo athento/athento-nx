@@ -1,6 +1,10 @@
 Manifest-Version: 1.0
+Bundle-Name: athento-nx-automation-extended
+Bundle-ManifestVersion: 1
 Bundle-Vendor: Athento
-Bundle-Version: 1.0
+Bundle-Version: 1.0.0
+Bundle-SymbolicName: org.athento.nuxeo.automation-extended;singleton:=true
+Nuxeo-WebModule: org.athento.nuxeo.module.ExtendedModule;name=apiext;extends=automation;package=org/athento/nuxeo/module
 Nuxeo-Component: OSGI-INF/chains-contrib.xml,
  OSGI-INF/Automation/operations-contrib.xml,
  OSGI-INF/vocabularies-contrib.xml,
@@ -18,7 +22,3 @@ Nuxeo-Component: OSGI-INF/chains-contrib.xml,
  OSGI-INF/automation-registry-framework.xml,
  OSGI-INF/automation-registry-directory-contrib.xml,
  OSGI-INF/listener-contrib.xml
-Bundle-Name: athento-nx-automation-extended
-Bundle-ManifestVersion: 1
-Nuxeo-WebModule: org.athento.nuxeo.module.ExtendedModule;name=apiext;extends=automation;package=org/athento/nuxeo/module;headless=true
-Bundle-SymbolicName: org.athento.nuxeo.automation-extended;singleton:=true
