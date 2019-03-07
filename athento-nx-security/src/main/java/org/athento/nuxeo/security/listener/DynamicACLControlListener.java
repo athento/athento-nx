@@ -47,7 +47,7 @@ public class DynamicACLControlListener implements EventListener {
                 public void run() {
                     DocumentModel doc = docCtx.getSourceDocument();
                     if (doc != null) {
-                        DynamicACLService dynamicACLService = Framework.getLocalService(DynamicACLService.class);
+                        DynamicACLService dynamicACLService = Framework.getService(DynamicACLService.class);
                         if (!dynamicACLService.isIgnoredDoctype(doc.getDocumentType().getName())) {
                             List<DynamicACLDescriptor> dynamicACLsForDoctype = dynamicACLService.getDynamicACLsForDoctype(doc);
                             for (DynamicACLDescriptor acl : dynamicACLsForDoctype) {

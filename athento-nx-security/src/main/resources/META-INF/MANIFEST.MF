@@ -42,6 +42,7 @@ Nuxeo-Component: OSGI-INF/automation/automation-chain/chain-contrib.xml,
  OSGI-INF/header-contrib.xml,
  OSGI-INF/security-service-framework.xml,
  OSGI-INF/dynamicacl-service-framework.xml,
+ OSGI-INF/documentace-service-framework.xml,
  OSGI-INF/dynamicacl-contrib.xml,
  OSGI-INF/loginModulePlugin-contrib.xml,
  OSGI-INF/htmlsanitizer-contrib.xml
