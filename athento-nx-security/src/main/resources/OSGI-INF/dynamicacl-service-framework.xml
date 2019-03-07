@@ -67,5 +67,4 @@
                 class="org.athento.nuxeo.security.api.descriptor.ACLIgnoreDoctypeDescriptor" />
     </extension-point>
 
-
 </component>
