@@ -17,8 +17,8 @@
 
         <listener name="DocumentAccessControlListener" async="false" postCommit="false"
                   class="org.athento.nuxeo.security.listener.DocumentAccessControlListener">
-            <event>documentCreated</event>
-            <event>documentModified</event>
+            <event>aboutToCreate</event>
+            <event>beforeDocumentModification</event>
         </listener>
 
     </extension>

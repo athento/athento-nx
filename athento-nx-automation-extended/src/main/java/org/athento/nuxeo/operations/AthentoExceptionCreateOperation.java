@@ -38,7 +38,7 @@ public class AthentoExceptionCreateOperation {
 	protected String message;
 
 	@OperationMethod()
-	public OperationException run() throws OperationException{
+	public OperationException run() throws OperationException {
 		AthentoException retVal = null;
 		if (_log.isDebugEnabled()) {
 		    _log.debug("Running operation: " + AthentoExceptionCreateOperation.ID);

@@ -2,16 +2,22 @@ package org.athento.nuxeo.security.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.security.api.DocumentACEException;
 import org.athento.nuxeo.security.api.DocumentACEResult;
 import org.athento.nuxeo.security.api.DocumentACEService;
+import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.ecm.platform.ui.web.util.ComponentUtils;
 import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.transaction.TransactionHelper;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.security.Principal;
 
 /**
@@ -41,13 +47,21 @@ public class DocumentAccessControlListener implements EventListener {
             if (documentACEService == null) {
                 return;
             }
+            DocumentACEResult result = null;
             try {
-                DocumentACEResult result = documentACEService.checkDocumentACEs(doc, principal);
-                if (result.hasError()) {
-                    throw new NuxeoException("Unauthorized: " + result.getErrors());
-                }
+                result = documentACEService.checkDocumentACEs(doc, principal);
             } catch (Exception e) {
-                LOG.error("Unable to check DocumentACEs for document.", e);
+                LOG.error("Unable to check document ACEs", e);
+            }
+            if (result != null && result.hasError()) {
+                if (FacesContext.getCurrentInstance() != null) {
+                    String message = ComponentUtils.translate(FacesContext.getCurrentInstance(),
+                            "error.notallowed");
+                    FacesMessage fm = FacesMessages.createFacesMessage(FacesMessage.SEVERITY_ERROR, message);
+                    FacesMessages.instance().add(fm);
+                }
+                TransactionHelper.commitOrRollbackTransaction();
+                throw new DocumentACEException("Unauthorized: " + result.getErrors());
             }
         }
     }

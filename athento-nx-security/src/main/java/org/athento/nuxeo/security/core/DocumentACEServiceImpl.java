@@ -98,7 +98,6 @@ public class DocumentACEServiceImpl extends DefaultComponent implements Document
     public DocumentACEResult checkDocumentACEs(DocumentModel doc, Principal principal) {
         DocumentACEResult result = new DocumentACEResult();
         DocumentACEDescriptor doctypeACE = getDocumentACE(doc.getType());
-        LOG.info("Doctype ace " + doctypeACE);
         if (doctypeACE != null) {
             // Check schemas
             List<String> schemaErrors = checkSchemas(doc, doctypeACE, principal);
@@ -190,7 +189,7 @@ public class DocumentACEServiceImpl extends DefaultComponent implements Document
         for (DocumentACEFilterRuleDescriptor rule : rules) {
             if (rule.usernames.length > 0) {
                 for (String username : rule.usernames) {
-                    if (principal.equals(username)) {
+                    if (principal.getName().equals(username)) {
                         return rule.grant;
                     }
                 }
@@ -204,7 +203,9 @@ public class DocumentACEServiceImpl extends DefaultComponent implements Document
             }
             if (rule.expressions.length > 0) {
                 for (String expression : rule.expressions) {
-                    return rule.grant && checkExpression(expression, params);
+                    if (checkExpression(expression, params)) {
+                        return rule.grant;
+                    }
                 }
             }
         }
