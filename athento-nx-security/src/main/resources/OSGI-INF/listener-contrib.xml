@@ -9,7 +9,7 @@
             <event>beforeDocumentModification</event>
         </listener>
 
-        <listener name="DynamicACLControlListener" async="false" postCommit="true"
+        <listener name="DynamicACLControlListener" async="false" postCommit="true" priority="10000"
                   class="org.athento.nuxeo.security.listener.DynamicACLControlListener">
             <event>documentCreated</event>
             <event>documentModified</event>
