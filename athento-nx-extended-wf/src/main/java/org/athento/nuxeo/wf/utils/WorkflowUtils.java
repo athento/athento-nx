@@ -595,7 +595,7 @@ public final class WorkflowUtils {
      * @return
      */
     public static DocumentModel getTargetDocumentFromTask(CoreSession session, Task task) {
-        return session.getDocument(new IdRef(task.getTargetDocumentId()));
+        return session.getDocument(new IdRef(task.getTargetDocumentsIds().get(0)));
     }
 
     /**

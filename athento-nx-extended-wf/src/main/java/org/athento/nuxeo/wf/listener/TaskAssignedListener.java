@@ -234,7 +234,7 @@ public class TaskAssignedListener implements EventListener {
                 LOG.info("Metadata assignment to execute " + metadataAssignment);
             }
             if (metadataAssignment != null && metadataAssignment.startsWith("#")) {
-                DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentId()));
+                DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentsIds().get(0)));
                 String[] assignments = metadataAssignment.replace("#", "").split(",");
                 for (String assignment : assignments) {
                     String[] assignmentInfo = assignment.split("=");

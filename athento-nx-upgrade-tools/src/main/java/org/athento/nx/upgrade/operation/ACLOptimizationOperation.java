@@ -64,8 +64,8 @@ public class ACLOptimizationOperation {
      */
     public org.nuxeo.ecm.core.storage.sql.Session getSession() throws ResourceException {
         SQLRepositoryService sqlRepositoryService = Framework.getLocalService(SQLRepositoryService.class);
-        RepositoryDescriptor descriptor = sqlRepositoryService.getRepositoryDescriptor(session.getRepositoryName());
-        ManagedConnectionFactoryImpl managedConnectionFactory = new ManagedConnectionFactoryImpl(descriptor);
+        // Since 9.10 RepositoryDescriptor descriptor = sqlRepositoryService.getRepositoryDescriptor(session.getRepositoryName());
+        ManagedConnectionFactoryImpl managedConnectionFactory = new ManagedConnectionFactoryImpl(session.getRepositoryName());
         ConnectionFactoryImpl connectionFactory = (ConnectionFactoryImpl) managedConnectionFactory.createConnectionFactory();
         return connectionFactory.getConnection();
     }

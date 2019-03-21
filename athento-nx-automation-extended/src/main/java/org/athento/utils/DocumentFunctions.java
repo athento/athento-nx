@@ -1,16 +1,13 @@
 package org.athento.utils;
 
-import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.query.sql.NXQL;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +63,7 @@ public final class DocumentFunctions {
             }
         } else if (NXQL.ECM_LOCK_CREATED.equals(column)) {
             if (doc.isLocked()) {
-                return DateUtil.formatDate(doc.getLockInfo().getCreated().getTime(), DATE_FORMAT);
+                return formatDate(doc.getLockInfo().getCreated().getTime(), DATE_FORMAT);
             } else {
                 return "Unlocked";
             }
@@ -76,7 +73,7 @@ public final class DocumentFunctions {
                 return "";
             }
             if (value instanceof GregorianCalendar) {
-                return DateUtil.formatDate(((GregorianCalendar) value).getTime(), DATE_FORMAT);
+                return formatDate(((GregorianCalendar) value).getTime(), DATE_FORMAT);
             } else if (value instanceof Collection) {
                 Collection<Serializable> items = (Collection) value;
                 return items.stream().map(e -> e.toString()).reduce("|", String::concat);
@@ -89,5 +86,9 @@ public final class DocumentFunctions {
         } else {
             return "";
         }
+    }
+
+    public static String formatDate(Date date, String format) {
+        return new SimpleDateFormat(format).format(date);
     }
 }

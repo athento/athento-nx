@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.athento.nx</groupId>
         <artifactId>athento-nx</artifactId>
-        <version>8.10-AT11-SNAPSHOT</version>
+        <version>9.10-AT1-SNAPSHOT</version>
     </parent>
 
     <artifactId>athento-nx-upgrade-tools</artifactId>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.nuxeo.elasticsearch</groupId>
             <artifactId>nuxeo-elasticsearch-core</artifactId>
-            <version>8.10</version>
+            <version>${nuxeo.platform.version}</version>
         </dependency>
     </dependencies>
 

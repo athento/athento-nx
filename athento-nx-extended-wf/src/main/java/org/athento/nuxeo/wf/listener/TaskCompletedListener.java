@@ -119,7 +119,7 @@ public class TaskCompletedListener implements EventListener {
                 if (isAbleToManage(taskNodeDoc, "var-" + nodeId + ":lfTransitions")) {
                     String transitionsData = (String) taskNodeDoc.getPropertyValue("var-" + nodeId + ":lfTransitions");
                     if (transitionsData != null) {
-                        DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentId()));
+                        DocumentModel targetDoc = session.getDocument(new IdRef(task.getTargetDocumentsIds().get(0)));
                         DocumentModel nextTaskDocument = WorkflowUtils.getTaskDocument(session, targetDoc, "opened");
                         if (nextTaskDocument != null) {
                             Task nextTask = nextTaskDocument.getAdapter(Task.class);

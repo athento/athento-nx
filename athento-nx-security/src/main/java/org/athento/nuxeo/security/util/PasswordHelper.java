@@ -206,7 +206,7 @@ public final class PasswordHelper {
         }
         String digest = hashedPassword.substring(6);
 
-        byte[] bytes = org.nuxeo.common.utils.Base64.decode(digest);
+        byte[] bytes = Base64.decodeBase64(digest);
         if (bytes == null) {
             // invalid base64
             return false;

@@ -173,8 +173,7 @@ public class RememberPasswordComponent extends DefaultComponent implements
 
             String title = "Remember password request for "
                     + sendRememberPasswordModel.getPropertyValue("remember:email");
-            String name = IdUtils.generateId(title + "-"
-                    + System.currentTimeMillis());
+            String name = IdUtils.generateStringId();
 
             String targetPath = getOrCreateRootDocument(session).getPathAsString();
 

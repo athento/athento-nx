@@ -26,7 +26,7 @@ public class ExtendedRoot extends ModuleRoot {
     }
 
     @Override
-    public Object handleError(final WebApplicationException cause) {
+    public Object handleError(final Throwable cause) {
         Throwable unWrapException = ExceptionHelper.unwrapException(cause);
         if (unWrapException instanceof RestOperationException) {
             int customHttpStatus = ((RestOperationException) unWrapException)

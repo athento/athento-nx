@@ -9,7 +9,6 @@ import org.athento.nuxeo.operations.exception.AthentoException;
 import org.athento.nuxeo.operations.security.AbstractAthentoOperation;
 import org.athento.nuxeo.operations.utils.AthentoOperationsHelper;
 import org.athento.utils.StringUtils;
-import org.nuxeo.ecm.automation.ConflictOperationException;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -22,6 +21,7 @@ import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.platform.tag.TagService;
 
 import java.util.HashMap;
@@ -138,7 +138,7 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
                     // Check for dirty update
                     String repoToken = doc.getChangeToken();
                     if (!changeToken.equals(repoToken)) {
-                        throw new ConflictOperationException(doc);
+                        throw new NuxeoException("Change token error");
                     }
                 }
                 DocumentHelper.setProperties(session, doc, properties);
