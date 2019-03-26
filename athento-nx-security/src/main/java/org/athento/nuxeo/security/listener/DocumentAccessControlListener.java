@@ -34,8 +34,8 @@ public class DocumentAccessControlListener implements EventListener {
             DocumentEventContext docCtx = (DocumentEventContext) ctx;
             DocumentModel doc = docCtx.getSourceDocument();
             Principal principal = ctx.getPrincipal();
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Document ACEs for doc: " + doc.getId());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Document ACEs for doc: " + doc.getId());
             }
             DocumentACEService documentACEService = Framework.getService(DocumentACEService.class);
             if (documentACEService == null) {
