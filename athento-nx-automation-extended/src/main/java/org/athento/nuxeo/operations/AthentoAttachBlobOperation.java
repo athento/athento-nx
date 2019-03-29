@@ -100,7 +100,9 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
         Event event = envContext.newEvent(BLOB_ATTACH_EVENT);
         envContext.getProperties().put("xpath", xpath);
         envContext.getProperties().put("blob", (Serializable) blob);
-        envContext.getProperties().putAll(properties);
+        if (properties != null) {
+            envContext.getProperties().putAll(properties);
+        }
         Framework.getLocalService(EventProducer.class).fireEvent(event);
     }
 
