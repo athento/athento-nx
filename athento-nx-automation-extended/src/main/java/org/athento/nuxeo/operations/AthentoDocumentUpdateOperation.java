@@ -23,6 +23,7 @@ import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.tag.TagService;
+import org.nuxeo.elasticsearch.ElasticSearchConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,6 +80,9 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
     @Param(name = "tags", required = false, description = "Tags for the document")
     protected StringList tags;
 
+    @Param(name = "reindexSync", required = false, description = "Sync reindex for document")
+    protected boolean reindexSync = false;
+
     @OperationMethod()
     public DocumentModel run() throws Exception {
         return run(null);
@@ -117,6 +121,12 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
                 // Save document
                 if (doc != null && save) {
                     DocumentHelper.setProperties(session, doc, properties);
+                    if (reindexSync) {
+                        if (_log.isInfoEnabled()) {
+                            _log.info("Sync indexing to " + doc.getId());
+                        }
+                        doc.getContextData().put(ElasticSearchConstants.ES_SYNC_INDEXING_FLAG, true);
+                    }
                     // After intercept pre-operation, saving doc is mandatory.
                     // It shouldn't delegate to pre or post operation.
                     this.session.saveDocument(doc);
@@ -143,6 +153,12 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
                 }
                 DocumentHelper.setProperties(session, doc, properties);
                 if (save) {
+                    if (reindexSync) {
+                        if (_log.isInfoEnabled()) {
+                            _log.info("Sync indexing to " + doc.getId());
+                        }
+                        doc.getContextData().put(ElasticSearchConstants.ES_SYNC_INDEXING_FLAG, true);
+                    }
                     doc = session.saveDocument(doc);
                 }
             }
