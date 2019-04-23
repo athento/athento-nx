@@ -104,10 +104,7 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
         try {
             Map<String, Object> config = AthentoOperationsHelper
                     .readConfig(session);
-            String watchedDocumentTypes = String.valueOf(config
-                    .get(AthentoDocumentUpdateOperation.CONFIG_WATCHED_DOCTYPE));
-            if (AthentoOperationsHelper.isWatchedDocumentType(doc,
-                    documentType, watchedDocumentTypes)) {
+            if (oldProperties != null) {
                 Map<String, Object> params = new HashMap<>();
                 params.put("documentType", documentType);
                 params.put("save", save);
@@ -140,10 +137,6 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
                 if (doc == null) {
                     throw new AthentoException("Document input is mandatory to update");
                 }
-                if (_log.isDebugEnabled()) {
-                    _log.debug("Document not watched: " + documentType
-                            + ". Watched doctypes are: " + watchedDocumentTypes);
-                }
                 if (changeToken != null) {
                     // Check for dirty update
                     String repoToken = doc.getChangeToken();
@@ -165,10 +158,6 @@ public class AthentoDocumentUpdateOperation extends AbstractAthentoOperation {
             // Update tags
             if (tags != null) {
                 updateTags(doc);
-            }
-            if (_log.isDebugEnabled()) {
-                _log.debug(AthentoDocumentUpdateOperation.ID
-                        + " END return value: " + doc);
             }
             return doc;
         } catch (Exception e) {

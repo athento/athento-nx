@@ -205,18 +205,22 @@ public class ResultSetElasticPageProviderOperation {
             }
         }
         if (pp != null) {
-            // Check casting fields
-            manageCastFields(pp);
-            // Check field list items
-            if (hasFieldList()) {
-                LOG.info("fieldList param is deprecated. Please, use ::list casting in your SELECT clause");
-                // Manage fields for get its field items
-                manageFieldList(pp);
-            }
-            // Check field complex items
-            if (hasFieldComplex()) {
-                LOG.info("complexField param is deprecated. Please, use ::complex casting in your SELECT clause");
-                manageFieldComplex(pp);
+            try {
+                // Check casting fields
+                manageCastFields(pp);
+                // Check field list items
+                if (hasFieldList()) {
+                    LOG.info("fieldList param is deprecated. Please, use ::list casting in your SELECT clause");
+                    // Manage fields for get its field items
+                    manageFieldList(pp);
+                }
+                // Check field complex items
+                if (hasFieldComplex()) {
+                    LOG.info("complexField param is deprecated. Please, use ::complex casting in your SELECT clause");
+                    manageFieldComplex(pp);
+                }
+            } catch (Exception e) {
+                LOG.error("Unable to manage casting or complex metadata", e);
             }
         }
         PaginableRecordSetImpl res = new PaginableRecordSetImpl(pp);
@@ -232,7 +236,7 @@ public class ResultSetElasticPageProviderOperation {
      *
      * @param pp
      */
-    private void manageCastFields(PageProvider<Map<String, Serializable>> pp) {
+    private void manageCastFields(PageProvider<Map<String, Serializable>> pp) throws Exception {
         for (Map<String, Serializable> item : pp.getCurrentPage()) {
             if (item.get("ecm:uuid") == null) {
                 continue;
