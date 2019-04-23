@@ -4,7 +4,7 @@
 
 	<groupId>org.athento.nx</groupId>
 	<artifactId>athento-nx</artifactId>
-	<version>8.10-AT11-SNAPSHOT</version>
+	<version>8.10-AT11</version>
 	<name>Athento NX</name>
 	<description>Athento Bundles for Nuxeo</description>
 	<packaging>pom</packaging>
@@ -278,8 +278,8 @@
 	</profiles>
 
 	<properties>
-        <athento.addon.version>1.2</athento.addon.version>
-        <athento.platform.version>${project.version}</athento.platform.version>
+        	<athento.addon.version>1.2</athento.addon.version>
+        	<athento.platform.version>${project.version}</athento.platform.version>
 		<nuxeo.platform.version>8.10</nuxeo.platform.version>
 	</properties>
 </project>
