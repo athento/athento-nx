@@ -1,5 +1,6 @@
 package org.athento.nuxeo.query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.provider.ElasticSearchQueryProviderDescriptor;
@@ -345,8 +346,26 @@ public class QueryUtils {
      * @param separator
      * @return
      */
-    public static ArrayList<String> extractQueriesFromQuery(String query, String separator) {
-        return new ArrayList(Arrays.asList(query.split(separator)));
+    public static ArrayList<String> extractQueriesFromQuery(String query, String separator, boolean removeAccents) {
+        ArrayList<String> subqueries = new ArrayList(Arrays.asList(query.split(separator)));
+        if (!removeAccents) {
+            return subqueries;
+        }
+        ArrayList<String> normalizedQueries = new ArrayList<>();
+        for (String subquery : subqueries) {
+            normalizedQueries.add(stripAccents(subquery));
+        }
+        return normalizedQueries;
+    }
+
+    /**
+     * Normalize query removing accents.
+     *
+     * @param query
+     * @return
+     */
+    public static String stripAccents(String query) {
+        return StringUtils.stripAccents(query);
     }
 
     /**
@@ -616,5 +635,9 @@ public class QueryUtils {
             }
         }
         return null;
+    }
+
+    public static void main (String [] args) {
+        System.out.println("==" + StringUtils.stripAccents("hóla"));
     }
 }
