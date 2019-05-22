@@ -112,6 +112,9 @@ public class ResultSetElasticPageProviderOperation {
     @Param(name = "showCastingSource", required = false)
     protected boolean showCastingSource = false;
 
+    @Param(name = "removeAccents", required = false)
+    protected boolean removeAccents = false;
+
     @SuppressWarnings("unchecked")
     @OperationMethod
     public RecordSet run() throws OperationException, IOException {
@@ -190,7 +193,7 @@ public class ResultSetElasticPageProviderOperation {
             QueryContext queryCtxt;
             // Manage multiple queries
             if (query.contains(QueryUtils.QUERY_SEPARATOR)) {
-                ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QueryUtils.QUERY_SEPARATOR);
+                ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QueryUtils.QUERY_SEPARATOR, removeAccents);
                 queryCtxt = new QueryContext(queries, page * pageSize, pageSize, sortInfos);
                 // Execute queries
                 QueryUtils.executeRecursiveResultset(ppService, queryCtxt, props, parameters, false);
@@ -199,6 +202,9 @@ public class ResultSetElasticPageProviderOperation {
                 pp = (ElasticSearchQueryAndFetchPageProvider) ppService.getPageProvider("", desc, null, sortInfos,
                         targetPageSize, targetPage, props, parameters);
             } else {
+                if (removeAccents) {
+                    query = QueryUtils.stripAccents(query);
+                }
                 desc.setPattern(query);
                 pp = (ElasticSearchQueryAndFetchPageProvider) ppService.getPageProvider("", desc, null, sortInfos,
                         targetPageSize, targetPage, props, parameters);
