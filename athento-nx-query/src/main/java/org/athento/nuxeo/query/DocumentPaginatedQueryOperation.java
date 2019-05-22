@@ -1,7 +1,6 @@
 package org.athento.nuxeo.query;
 
 import org.apache.commons.lang.StringUtils;
-import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
@@ -54,7 +53,7 @@ public class DocumentPaginatedQueryOperation {
 
     @SuppressWarnings("unchecked")
     @OperationMethod
-    public DocumentModelList run() throws OperationException, IOException {
+    public DocumentModelList run() throws IOException {
 
         // Target offset
         int targetOffset = 0;
@@ -88,7 +87,7 @@ public class DocumentPaginatedQueryOperation {
         QueryContext queryCtxt;
         // Manage multiple queries
         if (query.contains(QUERY_SEPARATOR)) {
-            ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QUERY_SEPARATOR);
+            ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QUERY_SEPARATOR, false);
             queryCtxt = new QueryContext(queries, targetOffset, targetLimit, sortInfoList);
             // Execute queries
             QueryUtils.executeRecursiveQuery(session, queryCtxt);
