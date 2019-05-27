@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.athento.athento-nx-security.DocumentACEService">
+
+    <service>
+        <provide interface="org.athento.nuxeo.security.api.DocumentACEService"/>
+    </service>
+
+    <implementation
+            class="org.athento.nuxeo.security.core.DocumentACEServiceImpl"/>
+
+    <extension-point name="documentACE">
+        <documentation>
+            Contribution to add schema or metadata access control.
+            <code>
+                <documentACE doctype="File" enabled="true">
+                    <schema name="dublincore">
+                        <rule grant="true">
+                            <username>Administrator</username>
+                            <username>vs</username>
+                            <group>Administrators</group>
+                            <expression>@{doc.getPropertyValue('dc:title') == 'Yes'}</expression>
+                        </rule>
+                    </schema>
+                    <metadata xpath="dc:description">
+                        <rule grant="false">
+                            <username>Administrator</username>
+                            <group>members</group>
+                            <expression>@{doc.getPropertyValue('dc:title') == 'No'}</expression>
+                        </rule>
+                    </metadata>
+                </documentACE>
+            </code>
+        </documentation>
+        <object
+                class="org.athento.nuxeo.security.api.descriptor.DocumentACEDescriptor" />
+    </extension-point>
+
+</component>
