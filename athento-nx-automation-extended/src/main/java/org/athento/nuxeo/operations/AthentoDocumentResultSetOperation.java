@@ -86,6 +86,9 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
     @Param(name = "showCastingSource", required = false)
     protected boolean showCastingSource = false;
 
+    @Param(name = "removeAccents", required = false)
+    protected boolean removeAccents = true;
+
     @OperationMethod
     public RecordSet run() throws Exception {
         // Check access
@@ -136,6 +139,7 @@ public class AthentoDocumentResultSetOperation extends AbstractAthentoOperation 
             params.put("fieldList", fieldList);
             params.put("fieldComplex", fieldComplex);
             params.put("showCastingSource", showCastingSource);
+            params.put("removeAccents", removeAccents);
             if (!StringUtils.isNullOrEmpty(sortBy)) {
                 params.put("sortBy", sortBy);
                 if (!StringUtils.isNullOrEmpty(sortOrder)) {

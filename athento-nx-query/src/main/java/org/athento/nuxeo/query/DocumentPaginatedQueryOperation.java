@@ -51,6 +51,9 @@ public class DocumentPaginatedQueryOperation {
             ASC, DESC })
     protected String sortOrder;
 
+    @Param(name = "removeAccents", required = false)
+    protected boolean removeAccents = true;
+
     @SuppressWarnings("unchecked")
     @OperationMethod
     public DocumentModelList run() throws IOException {
@@ -87,7 +90,7 @@ public class DocumentPaginatedQueryOperation {
         QueryContext queryCtxt;
         // Manage multiple queries
         if (query.contains(QUERY_SEPARATOR)) {
-            ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QUERY_SEPARATOR, false);
+            ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QUERY_SEPARATOR, removeAccents);
             queryCtxt = new QueryContext(queries, targetOffset, targetLimit, sortInfoList);
             // Execute queries
             QueryUtils.executeRecursiveQuery(session, queryCtxt);
@@ -101,6 +104,9 @@ public class DocumentPaginatedQueryOperation {
             pp.setPageSize(targetLimit);
             result = pp.getCurrentPage();
         } else {
+            if (removeAccents) {
+                query = QueryUtils.stripAccents(query);
+            }
             // Execute single query
             result = QueryUtils.executeQuery(session, query, targetOffset, targetLimit, sortInfoList);
         }
