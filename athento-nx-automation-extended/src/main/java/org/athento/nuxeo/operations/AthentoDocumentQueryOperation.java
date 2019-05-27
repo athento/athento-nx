@@ -68,6 +68,9 @@ public class AthentoDocumentQueryOperation extends AbstractAthentoOperation {
         AthentoDocumentQueryOperation.ASC, AthentoDocumentQueryOperation.DESC })
     protected String sortOrder;
 
+    @Param(name = "removeAccents", required = false)
+    protected boolean removeAccents = true;
+
     @OperationMethod
     public DocumentModelList run() throws Exception {
         // Check access
@@ -106,6 +109,7 @@ public class AthentoDocumentQueryOperation extends AbstractAthentoOperation {
             params.put("query", modifiedQuery);
             params.put("offset", getOffset());
             params.put("limit", pageSize);
+            params.put("removeAccents", removeAccents);
             Object retValue = AthentoOperationsHelper.runOperation(operationId,
                 input, params, session);
             if (_log.isDebugEnabled()) {

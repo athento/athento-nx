@@ -113,7 +113,7 @@ public class ResultSetElasticPageProviderOperation {
     protected boolean showCastingSource = false;
 
     @Param(name = "removeAccents", required = false)
-    protected boolean removeAccents = false;
+    protected boolean removeAccents = true;
 
     @SuppressWarnings("unchecked")
     @OperationMethod
