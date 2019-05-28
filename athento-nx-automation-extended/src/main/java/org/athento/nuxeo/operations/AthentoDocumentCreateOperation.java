@@ -16,6 +16,7 @@ import org.athento.nuxeo.report.api.model.Report;
 import org.athento.nuxeo.report.api.model.ReportEngine;
 import org.athento.nuxeo.report.api.model.ReportHandler;
 import org.athento.nuxeo.report.api.xpoint.ReportDescriptor;
+import org.athento.utils.DocumentFunctions;
 import org.athento.utils.FTPUtils;
 import org.athento.utils.ReportInfo;
 import org.athento.utils.StringUtils;
@@ -160,9 +161,8 @@ public class AthentoDocumentCreateOperation extends AbstractAthentoOperation {
             } else {
                 parentFolder = parentDoc;
             }
-            if (name == null) {
-                name = "Untitled";
-            }
+            // Sanitize name
+            name = DocumentFunctions.sanitizeName(name);
             String parentPath = parentFolder.getPathAsString();
             DocumentModel newDoc = session.createDocumentModel(parentPath,
                 name, type);

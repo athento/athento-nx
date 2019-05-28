@@ -16,7 +16,7 @@ public class TestQuery extends TestCase {
         String query = "SELECT * FROM Document WHERE ecm:mixinType != 'HiddenInNavigation' AND ecm:isProxy = 0 AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted' AND dc:title = 'Test'" +
                 "|SELECT * FROM Document WHERE ecm:mixinType != 'HiddenInNavigation' AND ecm:isProxy = 0 AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted' AND dc:creator = '${dc:creator}'";
 
-        List<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\|");
+        List<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\|", false);
         assertEquals(queries.size(), 2);
 
     }
