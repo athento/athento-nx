@@ -90,4 +90,22 @@ public final class DocumentFunctions {
             return "";
         }
     }
+
+    /**
+     * Sanitize document name.
+     *
+     * @param name
+     * @return
+     */
+    public static String sanitizeName(String name) {
+        String finalName = "Untitled";
+        if (name != null && !name.isEmpty()) {
+            finalName = name;
+            if (name.contains("/")) {
+                finalName = name.replace("/", "_");
+            }
+        }
+        return finalName;
+    }
+
 }
