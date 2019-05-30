@@ -25,6 +25,9 @@ public class DynamicACLDescriptor {
     @XNode("@enabled")
     public boolean enabled = true;
 
+    @XNode("@blockDefaultAces")
+    public boolean blockDefaultAces = false;
+
     @XNodeList(value = "doctype", type = ArrayList.class, componentType = String.class)
     public final List<String> doctypes = new ArrayList<>();
 

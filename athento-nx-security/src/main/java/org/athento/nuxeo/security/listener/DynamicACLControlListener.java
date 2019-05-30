@@ -9,6 +9,8 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.AdministratorGroupsProvider;
+import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.api.security.impl.ACLImpl;
 import org.nuxeo.ecm.core.api.security.impl.ACPImpl;
 import org.nuxeo.ecm.core.event.Event;
@@ -17,6 +19,7 @@ import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.runtime.api.Framework;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -105,14 +108,32 @@ public class DynamicACLControlListener implements EventListener {
         }
         if (!aces.isEmpty()) {
             if (acl.blockInheritance) {
-                boolean permissionChanged = acp.blockInheritance(destinyAcl, session.getPrincipal().getName());
-                if (permissionChanged) {
-                    session.setACP(doc.getRef(), acp, acl.overwrite);
+                if (!acl.blockDefaultAces) {
+                    aclImpl.add(ACE.builder(session.getPrincipal().getName(),
+                            SecurityConstants.EVERYTHING).creator(session.getPrincipal().getName()).build());
                 }
+                aclImpl.addAll(getAdminEverythingACES());
+                aclImpl.add(ACE.BLOCK);
+                session.setACP(doc.getRef(), acp, acl.overwrite);
             } else {
                 session.setACP(doc.getRef(), acp, acl.overwrite);
             }
         }
+    }
+
+    /**
+     * Get admin ACES.
+     *
+     * @return
+     */
+    protected List<ACE> getAdminEverythingACES() {
+        List<ACE> aces = new ArrayList<>();
+        AdministratorGroupsProvider provider = Framework.getLocalService(AdministratorGroupsProvider.class);
+        List<String> administratorsGroups = provider.getAdministratorsGroups();
+        for (String adminGroup : administratorsGroups) {
+            aces.add(new ACE(adminGroup, SecurityConstants.EVERYTHING, true));
+        }
+        return aces;
     }
 
 }
