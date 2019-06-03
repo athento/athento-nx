@@ -4,14 +4,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.provider.ElasticSearchQueryProviderDescriptor;
+import org.hsqldb.lib.StringUtil;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.model.Property;
 import org.nuxeo.ecm.core.api.model.PropertyNotFoundException;
+import org.nuxeo.ecm.core.query.sql.SQLQueryParser;
+import org.nuxeo.ecm.core.query.sql.model.*;
+import org.nuxeo.ecm.core.storage.sql.jdbc.NXQLQueryMaker;
 import org.nuxeo.ecm.directory.DirectoryException;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.query.api.PageProvider;
 import org.nuxeo.ecm.platform.query.api.PageProviderService;
+import org.nuxeo.ecm.platform.query.api.PredicateDefinition;
+import org.nuxeo.ecm.platform.query.nxql.NXQLQueryBuilder;
 import org.nuxeo.ecm.platform.tag.Tag;
 import org.nuxeo.ecm.platform.tag.TagService;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
@@ -365,7 +371,26 @@ public class QueryUtils {
      * @return
      */
     public static String stripAccents(String query) {
-        return StringUtils.stripAccents(query);
+        if (!query.toUpperCase().contains("WHERE")) {
+            return query;
+        }
+        // Extract WHERE clauses
+        String whereClause = query.split("WHERE|where")[1].trim();
+        if (!whereClause.contains("ecm:tag")) {
+            return StringUtils.stripAccents(query);
+        }
+        // Get ecm:tag predicate
+        String regex = "\\s(ecm:tag)\\s*(LIKE|ILIKE|IN|in|like|ilike|=)\\s*([^\\s]*)";
+        Pattern ecmTagPattern = Pattern.compile(regex);
+        Matcher matcher = ecmTagPattern.matcher(query);
+        if (matcher.find()) {
+            String operator = matcher.group(2);
+            String roperand = matcher.group(3);
+            String ecmTagFinal = " ecm:tag " + operator + " " + roperand;
+            query = StringUtils.stripAccents(query);
+            query = query.replaceAll(regex, ecmTagFinal);
+        }
+        return query;
     }
 
     /**
@@ -637,7 +662,4 @@ public class QueryUtils {
         return null;
     }
 
-    public static void main (String [] args) {
-        System.out.println("==" + StringUtils.stripAccents("hóla"));
-    }
 }
