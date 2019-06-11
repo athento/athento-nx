@@ -54,6 +54,9 @@ public class DocumentSaveRestrictListener implements EventListener {
         if (!enabled) {
             return;
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Controlling mimetype for document...");
+        }
         try {
             MimeUtils.checkMimeType(doc);
         } catch (MimetypeException e) {

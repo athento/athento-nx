@@ -126,12 +126,8 @@ public final class MimeUtils {
         if (!doc.hasSchema("file")) {
             return;
         }
-        List<String> allowedDocumentTypes = getIncludedDocumentTypes(doc);
-        if (allowedDocumentTypes == null || allowedDocumentTypes.isEmpty()) {
-            LOG.debug("Included document types is undefined, no mimetypes checking executed.");
-            return;
-        }
         if (getMimeTypesAllowed(doc) == null) {
+            LOG.info("Mimetype was allowed!");
             LOG.debug("Included mimetypes, no checking executed.");
             return;
         }

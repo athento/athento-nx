@@ -98,7 +98,6 @@ public class DocumentACEServiceImpl extends DefaultComponent implements Document
     public DocumentACEResult checkDocumentACEs(DocumentModel doc, Principal principal) {
         DocumentACEResult result = new DocumentACEResult();
         DocumentACEDescriptor doctypeACE = getDocumentACE(doc.getType());
-        LOG.info("Doctype ace " + doctypeACE);
         if (doctypeACE != null) {
             // Check schemas
             List<String> schemaErrors = checkSchemas(doc, doctypeACE, principal);
