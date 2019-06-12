@@ -127,7 +127,6 @@ public final class MimeUtils {
             return;
         }
         if (getMimeTypesAllowed(doc) == null) {
-            LOG.info("Mimetype was allowed!");
             LOG.debug("Included mimetypes, no checking executed.");
             return;
         }
