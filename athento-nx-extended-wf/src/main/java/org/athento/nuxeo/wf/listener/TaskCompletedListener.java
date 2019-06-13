@@ -46,6 +46,7 @@ public class TaskCompletedListener implements EventListener {
             CoreSession session = event.getContext().getCoreSession();
             if (event.getName().equals(DocumentRoutingConstants.Events.beforeRouteStart.name())) {
                 // Start task
+                lastExecutedTransition.clear();
                 GraphRouteImpl startRoute = (GraphRouteImpl) event.getContext().getProperty("documentElementEventContextKey");
                 GraphNode startNode = startRoute.getStartNode();
                 List<GraphNode.Transition> nodeTransitions = startNode.getOutputTransitions();
@@ -176,6 +177,7 @@ public class TaskCompletedListener implements EventListener {
                         String transition = transitionData[1];
                         if (transition != null && !"null".equals(transition)
                                 && !isLastExecutedTransition(targetDocument.getId(), transition)) {
+                            LOG.info("Executing transition " + transition);
                             session.followTransition(targetDocument, transition);
                             // Update lastExecutedTransition
                             lastExecutedTransition.put(targetDocument.getId(), transition);
