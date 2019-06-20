@@ -8,9 +8,7 @@ import org.athento.nuxeo.security.api.descriptor.DynamicACLDescriptor;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
-import org.nuxeo.ecm.core.api.security.ACE;
-import org.nuxeo.ecm.core.api.security.AdministratorGroupsProvider;
-import org.nuxeo.ecm.core.api.security.SecurityConstants;
+import org.nuxeo.ecm.core.api.security.*;
 import org.nuxeo.ecm.core.api.security.impl.ACLImpl;
 import org.nuxeo.ecm.core.api.security.impl.ACPImpl;
 import org.nuxeo.ecm.core.event.Event;
@@ -33,10 +31,10 @@ public class DynamicACLControlListener implements EventListener {
 
     /** Default ACL. */
     private static final String DEFAULT_ACL_NAME = "local";
-    
+
     /**
      * Handle event.
-     * 
+     *
      * @param event document save event
      */
     @Override
@@ -89,37 +87,41 @@ public class DynamicACLControlListener implements EventListener {
      * @param acl
      */
     private void setACEs(CoreSession session, DocumentModel doc, List<ACE> aces, DynamicACLDescriptor acl) {
-        LOG.info("Set ACES for DynamicACLS in " + doc.getName() + ", " + aces   );
         String destinyAcl = DEFAULT_ACL_NAME;
         if (acl.acl != null && !acl.acl.isEmpty()) {
             destinyAcl = acl.acl;
         }
-        ACPImpl acp = new ACPImpl();
+        // Get current ACP from document
+        ACP acp = doc.getACP();
+        ACPImpl newACP = new ACPImpl();
+        for (ACL docACL : acp.getACLs()) {
+            if (!docACL.getName().equals(destinyAcl)) {
+                newACP.addACL((ACL) docACL.clone());
+            }
+        }
         ACLImpl aclImpl = new ACLImpl(destinyAcl);
-        acp.addACL(aclImpl);
+        newACP.addACL(aclImpl);
         for (ACE ace : aces) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Creating dynamic ACE for " + ace.getUsername() +
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Creating dynamic ACE for " + ace.getUsername() +
                         " for document " + doc.getName() +
                         " in Dynamic ACL " + acl.name + " for " + destinyAcl);
             }
             ACE aceImpl = new ACE(ace.getUsername(), ace.getPermission(), ace.isGranted());
             aclImpl.add(aceImpl);
         }
-        if (!aces.isEmpty()) {
-            if (acl.blockInheritance) {
-                if (!acl.blockDefaultAces) {
-                    aclImpl.add(ACE.builder(session.getPrincipal().getName(),
-                            SecurityConstants.EVERYTHING).creator(session.getPrincipal().getName()).build());
-                }
-                aclImpl.addAll(getAdminEverythingACES());
-                aclImpl.add(ACE.BLOCK);
-                session.setACP(doc.getRef(), acp, acl.overwrite);
-            } else {
+        if (acl.blockInheritance) {
+            boolean permissionChanged = acp.blockInheritance(destinyAcl, session.getPrincipal().getName());
+            if (permissionChanged) {
                 session.setACP(doc.getRef(), acp, acl.overwrite);
             }
+            aclImpl.addAll(getAdminEverythingACES());
+            aclImpl.add(ACE.BLOCK);
         }
+        session.setACP(doc.getRef(), newACP, acl.overwrite);
+
     }
+
 
     /**
      * Get admin ACES.
