@@ -3,9 +3,11 @@ package org.athento.nuxeo.query;
 import org.nuxeo.ecm.core.api.SortInfo;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Query context.
@@ -13,6 +15,7 @@ import java.util.List;
 public class QueryContext extends HashMap<String, Object> {
 
     private ArrayList<String> queries;
+    private Map<String, Map<String, Map<String, Serializable>>> results;
     private int currentQueryIndex = -1;
     private int limit;
     private int offset;
@@ -35,9 +38,14 @@ public class QueryContext extends HashMap<String, Object> {
         this.limit = limit;
         this.offset = offset;
         this.sortInfo = sortInfo;
+        this.results = new HashMap<>();
     }
 
-    public String getQuery() throws IOException {
+    public String getCompleteQuery() {
+        return String.join("|", this.queries);
+    }
+
+    public String getQuery() {
         if (currentQueryIndex > queries.size() - 1) {
             return null;
         }
@@ -85,5 +93,24 @@ public class QueryContext extends HashMap<String, Object> {
      */
     public boolean isLastQuery() {
         return currentQueryIndex == queries.size() - 1;
+    }
+
+    /**
+     * Get query results.
+     *
+     * @return
+     */
+    public Map<String, Map<String, Map<String, Serializable>>> getSubqueryResults() {
+        return results;
+    }
+
+    /**
+     * Get subquery result.
+     *
+     * @param query
+     * @return
+     */
+    public Map<String, Map<String, Serializable>> getSubqueryResult(String query) {
+        return results.get(query);
     }
 }
