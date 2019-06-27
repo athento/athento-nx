@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Elasticsearch query and fetch operation based on ResultSetPageProvider of Nuxeo6.
+ * Elasticsearch query and fetch operation based on ResultSetPageProvider of Nuxeo.
  * <p/>
  * Created by victorsanchez on 5/5/16.
  */
@@ -187,10 +187,10 @@ public class ResultSetElasticPageProviderOperation {
             // set the maxResults to avoid slowing down queries
             desc.getProperties().put("maxResults", maxResults);
         }
+        QueryContext queryCtxt = null;
         // Manage queries
         PageProvider<Map<String, Serializable>> pp = null;
         if (query != null) {
-            QueryContext queryCtxt;
             // Manage multiple queries
             if (query.contains(QueryUtils.QUERY_SEPARATOR)) {
                 ArrayList<String> queries = QueryUtils.extractQueriesFromQuery(query, "\\" + QueryUtils.QUERY_SEPARATOR, removeAccents);
@@ -211,23 +211,8 @@ public class ResultSetElasticPageProviderOperation {
             }
         }
         if (pp != null) {
-            try {
-                // Check casting fields
-                manageCastFields(pp);
-                // Check field list items
-                if (hasFieldList()) {
-                    LOG.info("fieldList param is deprecated. Please, use ::list casting in your SELECT clause");
-                    // Manage fields for get its field items
-                    manageFieldList(pp);
-                }
-                // Check field complex items
-                if (hasFieldComplex()) {
-                    LOG.info("complexField param is deprecated. Please, use ::complex casting in your SELECT clause");
-                    manageFieldComplex(pp);
-                }
-            } catch (Exception e) {
-                LOG.error("Unable to manage casting or complex metadata", e);
-            }
+            // Post-processing result
+            processingResult(pp, queryCtxt);
         }
         PaginableRecordSetImpl res = new PaginableRecordSetImpl(pp);
         if (res.hasError()) {
@@ -238,19 +223,23 @@ public class ResultSetElasticPageProviderOperation {
     }
 
     /**
-     * Manage casting in fields.
+     * Processing final result.
      *
      * @param pp
+     * @param queryContext for multiples queries
      */
-    private void manageCastFields(PageProvider<Map<String, Serializable>> pp) throws Exception {
-        for (Map<String, Serializable> item : pp.getCurrentPage()) {
+    private void processingResult(PageProvider<Map<String, Serializable>> pp, QueryContext queryContext) {
+        for (Iterator<Map<String, Serializable>> it =  pp.getCurrentPage().iterator();it.hasNext();) {
+            Map<String, Serializable> item = it.next();
             if (item.get("ecm:uuid") == null) {
                 continue;
             }
+            boolean clear = false;
             Map<String, Serializable> newItems = new HashMap<>();
-            for (Map.Entry<String, Serializable> field : item.entrySet()) {
-                String metadata = field.getKey();
+            for (Map.Entry<String, Serializable> column : item.entrySet()) {
+                String metadata = column.getKey();
                 if (QueryUtils.hasCasting(metadata)) {
+                    clear = true;
                     DocumentRef idRef = new IdRef((String) item.get("ecm:uuid"));
                     try {
                         DocumentModel doc = session.getDocument(idRef);
@@ -267,85 +256,63 @@ public class ResultSetElasticPageProviderOperation {
                         LOG.warn("Document " + idRef + " is not found in Athento, no casting is doing.");
                     }
                 } else {
-                    newItems.put(metadata, field.getValue());
+                    newItems.put(metadata, column.getValue());
                 }
-            }
-            item.clear();
-            item.putAll(newItems);
-        }
-    }
-
-    /**
-     * Manage field complex.
-     */
-    private void manageFieldComplex(PageProvider<Map<String, Serializable>> pp) {
-        for (Map<String, Serializable> item : pp.getCurrentPage()) {
-            if (item.get("ecm:uuid") != null) {
-                try {
-                    DocumentModel doc = session.getDocument(new IdRef((String) item.get("ecm:uuid")));
-                    for (String field : fieldComplex) {
-                        if (field != null) {
-                            field = field.trim();
-                            if (!field.isEmpty()) {
-                                try {
-                                    String aux = field;
-                                    if (aux.contains("/")) {
-                                        aux = field.split("/")[0];
-                                    }
-                                    Property prop = doc.getProperty(aux);
-                                    if (prop.isComplex()) {
-                                        Serializable value = doc.getPropertyValue(field);
-                                        item.put(field, value);
+                if (hasFieldList()) {
+                    try {
+                        DocumentModel doc = session.getDocument(new IdRef((String) item.get("ecm:uuid")));
+                        for (String field : fieldList) {
+                            if (field != null) {
+                                field = field.trim();
+                                if (!field.isEmpty()) {
+                                    if ("ecm:tag".equals(field)) {
+                                        TagService tagService = Framework.getService(TagService.class);
+                                        List<Tag> tags = tagService.getDocumentTags(session, doc.getId(), null);
+                                        StringBuilder sb = new StringBuilder();
+                                        for (Iterator<Tag> it2 = tags.iterator(); it.hasNext(); ) {
+                                            Tag tag = it2.next();
+                                            sb.append(tag.getLabel());
+                                            if (it.hasNext()) {
+                                                sb.append(", ");
+                                            }
+                                        }
+                                        newItems.put(field, sb.toString());
                                     } else {
-                                        LOG.warn("Field " + field + " is not complex");
+                                        try {
+                                            Property prop = doc.getProperty(field);
+                                            if (prop.isList()) {
+                                                newItems.put(field, doc.getPropertyValue(field));
+                                            } else {
+                                                LOG.warn("Property " + field + " is not a list");
+                                            }
+                                        } catch (PropertyNotFoundException e) {
+                                            LOG.trace("Ignore document property " + field + " for " + doc.getId());
+                                        }
                                     }
-                                } catch (PropertyNotFoundException e) {
-                                    LOG.trace("Ignore document property " + field + " for " + doc.getId());
                                 }
                             }
                         }
+                    } catch (NuxeoException e) {
+                        LOG.trace("Document is not found into ResultSet " + item.get("ecm:uuid"));
                     }
-                } catch (ClientException e) {
-                    LOG.trace("Document is not found into ResultSet " + item.get("ecm:uuid"));
-                }
-            } else {
-                // Checking ecm:uuid to get list information
-                return;
-            }
-        }
-    }
-
-    /**
-     * Manage field list.
-     */
-    private void manageFieldList(PageProvider<Map<String, Serializable>> pp) {
-        for (Map<String, Serializable> item : pp.getCurrentPage()) {
-            if (item.get("ecm:uuid") != null) {
-                try {
-                    DocumentModel doc = session.getDocument(new IdRef((String) item.get("ecm:uuid")));
-                    for (String field : fieldList) {
-                        if (field != null) {
-                            field = field.trim();
-                            if (!field.isEmpty()) {
-                                if ("ecm:tag".equals(field)) {
-                                    TagService tagService = Framework.getService(TagService.class);
-                                    List<Tag> tags = tagService.getDocumentTags(session, doc.getId(), null);
-                                    StringBuilder sb = new StringBuilder();
-                                    for (Iterator<Tag> it = tags.iterator(); it.hasNext(); ) {
-                                        Tag tag = it.next();
-                                        sb.append(tag.getLabel());
-                                        if (it.hasNext()) {
-                                            sb.append(", ");
-                                        }
-                                    }
-                                    item.put(field, sb.toString());
-                                } else {
+                } else if (hasFieldComplex()) {
+                    try {
+                        DocumentModel doc = session.getDocument(new IdRef((String) item.get("ecm:uuid")));
+                        for (String field : fieldComplex) {
+                            if (field != null) {
+                                field = field.trim();
+                                if (!field.isEmpty()) {
                                     try {
-                                        Property prop = doc.getProperty(field);
-                                        if (prop.isList()) {
-                                            item.put(field, doc.getPropertyValue(field));
+                                        String aux = field;
+                                        if (aux.contains("/")) {
+                                            aux = field.split("/")[0];
+                                        }
+                                        Property prop = doc.getProperty(aux);
+                                        if (prop.isComplex()) {
+                                            Serializable value = doc.getPropertyValue(field);
+                                            newItems.put(field, value);
                                         } else {
-                                            LOG.warn("Property " + field + " is not a list");
+                                            LOG.warn("Field " + field + " is not complex");
                                         }
                                     } catch (PropertyNotFoundException e) {
                                         LOG.trace("Ignore document property " + field + " for " + doc.getId());
@@ -353,14 +320,39 @@ public class ResultSetElasticPageProviderOperation {
                                 }
                             }
                         }
+                    } catch (NuxeoException e) {
+                        LOG.trace("Document is not found into ResultSet " + item.get("ecm:uuid"));
                     }
-                } catch (ClientException e) {
-                    LOG.trace("Document is not found into ResultSet " + item.get("ecm:uuid"));
                 }
-            } else {
-                // Checking ecm:uuid to get list information
-                return;
+                if (queryContext != null) {
+                    int subqueryIter = 0;
+                    newItems.putAll(item);
+                    // Manage subqueries columns from context
+                    for (Map.Entry entry : queryContext.getSubqueryResults().entrySet()) {
+                        // Getting columns from subqueries
+                        Map<String, Map> subqueryResult = (Map<String, Map>) entry.getValue();
+                        Map<String, Serializable> resultFromId = subqueryResult.get(item.get("ecm:uuid"));
+                        if (resultFromId != null) {
+                            for (Map.Entry resultEntry : resultFromId.entrySet()) {
+                                Serializable value = (Serializable) resultEntry.getValue();
+                                if (!value.equals(item.get("ecm:uuid"))) {
+                                    String joinedColumn = (String) resultEntry.getKey();
+                                    if (newItems.get(joinedColumn) != null) {
+                                        newItems.remove(joinedColumn);
+                                        joinedColumn += "_" + subqueryIter;
+                                    }
+                                    newItems.put(joinedColumn, value);
+                                }
+                            }
+                        }
+                        subqueryIter++;
+                    }
+                }
             }
+            if (clear) {
+                item.clear();
+            }
+            item.putAll(newItems);
         }
     }
 

@@ -461,7 +461,19 @@ public class QueryUtils {
             }
         } else {
             String query = queryCtxt.getQuery();
-            List<Map<String, Serializable>> result = executeResultSet(ppService, query, 0, -1, new ArrayList<SortInfo>(0), properties, params);
+            List<Map<String, Serializable>> result = executeResultSet(ppService, query, 0, -1, new ArrayList<>(0), properties, params);
+            // Save into subquery results into context
+            List<String> columnParamsForQuery = extractColumnParams(queryCtxt.getCompleteQuery());
+            Map<String, Map<String, Serializable>> items = new HashMap<>();
+            for (String column : columnParamsForQuery) {
+                for (Map<String, Serializable> values : result) {
+                    if (values.containsKey(column)) {
+                        items.put((String) values.get(column), values);
+                    }
+                }
+            }
+            queryCtxt.getSubqueryResults().put(query, items);
+            // Manage subquery clauses
             Map<String, List<Serializable>> clauses = getMetadataClauses(result);
             for (Map.Entry<String, List<Serializable>> entry : clauses.entrySet()) {
                 String metadata = entry.getKey();
@@ -470,6 +482,23 @@ public class QueryUtils {
             }
             executeRecursiveResultset(ppService, queryCtxt, properties, params, executeLast);
         }
+    }
+
+    /**
+     * Extract column params.
+     *
+     * @param query
+     * @return
+     */
+    public static List<String> extractColumnParams(String query) {
+        List<String> allMatches = new ArrayList<>();
+        String pattern = "\\$\\{(.*?)\\}";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(query);
+        while(m.find()) {
+            allMatches.add(m.group(1));
+        }
+        return allMatches;
     }
 
     /**
@@ -566,7 +595,7 @@ public class QueryUtils {
             for (Iterator<Map.Entry<String, Serializable>> itEntry = record.entrySet().iterator(); itEntry.hasNext();) {
                 Map.Entry<String, Serializable> entry = itEntry.next();
                 if (clauses.get(entry.getKey()) == null) {
-                    clauses.put(entry.getKey(), new ArrayList<Serializable>());
+                    clauses.put(entry.getKey(), new ArrayList<>());
                 }
                 clauses.get(entry.getKey()).add(entry.getValue());
             }
