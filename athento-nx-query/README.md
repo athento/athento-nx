@@ -140,3 +140,18 @@ also, you can use:
 * email
 * ...other available user schema field
 
+## Join Queries
+
+To join two queries or more, you must to use the pipeline char (|) between queries and the parameter format ${...} to make the join condition. For example,
+
+```SELECT ecm:uuid FROM Document WHERE ecm:path = '/default-domain/workspaces/myworkspace'|SELECT ecm:uuid, dc:title FROM Document WHERE ecm:uuid IN (${ecm:uuid})```
+
+This query gets children documents from parent with path _/default-domain/workspaces/myworkspace_
+
+Another,
+
+```SELECT ecm:uuid, nt:targetDocumentId FROM TaskDoc WHERE ecm:currentLifeCycleState NOT IN ('deleted', 'ended') AND nt:actors = 'JohnRive'|SELECT ecm:uuid, dc:title FROM Document WHERE ecm:uuid IN (${nt:targetDocumentId})```
+
+where it gets the uuid and title about documents that they are related with all user "JohnRive" tasks in Athento ECM.
+
+
