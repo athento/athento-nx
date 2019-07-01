@@ -81,7 +81,9 @@ public class InheritMetadataListener implements PostCommitFilteringEventListener
                 } catch (Exception e) {
                     LOG.error("Unable to execute inherit metadata from parent operation", e);
                 }
-            } else if (documentMustBeApplied(currentDoc)) {
+            }
+            // Check if document must be applied to
+            if (documentMustBeApplied(currentDoc)) {
                 final String ignoredMetadatas = InheritUtil.readConfigValue(session, "metadataInheritanceConfig:ignoredMetadatas", "");
                 if (DocumentEventTypes.DOCUMENT_UPDATED.equals(eventName)) {
                     // Check sibling inheritance
