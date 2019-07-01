@@ -279,14 +279,47 @@ public class ResultSetElasticPageProviderOperation {
                                         newItems.put(field, sb.toString());
                                     } else {
                                         try {
-                                            Property prop = doc.getProperty(field);
+                                            String aux = field;
+                                            if (field.contains("/")) {
+                                                aux = field.split("/")[0];
+                                            }
+                                            Property prop = doc.getProperty(aux);
                                             if (prop.isList()) {
-                                                newItems.put(field, doc.getPropertyValue(field));
+                                                if (field.contains("/")) {
+                                                    aux = field.split("/")[1];
+                                                    if (aux != null) {
+                                                        ArrayList listResult = new ArrayList<>();
+                                                        for (Property p : prop) {
+                                                            if (p.isComplex()) {
+                                                                Serializable val = p.getValue(aux);
+                                                                if (val instanceof Blob) {
+                                                                    HashMap<String, Serializable> complexBlobResult = new HashMap<>();
+                                                                    String filename = ((Blob) val).getFilename();
+                                                                    String encoding = ((Blob) val).getEncoding();
+                                                                    String mimetype = ((Blob) val).getMimeType();
+                                                                    String digest = ((Blob) val).getDigest();
+                                                                    complexBlobResult.put("filename", filename);
+                                                                    complexBlobResult.put("encoding", encoding);
+                                                                    complexBlobResult.put("mimetype", mimetype);
+                                                                    complexBlobResult.put("digest", digest);
+                                                                    listResult.add(complexBlobResult);
+                                                                } else {
+                                                                    listResult.add(p.getValue(aux));
+                                                                }
+                                                            }
+                                                        }
+                                                        newItems.put(field, listResult);
+                                                    } else {
+                                                        newItems.put(field, doc.getPropertyValue(field));
+                                                    }
+                                                } else {
+                                                    newItems.put(field, doc.getPropertyValue(field));
+                                                }
                                             } else {
                                                 LOG.warn("Property " + field + " is not a list");
                                             }
                                         } catch (PropertyNotFoundException e) {
-                                            LOG.trace("Ignore document property " + field + " for " + doc.getId());
+                                            LOG.warn("Ignore document property " + field + " for " + doc.getId());
                                         }
                                     }
                                 }
