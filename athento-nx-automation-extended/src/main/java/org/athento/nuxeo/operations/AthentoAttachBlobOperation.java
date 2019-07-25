@@ -1,14 +1,3 @@
-/*
- * Copyright (c) 2006-2011 Nuxeo SA (http://nuxeo.com/) and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     bstefanescu
- */
 package org.athento.nuxeo.operations;
 
 import org.apache.commons.logging.Log;
@@ -37,13 +26,15 @@ import java.io.Serializable;
 /**
  * Override Blob.Attach filling file:filename metadata.
  */
-@Operation(id = AttachBlob.ID, category = Constants.CAT_BLOB, label = "Attach File", description = "Attach the input file to the document given as a parameter. If the xpath points to a blob list then the blob is appended to the list, otherwise the xpath should point to a blob property. If the save parameter is set the document modification will be automatically saved. Return the blob.")
+@Operation(id = AttachBlob.ID, category = Constants.CAT_BLOB, label = "Attach File",
+            description = "Attach the input file to the document given as a parameter. If the xpath points to a blob list then the blob is appended to the list, otherwise the xpath should point to a blob property. If the save parameter is set the document modification will be automatically saved. Return the blob.",
+            aliases = { "Blob.Attach", "Athento.BlobAttach" })
 public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
 
     /** Log. */
     private static final Log LOG = LogFactory.getLog(AthentoAttachBlobOperation.class);
 
-    public static final String ID = "Blob.Attach";
+    public static final String ID = "Blob.AttachOnDocument";
 
     public static final String BLOB_ATTACH_EVENT = "blobAttachEvent";
 
@@ -71,6 +62,7 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
 
     @OperationMethod(collector = BlobCollector.class)
     public Blob run(Blob blob) throws Exception {
+        LOG.info("Blob attach running...");
         // Check access
         checkAllowedAccess(ctx);
         DocumentHelper.addBlob(doc.getProperty(xpath), blob);
@@ -83,6 +75,7 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
             // Fire event before update xpath
             fireEvent(blob);
             if (CONTENT_FIELD.equals(xpath)) {
+                LOG.info("Set file:filename for " + doc.getId());
                 doc.setPropertyValue(FILENAME_FIELD, blob.getFilename());
             }
             doc = session.saveDocument(doc);

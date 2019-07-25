@@ -8,7 +8,7 @@
 		<operation class="org.athento.nuxeo.security.operation.GetPublicURLOperation" />
 
         <!-- Overrided operations -->
-		<operation class="org.athento.nuxeo.security.operation.AttachBlob" replace="true" />
+		<!--operation class="org.athento.nuxeo.security.operation.AttachBlob" replace="true" /-->
         <operation class="org.athento.nuxeo.security.operation.SetDocumentBlob" replace="true" />
 
 	</extension>
