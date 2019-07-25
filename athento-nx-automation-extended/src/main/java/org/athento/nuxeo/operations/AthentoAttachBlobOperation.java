@@ -57,7 +57,7 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
     @Context
     protected CoreSession session;
 
-    @Param(name = "xpath", required = false, values = FILENAME_FIELD)
+    @Param(name = "xpath", required = false, values = CONTENT_FIELD)
     protected String xpath = CONTENT_FIELD;
 
     @Param(name = "document")
@@ -82,7 +82,7 @@ public class AthentoAttachBlobOperation extends AbstractAthentoOperation {
             }
             // Fire event before update xpath
             fireEvent(blob);
-            if (FILENAME_FIELD.equals(xpath)) {
+            if (CONTENT_FIELD.equals(xpath)) {
                 doc.setPropertyValue(FILENAME_FIELD, blob.getFilename());
             }
             doc = session.saveDocument(doc);
