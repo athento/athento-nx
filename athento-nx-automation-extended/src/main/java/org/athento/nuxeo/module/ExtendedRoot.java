@@ -8,6 +8,7 @@ import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 
 /**
  * The root entry for the WebEngine module for Athento.
@@ -24,23 +25,20 @@ public class ExtendedRoot extends ModuleRoot {
         return newObject("entries");
     }
 
-    /**
-     * Handle error.
-     *
-     * @param cause
-     * @return
-     */
+    @Path("/audit")
+    public Object doAudit() { return newObject("audit"); }
+
     @Override
-    public Object handleError(final Throwable cause) {
-        Throwable unWrapException = ExceptionHelper.unwrapException(cause);
+    public Object handleError(WebApplicationException e) {
+        Throwable unWrapException = ExceptionHelper.unwrapException(e);
         if (unWrapException instanceof RestOperationException) {
             int customHttpStatus = ((RestOperationException) unWrapException)
                     .getStatus();
             return WebException.newException(
-                    cause.getMessage(), cause, customHttpStatus);
+                    e.getMessage(), e, customHttpStatus);
         }
         return WebException.newException(
-                cause.getMessage(), unWrapException);
+                e.getMessage(), unWrapException);
     }
 
 }

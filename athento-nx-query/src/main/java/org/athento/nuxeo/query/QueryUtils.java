@@ -34,7 +34,6 @@ public class QueryUtils {
     /** Log. */
     private static final Log LOG = LogFactory.getLog(QueryUtils.class);
 
-
     enum CastTypes {
         date, shortdate, vocabulary, document, user, parent, complex, list;
     }
@@ -683,6 +682,16 @@ public class QueryUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Format date to default.
+     *
+     * @param date
+     * @return
+     */
+    public static String formatDate(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 
 }
