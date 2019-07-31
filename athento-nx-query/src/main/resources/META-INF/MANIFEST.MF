@@ -4,7 +4,8 @@ Bundle-Vendor: Athento
 Bundle-Version: 1.0.0
 Bundle-Name: Athento Query Optimization
 Nuxeo-Component: OSGI-INF/operation-contrib.xml,
- OSGI-INF/configuration-contrib.xml
+ OSGI-INF/configuration-contrib.xml,
+ OSGI-INF/elasticsearch-audit-contrib.xml
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.athento.nuxeo.queryoptimization
 Created-By: Athento

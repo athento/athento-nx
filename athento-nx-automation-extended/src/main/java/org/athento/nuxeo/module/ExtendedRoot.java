@@ -25,6 +25,9 @@ public class ExtendedRoot extends ModuleRoot {
         return newObject("entries");
     }
 
+    @Path("/audit")
+    public Object doAudit() { return newObject("audit"); }
+
     @Override
     public Object handleError(final WebApplicationException cause) {
         Throwable unWrapException = ExceptionHelper.unwrapException(cause);
