@@ -4,6 +4,7 @@ package org.athento.nuxeo.module.workflow;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.provider.ESDocumentAuditPageProvider;
+import org.athento.utils.DateUtils;
 import org.nuxeo.ecm.automation.core.util.DocumentHelper;
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -25,10 +26,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Web object to manage workflows audit entries.
@@ -174,6 +172,12 @@ public class WorkflowEntriesObject extends DefaultObject {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
+            if (value != null && value.toLowerCase().startsWith("now(")) {
+                Date date = DateUtils.formatFromReserved(value);
+                if (date != null) {
+                    value = DateUtils.formatDate(date, "yyyy-MM-dd");
+                }
+            }
             DocumentHelper.setProperty(session, doc, key, value);
         }
     }

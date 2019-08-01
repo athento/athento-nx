@@ -47,26 +47,6 @@
 			<classifier>jdk15</classifier>
 		</dependency>
 		<dependency>
-			<groupId>org.nuxeo.ecm.platform</groupId>
-			<artifactId>nuxeo-platform-webapp-base</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nuxeo.common</groupId>
-			<artifactId>nuxeo-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nuxeo.runtime</groupId>
-			<artifactId>nuxeo-runtime</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nuxeo.ecm.core</groupId>
-			<artifactId>nuxeo-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nuxeo.ecm.core</groupId>
-			<artifactId>nuxeo-core-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core-query</artifactId>
 		</dependency>
@@ -101,21 +81,12 @@
 			<artifactId>nuxeo-core-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.nuxeo.ecm.platform</groupId>
-			<artifactId>nuxeo-platform-directory-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core-cache</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.nuxeo.ecm.webengine</groupId>
 			<artifactId>nuxeo-webengine-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nuxeo.ecm.platform</groupId>
-			<artifactId>nuxeo-platform-tag-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.nuxeo.ecm.platform</groupId>
