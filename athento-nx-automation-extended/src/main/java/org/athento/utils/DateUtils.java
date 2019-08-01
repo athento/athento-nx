@@ -53,31 +53,29 @@ public class DateUtils {
      */
     public static Date formatFromReserved(String key) {
         if (key != null && key.toLowerCase().startsWith("now(")) {
-            Pattern p = Pattern.compile("^(now|NOW){1}\\(([-+]{0,1}[0-9]*[d|m|y]{1})\\)$");
+            Pattern p = Pattern.compile("(now|NOW){1}\\(([\\+-]{0,1}[0-9]+[dmy]*)*\\)");
             Matcher m = p.matcher(key);
             if (m.matches()) {
                 try {
-                    int days = 0;
-                    int months = 0;
-                    int years = 0;
-                    if (m.groupCount() < 2) {
-                         return GregorianCalendar.getInstance().getTime();
-                    } else {
-                        Calendar gc = GregorianCalendar.getInstance();
-                        String value = m.group(2);
-                        if (value.endsWith("d") || value.endsWith("D")) {
-                            days = Integer.valueOf(value);
-                            gc.add(GregorianCalendar.DAY_OF_MONTH, days);
-                        } else if (value.endsWith("m") || value.endsWith("M")) {
-                            months = Integer.valueOf(value);
-                            gc.add(GregorianCalendar.MONTH, months);
-                        } else if (value.endsWith("y") || value.endsWith("Y")) {
-                            years = Integer.valueOf(value);
-                            gc.add(GregorianCalendar.YEAR, years);
-                        }
-                        LOG.info(days + ", " + months + ", " + years);
+                    int days;
+                    int months;
+                    int years;
+                    Calendar gc = GregorianCalendar.getInstance();
+                    String value = m.group(2);
+                    if (value == null) {
                         return gc.getTime();
                     }
+                    if (value.endsWith("d") || value.endsWith("D")) {
+                        days = Integer.valueOf(value.substring(0, value.length() - 1));
+                        gc.add(GregorianCalendar.DAY_OF_MONTH, days);
+                    } else if (value.endsWith("m") || value.endsWith("M")) {
+                        months = Integer.valueOf(value.substring(0, value.length() - 1));
+                        gc.add(GregorianCalendar.MONTH, months);
+                    } else if (value.endsWith("y") || value.endsWith("Y")) {
+                        years = Integer.valueOf(value.substring(0, value.length() - 1));
+                        gc.add(GregorianCalendar.YEAR, years);
+                    }
+                    return gc.getTime();
                 } catch (NumberFormatException e) {
                     LOG.warn("Format from reserved error", e);
                 }

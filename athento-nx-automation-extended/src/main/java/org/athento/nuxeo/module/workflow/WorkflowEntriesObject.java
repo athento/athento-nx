@@ -176,7 +176,6 @@ public class WorkflowEntriesObject extends DefaultObject {
                 Date date = DateUtils.formatFromReserved(value);
                 if (date != null) {
                     value = DateUtils.formatDate(date, "yyyy-MM-dd");
-                    LOG.info("Date=" + value);
                 }
             }
             DocumentHelper.setProperty(session, doc, key, value);
