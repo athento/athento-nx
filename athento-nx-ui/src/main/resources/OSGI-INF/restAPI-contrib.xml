@@ -22,7 +22,7 @@
         <restletPlugin
                 name="getTiles" enabled="false" />
 
-        <restletPlugin
+        <!--restletPlugin
                 name="athTiles"
                 class="org.athento.nuxeo.ui.restlet.PictureTilesRestlets"
                 enabled="true"
@@ -30,7 +30,7 @@
             <urlPatterns>
                 <urlPattern>/getTiles/{repoId}/{docId}/{tileWidth}/{tileHeight}/{maxTiles}</urlPattern>
             </urlPatterns>
-        </restletPlugin>
+        </restletPlugin-->
 
         <restletPlugin
                 name="inlineFileRestlet"

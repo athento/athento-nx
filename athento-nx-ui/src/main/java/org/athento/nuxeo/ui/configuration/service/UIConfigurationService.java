@@ -112,7 +112,7 @@ public class UIConfigurationService extends DefaultComponent implements UIConfig
         if (UIConfigurationService.configUIDoc == null) {
             new UnrestrictedSessionRunner(session) {
                 @Override
-                public void run() throws ClientException {
+                public void run() {
                     DocumentModel doc = null;
                     // Get configuration-ui document
                     DocumentModelList configUIDocList = session.query(DOC_CONFIG_UNIQUE_QUERY);
