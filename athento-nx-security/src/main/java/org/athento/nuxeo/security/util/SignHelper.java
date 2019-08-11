@@ -120,6 +120,7 @@ public final class SignHelper {
         PKCS8EncodedKeySpec spec = new  PKCS8EncodedKeySpec(privKey);
         KeyFactory fact = KeyFactory.getInstance("RSA");
         return fact.generatePrivate(spec);*/
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
         PemReader pemReader = new PemReader(new InputStreamReader(
                 new FileInputStream(filename)));
