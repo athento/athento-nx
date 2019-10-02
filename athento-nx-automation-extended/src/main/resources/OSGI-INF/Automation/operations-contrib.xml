@@ -24,6 +24,7 @@
         <operation class="org.athento.nuxeo.operations.AthentoMultiAttachBlobOperation" />
         <operation class="org.athento.nuxeo.operations.AthentoDocumentMutateOperation" />
         <operation class="org.athento.nuxeo.operations.DocumentFetchOrCreateOperation" />
+        <operation class="org.athento.nuxeo.operations.RemoveLastDocumentBlob"/>
 
         <!-- Properties operations -->
         <operation class="org.athento.nuxeo.operations.SetDocumentComplexPropertyOperation" />
