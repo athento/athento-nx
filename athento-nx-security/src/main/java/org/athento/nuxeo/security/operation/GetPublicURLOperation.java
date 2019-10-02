@@ -108,6 +108,8 @@ public class GetPublicURLOperation {
         }
         String host = Framework.getProperty("nuxeo.url");
         // Return download URL
+        LOG.info("XPath URL: " + xpath);
+        xpath = xpath.replace("/", "-");
         String url = String.format(DOWNLOAD_RESTLET_STRING, host, "default", doc.getId(), xpath, disposition, token);
         if (auth != null) {
             url += "&auth=" + auth;
