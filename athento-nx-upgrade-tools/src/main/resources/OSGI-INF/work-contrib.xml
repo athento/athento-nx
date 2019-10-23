@@ -7,6 +7,11 @@
       <category>athentoStatistics</category>
       <name>Athento Stats</name>
     </queue>
+    <queue id="exportMassive">
+      <maxThreads>1</maxThreads>
+      <category>exportCSV</category>
+      <name>Athento Massive Export</name>
+    </queue>
   </extension>
 
 </component>

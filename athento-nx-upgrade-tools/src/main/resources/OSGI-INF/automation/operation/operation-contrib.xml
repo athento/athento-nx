@@ -23,6 +23,7 @@
 		<operation class="org.athento.nx.upgrade.operation.RecalculateThumbnailsOperation"/>
 
 		<operation class="org.athento.nx.upgrade.operation.ElasticsearchReindexQueryOperation"/>
+		<operation class="org.athento.nx.upgrade.operation.ExportMassiveOperation"/>
 
 	</extension>
 </component>
