@@ -162,11 +162,12 @@ public class ExportMassiveCSVWorker extends AbstractWork {
             LOG.info("Saving children of " + ref + ": " + docList.size() + ". Total: " + totalDocs);
         }
         for (DocumentModel doc : docList) {
-            if (doc.isFolder()) {
-                writeDocuments(printer, doc.getRef());
-            } else if (this.doctype.equals(doc.getType())) {
+            if (this.doctype.equals(doc.getType())) {
                 printer.printRecord(extractCSVLine(doc));
                 totalDocs++;
+            }
+            if (doc.isFolder()) {
+                writeDocuments(printer, doc.getRef());
             }
         }
     }
