@@ -17,6 +17,8 @@ import org.nuxeo.ecm.core.schema.types.Schema;
 import org.nuxeo.ecm.core.work.AbstractWork;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
+import org.nuxeo.ecm.platform.tag.Tag;
+import org.nuxeo.ecm.platform.tag.TagService;
 import org.nuxeo.runtime.api.Framework;
 import org.restlet.util.DateUtils;
 
@@ -24,6 +26,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Export massive worker.
@@ -199,6 +202,8 @@ public class ExportMassiveCSVWorker extends AbstractWork {
                         fields.add(doc.getType());
                 } else if ("ecm:source".equals(field)) {
                     fields.add(doc.getSourceId());
+                } else if ("ecm:tag".equals(field)) {
+                    fields.add(getTags(doc));
                 } else {
                     fields.add("");
                 }
@@ -274,6 +279,31 @@ public class ExportMassiveCSVWorker extends AbstractWork {
         }
 
         return fields;
+    }
+
+    /**
+     * Get tags of document.
+     *
+     * @param doc
+     * @return
+     */
+    private String getTags(DocumentModel doc) {
+        TagService tagService = getTagService();
+        if (tagService == null) {
+            return "";
+        }
+        List<Tag> tags = tagService.getDocumentTags(this.session, doc.getId(), null);
+        return tags.stream().map(t -> t.getLabel()).collect(Collectors.joining(","));
+    }
+
+    /**
+     * Get tag service.
+     *
+     * @return
+     */
+    protected TagService getTagService() {
+        TagService tagService = Framework.getService(TagService.class);
+        return tagService.isEnabled() ? tagService : null;
     }
 
     /**
