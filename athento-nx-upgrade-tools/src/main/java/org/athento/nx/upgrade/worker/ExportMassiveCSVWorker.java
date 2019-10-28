@@ -3,9 +3,13 @@ package org.athento.nx.upgrade.worker;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.automation.client.model.StreamBlob;
 import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
 import org.nuxeo.ecm.core.api.model.Property;
 import org.nuxeo.ecm.core.api.model.impl.primitives.BlobProperty;
 import org.nuxeo.ecm.core.schema.SchemaManager;
@@ -16,9 +20,7 @@ import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.runtime.api.Framework;
 import org.restlet.util.DateUtils;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -70,6 +72,9 @@ public class ExportMassiveCSVWorker extends AbstractWork {
 
     /** Total documents exported. */
     private long totalDocs = 0;
+
+    /** Download information. */
+    private String downloadPath = null;
 
 
     /**
@@ -244,6 +249,20 @@ public class ExportMassiveCSVWorker extends AbstractWork {
                             if (blob != null) {
                                 String digest = blob.getDigest();
                                 propertyValue = String.join("/", digest.substring(0, 2), digest.substring(2, 4), digest);
+                                // Manage download
+                                if (downloadPath != null) {
+                                    try {
+                                        String subdirs = digest.substring(0, 2) + "/" + digest.substring(2, 4);
+                                        File dirs = new File(downloadPath + "/" + subdirs);
+                                        dirs.mkdirs();
+                                        File f = new File(downloadPath + "/" + subdirs + "/" + blob.getDigest());
+                                        try (OutputStream os = new FileOutputStream(f)) {
+                                            IOUtils.copy(blob.getStream(), os);
+                                        }
+                                    } catch (IOException e) {
+                                        LOG.error("Unable to download file", e);
+                                    }
+                                }
                             }
                         }
                     }
@@ -349,5 +368,9 @@ public class ExportMassiveCSVWorker extends AbstractWork {
 
     public void setDelimiter(char delimiter) {
         this.delimiter = delimiter;
+    }
+
+    public void setDownloadPath(String downloadPath) {
+        this.downloadPath = downloadPath;
     }
 }

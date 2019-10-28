@@ -40,12 +40,21 @@ public class ExportMassiveOperation {
     @Param(name = "metadatas")
     protected StringList metadatas;
 
+    @Param(name="download", required = false)
+    protected boolean download = false;
+
+    @Param(name="downloadPath", required = false)
+    protected String downloadPath;
+
     /** Run. */
     @OperationMethod
     public String run(DocumentModel doc) {
         LOG.info("Starting operation CSV Massive export...");
         ExportMassiveCSVWorker worker = new ExportMassiveCSVWorker(doc, doctype,
                 metadatas, destinyPath);
+        if (download) {
+            worker.setDownloadPath(downloadPath);
+        }
         WorkManager workManager = Framework.getLocalService(WorkManager.class);
         workManager.schedule(worker, WorkManager.Scheduling.IF_NOT_RUNNING_OR_SCHEDULED);
         return "OK";
