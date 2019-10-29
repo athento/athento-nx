@@ -13,7 +13,9 @@ import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 
 
-@Operation(id = AthentoDocumentCreateOperation.ID, category = "Athento", label = "Athento Document Change LifeCycle", description = "Set Lifecycle to document or list of documents")
+@Operation(id = AthentoDocumentCreateOperation.ID, category = "Athento",
+        label = "Athento Document Change LifeCycle", description = "Set Lifecycle to document or list of documents",
+        aliases = { "Document.SetLifeCycle" })
 public class AthentoDocumentSetLifeCycleOperation {
 
     public static final String ID = "Document.FollowLifecycleTransition";
