@@ -9,6 +9,8 @@
             replace="true" />
         <operation class="org.athento.nuxeo.operations.AthentoFilterDocuments"
                    replace="true" />
+        <operation class="org.athento.nuxeo.operations.AthentoDocumentSetLifeCycleOperation"
+                   replace="true" />
 
         <!-- Document operations -->
         <operation class="org.athento.nuxeo.operations.AthentoDocumentCreateOperation" />
