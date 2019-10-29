@@ -56,7 +56,7 @@ public class ExportMassiveOperation {
             worker.setDownloadPath(downloadPath);
         }
         WorkManager workManager = Framework.getLocalService(WorkManager.class);
-        workManager.schedule(worker, WorkManager.Scheduling.IF_NOT_RUNNING_OR_SCHEDULED);
+        workManager.schedule(worker, WorkManager.Scheduling.IF_NOT_RUNNING_OR_SCHEDULED, true);
         return "OK";
     }
 

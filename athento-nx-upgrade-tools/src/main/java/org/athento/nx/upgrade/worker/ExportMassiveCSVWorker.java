@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Transaction;
 import org.nuxeo.ecm.automation.client.model.StreamBlob;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
@@ -20,6 +21,7 @@ import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.tag.Tag;
 import org.nuxeo.ecm.platform.tag.TagService;
 import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.transaction.TransactionHelper;
 import org.restlet.util.DateUtils;
 
 import java.io.*;
@@ -164,19 +166,26 @@ public class ExportMassiveCSVWorker extends AbstractWork {
      * @param ref
      * @exception IOException on write error
      */
-    private void writeDocuments(CSVPrinter printer, DocumentRef ref) throws IOException {
-        DocumentModelList docList = session.getChildren(ref);
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Saving children of " + ref + ": " + docList.size() + ". Total: " + totalDocs);
-        }
-        for (DocumentModel doc : docList) {
-            if (this.doctype.equals(doc.getType())) {
-                printer.printRecord(extractCSVLine(doc));
-                totalDocs++;
+    private void writeDocuments(CSVPrinter printer, DocumentRef ref) {
+        TransactionHelper.commitOrRollbackTransaction();
+        try {
+            TransactionHelper.startTransaction();
+            DocumentModelList docList = session.getChildren(ref);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Saving children of " + ref + ": " + docList.size() + ". Total: " + totalDocs);
             }
-            if (doc.isFolder()) {
-                writeDocuments(printer, doc.getRef());
+            for (DocumentModel doc : docList) {
+                if (this.doctype.equals(doc.getType())) {
+                    printer.printRecord(extractCSVLine(doc));
+                    totalDocs++;
+                }
+                if (doc.isFolder()) {
+                    writeDocuments(printer, doc.getRef());
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Error writing documents", e);
+            TransactionHelper.commitOrRollbackTransaction();
         }
     }
 
