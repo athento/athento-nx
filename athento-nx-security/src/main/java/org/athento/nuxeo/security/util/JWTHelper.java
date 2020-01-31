@@ -29,7 +29,6 @@ public final class JWTHelper {
 
     private static final String JWT_SECRET_PARAM = "athento.jwt.secret";
 
-    private static final String DEFAULT_SECRET = "lolailolaaflamencado";
     private static final String DEFAULT_ISSUER = "athento";
 
     /**
@@ -124,7 +123,7 @@ public final class JWTHelper {
      * @return
      */
     private static Algorithm getHmacAlgorithm() {
-        String secret = Framework.getProperty(JWT_SECRET_PARAM, DEFAULT_SECRET);
+        String secret = Framework.getProperty(JWT_SECRET_PARAM);
         if (secret == null) {
             return null;
         }

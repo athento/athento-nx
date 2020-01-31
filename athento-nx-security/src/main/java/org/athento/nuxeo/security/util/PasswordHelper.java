@@ -143,8 +143,7 @@ public final class PasswordHelper {
 
         private static void init() {
             try {
-                myEncryptionKey = Framework.getProperty("encryption.key",
-                        "u78a7fg7y9776FFYOAD68GOYGsafasdfoG66fdF6DF6dss234");
+                myEncryptionKey = Framework.getProperty("encryption.key");
                 myEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
                 arrayBytes = myEncryptionKey.getBytes(UNICODE_FORMAT);
                 ks = new DESedeKeySpec(arrayBytes);
