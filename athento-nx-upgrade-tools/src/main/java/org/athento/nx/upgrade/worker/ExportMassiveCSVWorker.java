@@ -63,6 +63,9 @@ public class ExportMassiveCSVWorker extends AbstractWork {
     /** Doctype. */
     protected String doctype;
 
+    /** Doctypes. */
+    protected String [] doctypes;
+
     /** File destiny path. */
     protected String destinyPathFile;
 
@@ -94,7 +97,11 @@ public class ExportMassiveCSVWorker extends AbstractWork {
                                   List<String> metadatas, String destinyPathFile) {
         this.session = doc.getCoreSession();
         this.root = doc;
-        this.doctype = doctype;
+        if (doctype.contains(",")) {
+            this.doctypes = doctype.split(",");
+        } else {
+            this.doctype = doctype;
+        }
         this.destinyPathFile = destinyPathFile;
         this.metadatas= metadatas;
     }
@@ -175,9 +182,18 @@ public class ExportMassiveCSVWorker extends AbstractWork {
                 LOG.info("Saving children of " + ref + ": " + docList.size() + ". Total: " + totalDocs);
             }
             for (DocumentModel doc : docList) {
-                if (this.doctype.equals(doc.getType())) {
-                    printer.printRecord(extractCSVLine(doc));
-                    totalDocs++;
+                if (this.doctype != null) {
+                    if (this.doctype.equals(doc.getType())) {
+                        printer.printRecord(extractCSVLine(doc));
+                        totalDocs++;
+                    }
+                } else {
+                    if (this.doctypes != null) {
+                        if (exportDoctype(doc.getType())) {
+                            printer.printRecord(extractCSVLine(doc));
+                            totalDocs++;
+                        }
+                    }
                 }
                 if (doc.isFolder()) {
                     writeDocuments(printer, doc.getRef());
@@ -187,6 +203,23 @@ public class ExportMassiveCSVWorker extends AbstractWork {
             LOG.error("Error writing documents", e);
             TransactionHelper.commitOrRollbackTransaction();
         }
+    }
+
+    /**
+     * Check if a doctype will be exported or not.
+     *
+     * @param doctype
+     * @return
+     */
+    private boolean exportDoctype(String doctype) {
+        if (this.doctypes != null) {
+            for (String dtype : this.doctypes) {
+                if (dtype.trim().equals(doctype)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -226,64 +259,76 @@ public class ExportMassiveCSVWorker extends AbstractWork {
                 String propertyValue = "";
                 String prefix = metadata.split(":")[0];
                 if (hasSchema(doc, prefix)) {
-                     Property prop = doc.getProperty(metadata);
-                    if (prop.isScalar()) {
-                        // FIX
-                        if (metadata.equals("file:filename")) {
-                            Blob blob = (Blob) doc.getPropertyValue("file:content");
-                            if (blob != null) {
-                                propertyValue = blob.getFilename();
-                            }
-                        } else {
-                            Serializable value = prop.getValue();
-                            if (cast != null) {
-                                try {
-                                    if ("vocabulary".equals(cast)) {
-                                        String vocabulary = field.split("::")[2];
-                                        if (!"".equals(vocabulary)) {
-                                            propertyValue = getVocabularyEntry(vocabulary, (String) value);
-                                        }
-                                    }
-                                } catch (IndexOutOfBoundsException ioe) {
-                                    LOG.info("Error casting column", ioe);
+                    try {
+                        Property prop = doc.getProperty(metadata);
+                        if (prop.isScalar()) {
+                            // FIX
+                            if (metadata.equals("file:filename")) {
+                                Blob blob = (Blob) doc.getPropertyValue("file:content");
+                                if (blob != null) {
+                                    propertyValue = blob.getFilename();
                                 }
                             } else {
-                                if (value != null) {
-                                    if (value instanceof GregorianCalendar) {
-                                        propertyValue = DateUtils.format(((GregorianCalendar) value).getTime(), "dd-MM-yyyy HH:mm:ss");
-                                    } else {
-                                        propertyValue = String.valueOf(value);
-                                    }
-                                }
-                            }
-                        }
-                    } else if (prop.isComplex()) {
-                        if (prop instanceof BlobProperty) {
-                            Blob blob = (Blob) doc.getPropertyValue(metadata);
-                            if (blob != null) {
-                                String digest = blob.getDigest();
-                                propertyValue = String.join("/", digest.substring(0, 2), digest.substring(2, 4), digest);
-                                // Manage download
-                                if (downloadPath != null) {
+                                Serializable value = prop.getValue();
+                                if (cast != null) {
                                     try {
-                                        String subdirs = digest.substring(0, 2) + "/" + digest.substring(2, 4);
-                                        File dirs = new File(downloadPath + "/" + subdirs);
-                                        dirs.mkdirs();
-                                        File f = new File(downloadPath + "/" + subdirs + "/" + blob.getDigest());
-                                        try (OutputStream os = new FileOutputStream(f)) {
-                                            IOUtils.copy(blob.getStream(), os);
+                                        if ("vocabulary".equals(cast)) {
+                                            String vocabulary = field.split("::")[2];
+                                            if (!"".equals(vocabulary)) {
+                                                propertyValue = getVocabularyEntry(vocabulary, (String) value);
+                                            }
                                         }
-                                    } catch (IOException e) {
-                                        LOG.error("Unable to download file", e);
+                                    } catch (IndexOutOfBoundsException ioe) {
+                                        LOG.info("Error casting column", ioe);
+                                    }
+                                } else {
+                                    if (value != null) {
+                                        if (value instanceof GregorianCalendar) {
+                                            propertyValue = DateUtils.format(((GregorianCalendar) value).getTime(), "dd-MM-yyyy HH:mm:ss");
+                                        } else {
+                                            propertyValue = String.valueOf(value);
+                                        }
                                     }
                                 }
                             }
+                        } else if (prop.isComplex()) {
+                            if (prop instanceof BlobProperty) {
+                                try {
+                                    LOG.info("Document " + doc.getId() + " has content");
+                                    Blob blob = (Blob) doc.getPropertyValue(metadata);
+                                    if (blob != null) {
+                                        String digest = blob.getDigest();
+                                        propertyValue = String.join("/", digest.substring(0, 2), digest.substring(2, 4), digest);
+                                        // Manage download
+                                        if (downloadPath != null) {
+                                            String subdirs = digest.substring(0, 2) + "/" + digest.substring(2, 4);
+                                            File dirs = new File(downloadPath + "/" + subdirs);
+                                            dirs.mkdirs();
+                                            File f = new File(downloadPath + "/" + subdirs + "/" + blob.getDigest());
+                                            LOG.info("Copy binary " + f.getAbsolutePath() + "...");
+                                            try (OutputStream os = new FileOutputStream(f)) {
+                                                if (blob.getFile().exists()) {
+                                                    IOUtils.copy(blob.getStream(), os);
+                                                } else {
+                                                    LOG.warn("Unable to download "
+                                                            + blob.getDigest() + " because it doesn't exists");
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    LOG.error("Unable to download file, please check binary in repo directory.", e);
+                                }
+                            }
                         }
+                    } catch (PropertyException e) {
+                        LOG.error("Property " + metadata + " is not found, please check. " +
+                                "Value will be empty for this property.");
                     }
                 } else {
                     propertyValue = "";
                 }
-                 fields.add(propertyValue);
+                fields.add(propertyValue);
             }
         }
 
