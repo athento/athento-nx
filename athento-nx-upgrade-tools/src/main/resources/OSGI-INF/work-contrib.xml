@@ -12,6 +12,11 @@
       <category>exportCSV</category>
       <name>Athento Massive Export</name>
     </queue>
+    <queue id="exportOrphan">
+      <maxThreads>1</maxThreads>
+      <category>exportOrphan</category>
+      <name>Athento Orphan Export</name>
+    </queue>
   </extension>
 
 </component>
