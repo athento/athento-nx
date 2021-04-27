@@ -9,10 +9,9 @@
 
     <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
                point="operations">
-
         <operation class="org.athento.nuxeo.query.ResultSetElasticPageProviderOperation" replace="true" />
         <operation class="org.athento.nuxeo.query.DocumentPaginatedQueryOperation" replace="true" />
         <operation class="org.athento.nuxeo.query.ResultSetAuditPageProviderOperation" replace="true" />
-
+        <operation class="org.athento.nuxeo.query.AthentoDocumentPageProviderOperation"  replace="true" />
     </extension>
 </component>
